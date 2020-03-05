@@ -20,8 +20,6 @@ World::~World(void)
 void World::Init()
 {
 	InitPathmap();
-	InitDots();
-	InitBigDots();
 }
 
 bool World::InitPathmap()
@@ -36,62 +34,19 @@ bool World::InitPathmap()
 			std::getline (myfile,line);
 			for (unsigned int i = 0; i < line.length(); i++)
 			{
-				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'));
-				myPathmapTiles.push_back(tile);
-			}
-
-			lineIndex++;
-		}
-		myfile.close();
-	}
-
-	return true;
-}
-
-bool World::InitDots()
-{
-	std::string line;
-	std::ifstream myfile ("map.txt");
-	if (myfile.is_open())
-	{
-		int lineIndex = 0;
-		while (! myfile.eof() )
-		{
-			std::getline (myfile,line);
-			for (unsigned int i = 0; i < line.length(); i++)
-			{
 				if (line[i] == '.')
 				{
-					Dot* dot = new Dot(Vector2f(i*22, lineIndex*22));
+					Dot* dot = new Dot(Vector2f(i * 22, lineIndex * 22));
 					myDots.push_back(dot);
 				}
-			}
-
-			lineIndex++;
-		}
-		myfile.close();
-	}
-
-	return true;
-}
-
-bool World::InitBigDots()
-{
-	std::string line;
-	std::ifstream myfile ("map.txt");
-	if (myfile.is_open())
-	{
-		int lineIndex = 0;
-		while (! myfile.eof() )
-		{
-			std::getline (myfile,line);
-			for (unsigned int i = 0; i < line.length(); i++)
-			{
-				if (line[i] == 'o')
+				else if (line[i] == 'o')
 				{
-					BigDot* dot = new BigDot(Vector2f(i*22, lineIndex*22));
+					BigDot* dot = new BigDot(Vector2f(i * 22, lineIndex * 22));
 					myBigDots.push_back(dot);
 				}
+
+				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'));
+				myPathmapTiles.push_back(tile);
 			}
 
 			lineIndex++;

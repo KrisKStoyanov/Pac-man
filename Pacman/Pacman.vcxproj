@@ -121,6 +121,7 @@
     <ClCompile Include="Avatar.cpp" />
     <ClCompile Include="BigDot.cpp" />
     <ClCompile Include="Cherry.cpp" />
+    <ClCompile Include="Core.cpp" />
     <ClCompile Include="Dot.cpp" />
     <ClCompile Include="Drawer.cpp" />
     <ClCompile Include="GameEntity.cpp" />
@@ -137,6 +138,7 @@
     <ClInclude Include="Avatar.h" />
     <ClInclude Include="BigDot.h" />
     <ClInclude Include="Cherry.h" />
+    <ClInclude Include="Core.h" />
     <ClInclude Include="Dot.h" />
     <ClInclude Include="Drawer.h" />
     <ClInclude Include="GameEntity.h" />

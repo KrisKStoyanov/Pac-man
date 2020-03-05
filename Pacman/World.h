@@ -37,8 +37,6 @@ private:
 
 
 	bool InitPathmap();
-	bool InitDots();
-	bool InitBigDots();
 
 	std::list<PathmapTile*> myPathmapTiles;
 	std::list<Dot*> myDots;

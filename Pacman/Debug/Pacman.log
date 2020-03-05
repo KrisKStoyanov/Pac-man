@@ -1,11 +1,7 @@
 ﻿  World.cpp
-C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pacman\Vector2f.h(72,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pacman\World.cpp(41,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pacman\World.cpp(41,36): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pacman\World.cpp(46,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pacman\World.cpp(46,42): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pacman\World.cpp(75,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pacman\World.cpp(75,35): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pacman\World.cpp(102,55): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pacman\World.cpp(102,41): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-  Pacman.vcxproj -> C:\Users\stoya\Downloads\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Debug\Pacman.exe
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(72,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\World.cpp(39,52): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\World.cpp(39,36): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\World.cpp(44,58): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\World.cpp(44,42): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
+  Pacman.vcxproj -> C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Debug\Pacman.exe

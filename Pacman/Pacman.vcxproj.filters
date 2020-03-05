@@ -22,6 +22,9 @@
     <Filter Include="Math">
       <UniqueIdentifier>{407f4558-6586-4bc4-8b47-e4c33e7ecfdd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{46b58b12-fc19-430a-a9b5-08f4ce9b3669}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Pacman.cpp">
@@ -64,6 +67,7 @@
       <Filter>Math</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -105,5 +109,6 @@
     <ClInclude Include="Vector2f.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Core.h" />
   </ItemGroup>
 </Project>
