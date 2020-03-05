@@ -40,32 +40,24 @@ bool Core::Init()
 
 int Core::Run()
 {
-	Pacman* pacman = Pacman::Create();
+	//float lastFrame = (float)SDL_GetTicks() * 0.001f;
+	//SDL_Event event;
+	//while (SDL_PollEvent(&event) > -1)
+	//{
+	//	float currentFrame = (float)SDL_GetTicks() * 0.001f;
+	//	float elapsedTime = currentFrame - lastFrame;
 
-	float lastFrame = (float)SDL_GetTicks() * 0.001f;
-	SDL_Event event;
-	while (SDL_PollEvent(&event) > -1)
-	{
-		float currentFrame = (float)SDL_GetTicks() * 0.001f;
-		float elapsedTime = currentFrame - lastFrame;
+	//	if (!pacman->Update(elapsedTime))
+	//		break;
 
-		if (!pacman->Update(elapsedTime))
-			break;
+	//	//start frame render
+	//	pacman->Draw(this);
 
-		SDL_SetRenderDrawColor(m_pRenderer, 0, 0, 0, 255);
-		SDL_RenderClear(m_pRenderer);
+	//	lastFrame = currentFrame;
 
-		pacman->Draw(this);
+	//	//end frame render
+	//}
 
-		lastFrame = currentFrame;
-
-		SDL_RenderPresent(m_pRenderer);
-		SDL_Delay(1);
-	}
-
-	delete pacman;
-
-	Shutdown();
 	return EXIT_SUCCESS;
 }
 
@@ -74,7 +66,7 @@ void Core::Draw(const char* anImage, int aCellX, int aCellY)
 	SDL_Surface* surface = IMG_Load(anImage);
 
 	if (!surface)
-		return;l
+		return;
 
 	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(m_pRenderer, surface);
 
@@ -93,6 +85,22 @@ void Core::Draw(const char* anImage, int aCellX, int aCellY)
 	SDL_RenderCopy(m_pRenderer, optimizedSurface, &sizeRect, &posRect);
 	SDL_DestroyTexture(optimizedSurface);
 	SDL_FreeSurface(surface);
+}
+
+void Core::OnStartFrameRender()
+{
+	SDL_SetRenderDrawColor(m_pRenderer, 0, 0, 0, 255);
+	SDL_RenderClear(m_pRenderer);
+}
+
+void Core::OnEndFrameRender()
+{
+	SDL_RenderPresent(m_pRenderer);
+	SDL_Delay(1);
+}
+
+void Core::ProcInput()
+{
 }
 
 void Core::DrawText(const char* aText, const char* aFontFile, int aX, int aY)

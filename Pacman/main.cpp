@@ -1,13 +1,18 @@
-#include "Core.h"
+#include "Pacman.h"
 
 int main(int argc, char **argv)
 {
 	bool status = EXIT_FAILURE;
 	Core* core = new Core();
-	if (core->Init())
+	Pacman* pacman = Pacman::Create();
+	if (pacman->Init(*core))
 	{
-		status = core->Run();
+		status = pacman->Run(*core);
 	}
+
+	delete core;
+	delete pacman;
+
 	return status;
 }
 

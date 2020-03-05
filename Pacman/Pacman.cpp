@@ -1,26 +1,8 @@
 #include "Pacman.h"
-#include "Core.h"
-#include "SDL.h"
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
-
-#include "Avatar.h"
-#include "World.h"
-#include "Ghost.h"
 
 Pacman* Pacman::Create()
 {
-	Pacman* pacman = new Pacman();
-
-	if (!pacman->Init())
-	{
-		delete pacman;
-		pacman = NULL;
-	}
-
-	return pacman;
+	return new Pacman();
 }
 
 Pacman::Pacman()
@@ -40,17 +22,62 @@ Pacman::~Pacman(void)
 {
 }
 
-bool Pacman::Init()
+bool Pacman::Init(Core& core)
 {
+	m_isRunning = core.Init();
 	myWorld->Init();
 
-	return true;
+	return m_isRunning;
+}
+
+int Pacman::Run(Core& core)
+{
+	float lastFrame = (float)SDL_GetTicks() * 0.001f;
+	while (m_isRunning) 
+	{
+		float currentFrame = (float)SDL_GetTicks() * 0.001f;
+		float elapsedTime = currentFrame - lastFrame;
+
+		SDL_Event curEvent;
+		while (SDL_PollEvent(&curEvent) > 0)
+		{
+			const Uint8* keystate = SDL_GetKeyboardState(NULL);
+
+			if (keystate[SDL_SCANCODE_UP])
+				myNextMovement = Vector2f(0.f, -1.f);
+			else if (keystate[SDL_SCANCODE_DOWN])
+				myNextMovement = Vector2f(0.f, 1.f);
+			else if (keystate[SDL_SCANCODE_RIGHT])
+				myNextMovement = Vector2f(1.f, 0.f);
+			else if (keystate[SDL_SCANCODE_LEFT])
+				myNextMovement = Vector2f(-1.f, 0.f);
+
+			if (keystate[SDL_SCANCODE_ESCAPE])
+			{
+				m_isRunning = false;
+			}			
+		}
+
+		Update(elapsedTime);
+
+		core.OnStartFrameRender();
+
+		Draw(core);
+
+		core.OnEndFrameRender();
+	
+		lastFrame = currentFrame;
+	}
+
+	Shutdown();
+	core.Shutdown();
+	return EXIT_SUCCESS;
 }
 
 bool Pacman::Update(float aTime)
 {
-	if (!UpdateInput())
-		return false;
+	//if (!UpdateInput())
+	//	return false;
 
 	//if (CheckEndGameCondition())
 	//{
@@ -144,32 +171,36 @@ bool Pacman::CheckEndGameCondition()
 	return false;
 }
 
-bool Pacman::Draw(Core* core)
+bool Pacman::Draw(Core& core)
 {
-	myWorld->Draw(core);
-	myAvatar->Draw(core);
-	myGhost->Draw(core);
+	myWorld->Draw(&core);
+	myAvatar->Draw(&core);
+	myGhost->Draw(&core);
 
 	std::string scoreString;
 	std::stringstream scoreStream;
 	scoreStream << myScore;
 	scoreString = scoreStream.str();
-	core->DrawText("Score", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 50);
-	core->DrawText(scoreString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 50);
+	core.DrawText("Score", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 50);
+	core.DrawText(scoreString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 50);
 
 	std::string livesString;
 	std::stringstream liveStream;
 	liveStream << myLives;
 	livesString = liveStream.str();
-	core->DrawText("Lives", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 80);
-	core->DrawText(livesString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 80);
+	core.DrawText("Lives", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 80);
+	core.DrawText(livesString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 80);
 
-	core->DrawText("FPS", "freefont-ttf\\sfd\\FreeMono.ttf", 880, 50);
+	core.DrawText("FPS", "freefont-ttf\\sfd\\FreeMono.ttf", 880, 50);
 	std::string fpsString;
 	std::stringstream fpsStream;
 	fpsStream << myFps;
 	fpsString = fpsStream.str();
-	core->DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50);
+	core.DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50);
 
 	return true;
+}
+
+void Pacman::Shutdown()
+{
 }
