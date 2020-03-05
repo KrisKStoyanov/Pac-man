@@ -44,7 +44,7 @@ int Core::Run()
 
 	float lastFrame = (float)SDL_GetTicks() * 0.001f;
 	SDL_Event event;
-	while (SDL_PollEvent(&event) >= 0)
+	while (SDL_PollEvent(&event) > -1)
 	{
 		float currentFrame = (float)SDL_GetTicks() * 0.001f;
 		float elapsedTime = currentFrame - lastFrame;
@@ -74,7 +74,7 @@ void Core::Draw(const char* anImage, int aCellX, int aCellY)
 	SDL_Surface* surface = IMG_Load(anImage);
 
 	if (!surface)
-		return;
+		return;l
 
 	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(m_pRenderer, surface);
 

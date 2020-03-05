@@ -86,7 +86,7 @@ bool Pacman::Update(float aTime)
 
 	if ((myGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
 	{
-		if (myGhostGhostCounter <= 0.f)
+		if (myGhostGhostCounter < 0.1f)
 		{
 			myLives--;
 
@@ -128,11 +128,10 @@ bool Pacman::UpdateInput()
 
 void Pacman::MoveAvatar()
 {
-	int nextTileX = myAvatar->GetCurrentTileX() + myNextMovement.myX;
-	int nextTileY = myAvatar->GetCurrentTileY() + myNextMovement.myY;
-
 	if (myAvatar->IsAtDestination())
 	{
+		int nextTileX = myAvatar->GetCurrentTileX() + myNextMovement.myX;
+		int nextTileY = myAvatar->GetCurrentTileY() + myNextMovement.myY;
 		if (myWorld->TileIsValid(nextTileX, nextTileY))
 		{
 			myAvatar->SetNextTile(nextTileX, nextTileY);
