@@ -3,7 +3,7 @@
 
 #include "Vector2f.h"
 
-class Drawer;
+class Core;
 
 class GameEntity
 {
@@ -15,7 +15,7 @@ public:
 	void SetPosition(const Vector2f& aPosition){ myPosition = aPosition; }
 
 	bool Intersect(GameEntity* aGameEntity);
-	virtual void Draw(Drawer* aDrawer);
+	virtual void Draw(Core* core);
 
 	void MarkForDelete() { myIdMarkedForDeleteFlag = true; }
 	bool IsMarkedForDelete() const { return myIdMarkedForDeleteFlag; }

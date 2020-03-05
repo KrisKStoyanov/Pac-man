@@ -7,7 +7,7 @@
 #include "PathmapTile.h"
 #include "Dot.h"
 #include "BigDot.h"
-#include "Drawer.h"
+#include "Core.h"
 
 World::World(void)
 {
@@ -57,20 +57,20 @@ bool World::InitPathmap()
 	return true;
 }
 
-void World::Draw(Drawer* aDrawer)
+void World::Draw(Core* core)
 {
-	aDrawer->Draw("playfield.png");
+	core->Draw("playfield.png");
 
 	for(std::list<Dot*>::iterator list_iter = myDots.begin(); list_iter != myDots.end(); list_iter++)
 	{
 		Dot* dot = *list_iter;
-		dot->Draw(aDrawer);
+		dot->Draw(core);
 	}
 
 	for(std::list<BigDot*>::iterator list_iter = myBigDots.begin(); list_iter != myBigDots.end(); list_iter++)
 	{
 		BigDot* dot = *list_iter;
-		dot->Draw(aDrawer);
+		dot->Draw(core);
 	}
 }
 

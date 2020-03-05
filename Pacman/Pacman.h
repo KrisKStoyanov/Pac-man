@@ -4,7 +4,7 @@
 #include "Vector2f.h"
 
 struct SDL_Surface;
-class Drawer;
+class Core;
 class Avatar;
 class World;
 class Ghost;
@@ -12,20 +12,18 @@ class Ghost;
 class Pacman
 {
 public:
-	static Pacman* Create(Drawer* aDrawer);
+	static Pacman* Create();
 	~Pacman(void);
 
 	bool Update(float aTime);
-	bool Draw();
+	bool Draw(Core* core);
 
 private:
-	Pacman(Drawer* aDrawer);
+	Pacman();
 	bool Init();
 	bool UpdateInput();
 	void MoveAvatar();
 	bool CheckEndGameCondition();
-
-	Drawer* myDrawer;
 
 	float myTimeToNextUpdate;
 	float myGhostGhostCounter;
@@ -39,7 +37,6 @@ private:
 	Avatar* myAvatar;
 	Ghost* myGhost;
 	World* myWorld;
-
 };
 
 #endif // PACMAN_H

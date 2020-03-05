@@ -1,5 +1,5 @@
 #include "Pacman.h"
-#include "Drawer.h"
+#include "Core.h"
 #include "SDL.h"
 #include <iostream>
 #include <sstream>
@@ -10,9 +10,9 @@
 #include "World.h"
 #include "Ghost.h"
 
-Pacman* Pacman::Create(Drawer* aDrawer)
+Pacman* Pacman::Create()
 {
-	Pacman* pacman = new Pacman(aDrawer);
+	Pacman* pacman = new Pacman();
 
 	if (!pacman->Init())
 	{
@@ -23,9 +23,8 @@ Pacman* Pacman::Create(Drawer* aDrawer)
 	return pacman;
 }
 
-Pacman::Pacman(Drawer* aDrawer)
-: myDrawer(aDrawer)
-, myTimeToNextUpdate(0.f)
+Pacman::Pacman()
+: myTimeToNextUpdate(0.f)
 , myNextMovement(-1.f,0.f)
 , myScore(0)
 , myFps(0)
@@ -53,16 +52,16 @@ bool Pacman::Update(float aTime)
 	if (!UpdateInput())
 		return false;
 
-	if (CheckEndGameCondition())
-	{
-		myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);
-		return true;
-	}
-	else if (myLives <= 0)
-	{
-		myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);	
-		return true;
-	}
+	//if (CheckEndGameCondition())
+	//{
+	//	myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);
+	//	return true;
+	//}
+	//else if (myLives <= 0)
+	//{
+	//	myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);	
+	//	return true;
+	//}
 
 	MoveAvatar();
 	myAvatar->Update(aTime);
@@ -146,32 +145,32 @@ bool Pacman::CheckEndGameCondition()
 	return false;
 }
 
-bool Pacman::Draw()
+bool Pacman::Draw(Core* core)
 {
-	myWorld->Draw(myDrawer);
-	myAvatar->Draw(myDrawer);
-	myGhost->Draw(myDrawer);
+	myWorld->Draw(core);
+	myAvatar->Draw(core);
+	myGhost->Draw(core);
 
 	std::string scoreString;
 	std::stringstream scoreStream;
 	scoreStream << myScore;
 	scoreString = scoreStream.str();
-	myDrawer->DrawText("Score", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 50);
-	myDrawer->DrawText(scoreString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 50);
+	core->DrawText("Score", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 50);
+	core->DrawText(scoreString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 50);
 
 	std::string livesString;
 	std::stringstream liveStream;
 	liveStream << myLives;
 	livesString = liveStream.str();
-	myDrawer->DrawText("Lives", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 80);
-	myDrawer->DrawText(livesString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 80);
+	core->DrawText("Lives", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 80);
+	core->DrawText(livesString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 80);
 
-	myDrawer->DrawText("FPS", "freefont-ttf\\sfd\\FreeMono.ttf", 880, 50);
+	core->DrawText("FPS", "freefont-ttf\\sfd\\FreeMono.ttf", 880, 50);
 	std::string fpsString;
 	std::stringstream fpsStream;
 	fpsStream << myFps;
 	fpsString = fpsStream.str();
-	myDrawer->DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50);
+	core->DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50);
 
 	return true;
 }

@@ -1,7 +1,7 @@
 #include "Ghost.h"
 #include "World.h"
 #include "PathmapTile.h"
-#include "Drawer.h"
+#include "Core.h"
 
 Ghost::Ghost(const Vector2f& aPosition)
 : MovableGameEntity(aPosition, "ghost_32.png")
@@ -92,12 +92,12 @@ void Ghost::SetImage(const char* anImage)
 	myImage = anImage;
 }
 
-void Ghost::Draw(Drawer* aDrawer)
+void Ghost::Draw(Core* core)
 {
 	if (myIsDeadFlag)
-		aDrawer->Draw("Ghost_Dead_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+		core->Draw("Ghost_Dead_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
 	else if (myIsClaimableFlag)
-		aDrawer->Draw("Ghost_Vulnerable_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+		core->Draw("Ghost_Vulnerable_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
 	else
-		aDrawer->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+		core->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
 }

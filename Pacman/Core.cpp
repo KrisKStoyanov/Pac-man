@@ -40,8 +40,7 @@ bool Core::Init()
 
 int Core::Run()
 {
-	Drawer* drawer = Drawer::Create(m_pWindow, m_pRenderer);
-	Pacman* pacman = Pacman::Create(drawer);
+	Pacman* pacman = Pacman::Create();
 
 	float lastFrame = (float)SDL_GetTicks() * 0.001f;
 	SDL_Event event;
@@ -56,7 +55,7 @@ int Core::Run()
 		SDL_SetRenderDrawColor(m_pRenderer, 0, 0, 0, 255);
 		SDL_RenderClear(m_pRenderer);
 
-		pacman->Draw();
+		pacman->Draw(this);
 
 		lastFrame = currentFrame;
 
@@ -65,10 +64,62 @@ int Core::Run()
 	}
 
 	delete pacman;
-	delete drawer;
 
 	Shutdown();
 	return EXIT_SUCCESS;
+}
+
+void Core::Draw(const char* anImage, int aCellX, int aCellY)
+{
+	SDL_Surface* surface = IMG_Load(anImage);
+
+	if (!surface)
+		return;
+
+	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(m_pRenderer, surface);
+
+	SDL_Rect sizeRect;
+	sizeRect.x = 0;
+	sizeRect.y = 0;
+	sizeRect.w = surface->w;
+	sizeRect.h = surface->h;
+
+	SDL_Rect posRect;
+	posRect.x = aCellX;
+	posRect.y = aCellY;
+	posRect.w = sizeRect.w;
+	posRect.h = sizeRect.h;
+
+	SDL_RenderCopy(m_pRenderer, optimizedSurface, &sizeRect, &posRect);
+	SDL_DestroyTexture(optimizedSurface);
+	SDL_FreeSurface(surface);
+}
+
+void Core::DrawText(const char* aText, const char* aFontFile, int aX, int aY)
+{
+	TTF_Font* font = TTF_OpenFont(aFontFile, 24);
+
+	SDL_Color fg = { 255,0,0,255 };
+	SDL_Surface* surface = TTF_RenderText_Solid(font, aText, fg);
+
+	SDL_Texture* optimizedSurface = SDL_CreateTextureFromSurface(m_pRenderer, surface);
+
+	SDL_Rect sizeRect;
+	sizeRect.x = 0;
+	sizeRect.y = 0;
+	sizeRect.w = surface->w;
+	sizeRect.h = surface->h;
+
+	SDL_Rect posRect;
+	posRect.x = aX;
+	posRect.y = aY;
+	posRect.w = sizeRect.w;
+	posRect.h = sizeRect.h;
+
+	SDL_RenderCopy(m_pRenderer, optimizedSurface, &sizeRect, &posRect);
+	SDL_DestroyTexture(optimizedSurface);
+	SDL_FreeSurface(surface);
+	TTF_CloseFont(font);
 }
 
 void Core::Shutdown()

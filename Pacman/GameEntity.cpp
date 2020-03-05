@@ -1,5 +1,5 @@
 #include "GameEntity.h"
-#include "Drawer.h"
+#include "Core.h"
 
 GameEntity::GameEntity(const Vector2f& aPosition, const char* anImage)
 :myPosition(aPosition)
@@ -18,7 +18,7 @@ bool GameEntity::Intersect(GameEntity* aGameEntity)
 	return false;	
 }
 
-void GameEntity::Draw(Drawer* aDrawer)
+void GameEntity::Draw(Core* core)
 {
-	aDrawer->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	core->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
 }

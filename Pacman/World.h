@@ -4,7 +4,7 @@
 #include <list>
 #include "Vector2f.h"
 
-class Drawer;
+class Core;
 class PathmapTile;
 class Dot;
 class BigDot;
@@ -18,7 +18,7 @@ public:
 
 	void Init();
 
-	void Draw(Drawer* aDrawer);
+	void Draw(Core* core);
 	bool TileIsValid(int anX, int anY);
 
 	bool HasIntersectedDot(const Vector2f& aPosition);

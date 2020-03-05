@@ -17,10 +17,6 @@ public:
 private:
 	Drawer(SDL_Window* aWindow, SDL_Renderer* aRenderer);
 	bool Init();
-	
-	SDL_Window* myWindow;
-	SDL_Renderer* myRenderer;
-	SDL_Surface* world;
 };
 
 #endif // DRAWER_H
