@@ -123,6 +123,18 @@ bool World::HasIntersectedCherry(const Vector2f& aPosition)
 	return true;
 }
 
+void World::Shutdown()
+{
+	delete m_pPlayfield;
+	delete m_pDot;
+	delete m_pBigDot;
+
+	while (!myPathmapTiles.empty()) delete myPathmapTiles.back(), myPathmapTiles.pop_back();
+	while (!myDots.empty()) delete myDots.back(), myDots.pop_back();
+	while (!myBigDots.empty()) delete myBigDots.back(), myBigDots.pop_back();
+	while (!myCherry.empty()) delete myCherry.back(), myCherry.pop_back();
+}
+
 void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList)
 {
 	PathmapTile* fromTile = GetTile(aFromX, aFromY);

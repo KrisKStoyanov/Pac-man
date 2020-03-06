@@ -40,6 +40,8 @@ public:
 
 	void Update(Core* core);
 
+	void Shutdown();
+
 	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList);
 private:
 

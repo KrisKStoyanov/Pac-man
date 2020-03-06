@@ -44,11 +44,21 @@ void DrawEntity::SetPosition(int posX, int posY)
 
 void DrawEntity::SetImage(SDL_Renderer* renderer, const char* anImage)
 {
+	if (mySurface) 
+	{
+		SDL_FreeSurface(mySurface);
+	}
 	mySurface = IMG_Load(anImage);
 
 	if (!mySurface)
+	{
 		return;
-	SDL_DestroyTexture(myTexture);
+	}
+
+	if (myTexture)
+	{
+		SDL_DestroyTexture(myTexture);
+	}
 	myTexture = SDL_CreateTextureFromSurface(renderer, mySurface);
 }
 

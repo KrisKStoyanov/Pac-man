@@ -76,7 +76,6 @@ int Pacman::Run(Core& core)
 		{
 			RedrawUI(core.GetRenderer());
 		}
-
 		core.OnEndFrameRender();
 	
 		lastFrame = currentFrame;
@@ -143,6 +142,8 @@ bool Pacman::Update(Core& core, float aTime)
 		}
 		else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
 		{
+			myGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			myGhost->Reset();
 			myScore += 50;
 			myGhost->myIsDeadFlag = true;
 			myGhost->Die(myWorld);
@@ -243,4 +244,17 @@ bool Pacman::Draw(Core& core)
 
 void Pacman::Shutdown()
 {
+	delete m_pScoreText;
+	delete m_pLivesText;
+	delete m_pFpsText;
+
+	myWorld->Shutdown();
+	delete myAvatar;
+	delete myGhost;
+	delete myWorld;
+
+	delete m_pAvatar;
+	delete m_pDefaultGhost;
+	delete m_pVulnerableGhost;
+	delete m_pDeadGhost;
 }

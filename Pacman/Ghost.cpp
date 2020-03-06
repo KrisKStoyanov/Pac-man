@@ -12,6 +12,7 @@ Ghost::Ghost(const Vector2f& aPosition)
 
 Ghost::~Ghost(void)
 {
+	while (!myPath.empty()) delete myPath.front(), myPath.pop_front();
 }
 
 void Ghost::Die(World* aWorld)

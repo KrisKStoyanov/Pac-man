@@ -23,15 +23,25 @@ DrawTextEntity::DrawTextEntity(SDL_Renderer* renderer, const char* aText, const 
 DrawTextEntity::~DrawTextEntity()
 {
 	TTF_CloseFont(myFont);
-	SDL_DestroyTexture(myTexture);
-	SDL_FreeSurface(mySurface);
 }
 
 void DrawTextEntity::SetText(SDL_Renderer* renderer, const char* aText, const char* aFontFile)
 {
-	SDL_FreeSurface(mySurface);
-	SDL_DestroyTexture(myTexture);
+	if (mySurface)
+	{
+		SDL_FreeSurface(mySurface);
+	}
 	mySurface = TTF_RenderText_Solid(myFont, aText, myFontColor);
+	
+	if (!mySurface)
+	{
+		return;
+	}
+		
+	if (myTexture)
+	{
+		SDL_DestroyTexture(myTexture);
+	}
 	myTexture = SDL_CreateTextureFromSurface(renderer, mySurface);
 }
 
