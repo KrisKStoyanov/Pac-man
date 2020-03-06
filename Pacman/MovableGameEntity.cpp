@@ -3,8 +3,7 @@
 MovableGameEntity::MovableGameEntity(const Vector2f& aPosition, const char* anImage)
 : GameEntity(aPosition, anImage)
 {
-	myCurrentTileX = myNextTileX =  myPosition.myX / 22;
-	myCurrentTileY = myNextTileY =  myPosition.myY / 22;
+	m_currentTile = m_nextTile = Vector2f(myPosition.myX / 22, myPosition.myY / 22);
 }
 
 MovableGameEntity::~MovableGameEntity(void)
@@ -13,18 +12,10 @@ MovableGameEntity::~MovableGameEntity(void)
 
 bool MovableGameEntity::IsAtDestination()
 {
-	if (myCurrentTileX == myNextTileX && myCurrentTileY == myNextTileY)
+	if (m_currentTile.myX == m_nextTile.myX && m_currentTile.myY == m_nextTile.myY) 
 	{
-
-
 		return true;
 	}
 
 	return false;
-}
-
-void MovableGameEntity::SetNextTile(int anX, int anY)
-{
-	myNextTileX = anX;
-	myNextTileY = anY;
 }

@@ -18,7 +18,7 @@ Ghost::~Ghost(void)
 void Ghost::Die(World* aWorld)
 {
 	myPath.clear();
-	aWorld->GetPath(myCurrentTileX, myCurrentTileY, 13, 13, myPath);
+	aWorld->GetPath(m_currentTile.myX, m_currentTile.myY, 13, 13, myPath);
 }
 
 void Ghost::Reset()
@@ -29,15 +29,14 @@ void Ghost::Reset()
 	myDesiredMovementX = 0;
 	myDesiredMovementY = -1;
 
-	myCurrentTileX = myNextTileX = myPosition.myX / 22;
-	myCurrentTileY = myNextTileY = myPosition.myY / 22;
+	m_currentTile = m_nextTile = Vector2f(myPosition.myX / 22, myPosition.myY / 22);
 }
 
 void Ghost::Update(float aTime, World* aWorld)
 {
 	float speed = 30.f;
-	int nextTileX = myCurrentTileX + myDesiredMovementX;
-	int nextTileY = myCurrentTileY + myDesiredMovementY;
+	int nextTileX = m_currentTile.myX + myDesiredMovementX;
+	int nextTileY = m_currentTile.myY + myDesiredMovementY;
 
 	if (myIsDeadFlag)
 		speed = 120.f;
@@ -48,11 +47,11 @@ void Ghost::Update(float aTime, World* aWorld)
 		{
 			PathmapTile* nextTile = myPath.front();
 			myPath.pop_front();
-			SetNextTile(nextTile->myX, nextTile->myY);
+			SetNextTile(nextTile->m_pos);
 		}
 		else if (aWorld->TileIsValid(nextTileX, nextTileY))
 		{
-			SetNextTile(nextTileX, nextTileY);
+			SetNextTile(Vector2f(nextTileX, nextTileY));
 		}
 		else
 		{
@@ -79,7 +78,7 @@ void Ghost::Update(float aTime, World* aWorld)
 	}
 
 	int tileSize = 22;
-	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
+	Vector2f destination(m_nextTile.myX * tileSize, m_nextTile.myY * tileSize);
 	Vector2f direction = destination - myPosition;
 
 	float distanceToMove = aTime * speed;
@@ -87,8 +86,7 @@ void Ghost::Update(float aTime, World* aWorld)
 	if (distanceToMove > direction.Length())
 	{
 		myPosition = destination;
-		myCurrentTileX = myNextTileX;
-		myCurrentTileY = myNextTileY;
+		m_currentTile = m_nextTile;
 	}
 	else
 	{

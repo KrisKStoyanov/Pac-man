@@ -5,16 +5,16 @@ Pacman* Pacman::Create()
 	return new Pacman();
 }
 
-Pacman::Pacman()
-: myTimeToNextUpdate(0.f)
-, myNextMovement(-1.f,0.f)
-, myScore(0)
-, myFps(0)
-, myLives(3)
-, myGhostGhostCounter(0.f)
+Pacman::Pacman(): 
+	myTimeToNextUpdate(0.f), 
+	myNextMovement(-1.f,0.f), 
+	myScore(0), myFps(0), myLives(3), 
+	myGhostGhostCounter(0.f),
+	m_drawOffsetX(220.0f), m_drawOffsetY(60.0f),
+	m_tileSize(22)
 {
-	myAvatar = new Avatar(Vector2f(13*22,22*22));
-	myGhost = new Ghost(Vector2f(13*22,13*22));
+	myAvatar = new Avatar(Vector2f(13 * m_tileSize, 22 * m_tileSize));
+	myGhost = new Ghost(Vector2f(13 * m_tileSize, 13 * m_tileSize));
 	myWorld = new World();
 }
 
@@ -108,8 +108,8 @@ bool Pacman::Update(Core& core, float aTime)
 		}
 	}
 
-	MoveAvatar();
-	myAvatar->Update(aTime);
+	UpdateAvatar(aTime);
+	
 	myGhost->Update(aTime, myWorld);
 
 	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
@@ -156,22 +156,41 @@ bool Pacman::Update(Core& core, float aTime)
 	return true;
 }
 
-void Pacman::MoveAvatar()
-{
-	if (myAvatar->IsAtDestination())
-	{
-		int nextTileX = myAvatar->GetCurrentTileX() + myNextMovement.myX;
-		int nextTileY = myAvatar->GetCurrentTileY() + myNextMovement.myY;
-		if (myWorld->TileIsValid(nextTileX, nextTileY))
-		{
-			myAvatar->SetNextTile(nextTileX, nextTileY);
-		}
-	}
-}
-
 bool Pacman::CheckEndGameCondition()
 {
 	return false;
+}
+
+void Pacman::UpdateAvatar(float deltaTime)
+{
+	if (myAvatar->IsAtDestination())
+	{
+		int nextTileX = myAvatar->GetCurrentTile().myX + myNextMovement.myX;
+		int nextTileY = myAvatar->GetCurrentTile().myY + myNextMovement.myY;
+		if (myWorld->TileIsValid(nextTileX, nextTileY))
+		{
+			myAvatar->SetNextTile(Vector2f(nextTileX, nextTileY));
+		}
+	}
+
+	Vector2f destination(myAvatar->GetNextTile().myX * m_tileSize, myAvatar->GetNextTile().myY * m_tileSize);
+	Vector2f direction = destination - myAvatar->GetPosition();
+
+	float distanceToMove = deltaTime * 30.f;
+
+	if (distanceToMove > direction.Length())
+	{
+		myAvatar->GetPosition() = destination;
+		myAvatar->SetCurrentTile(myAvatar->GetNextTile());
+	}
+	else
+	{
+		direction.Normalize();
+		myAvatar->SetPosition(myAvatar->GetPosition() +  direction * distanceToMove);
+	}
+
+	myAvatar->Update(deltaTime);
+	myAvatar->SetDrawPos(Vector2f(myAvatar->GetPosition().myX + m_drawOffsetX, myAvatar->GetPosition().myY + m_drawOffsetY));
 }
 
 void Pacman::UpdateScore(int amount)

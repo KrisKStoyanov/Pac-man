@@ -71,7 +71,7 @@ bool World::TileIsValid(int anX, int anY)
 {
 	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
 	{
-		if (myPathmapTiles[i]->myX == anX && myPathmapTiles[i]->myY == anY && !myPathmapTiles[i]->myIsBlockingFlag)
+		if (myPathmapTiles[i]->m_pos.myX == anX && myPathmapTiles[i]->m_pos.myY == anY && !myPathmapTiles[i]->myIsBlockingFlag)
 		{
 			return true;
 		}
@@ -152,7 +152,7 @@ PathmapTile* World::GetTile(int aFromX, int aFromY)
 {
 	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
 	{
-		if (myPathmapTiles[i]->myX == aFromX && myPathmapTiles[i]->myY == aFromY)
+		if (myPathmapTiles[i]->m_pos.myX == aFromX && myPathmapTiles[i]->m_pos.myY == aFromY)
 		{
 			return myPathmapTiles[i];
 		}
@@ -177,8 +177,8 @@ bool World::ListDoesNotContain(PathmapTile* aFromTile, std::list<PathmapTile*>& 
 
 bool SortFromGhostSpawn(PathmapTile* a, PathmapTile* b)
 {
-	int la = abs(a->myX - 13) + abs(a->myY - 13);
-	int lb = abs(b->myX - 13) + abs(b->myY - 13);
+	int la = abs(a->m_pos.myX - 13) + abs(a->m_pos.myY - 13);
+	int lb = abs(b->m_pos.myX - 13) + abs(b->m_pos.myY - 13);
 
     return la < lb;
 }
@@ -195,19 +195,19 @@ bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<Pat
 
 	std::list<PathmapTile*> neighborList;
 
-	PathmapTile* up = GetTile(aFromTile->myX, aFromTile->myY - 1);
+	PathmapTile* up = GetTile(aFromTile->m_pos.myX, aFromTile->m_pos.myY - 1);
 	if (up && !up->myIsVisitedFlag && !up->myIsBlockingFlag && ListDoesNotContain(up, aList))
 		neighborList.push_front(up);
 
-	PathmapTile* down = GetTile(aFromTile->myX, aFromTile->myY + 1);
+	PathmapTile* down = GetTile(aFromTile->m_pos.myX, aFromTile->m_pos.myY + 1);
 	if (down && !down->myIsVisitedFlag && !down->myIsBlockingFlag && ListDoesNotContain(down, aList))
 		neighborList.push_front(down);
 
-	PathmapTile* right = GetTile(aFromTile->myX + 1, aFromTile->myY);
+	PathmapTile* right = GetTile(aFromTile->m_pos.myX + 1, aFromTile->m_pos.myY);
 	if (right && !right->myIsVisitedFlag && !right->myIsBlockingFlag && ListDoesNotContain(right, aList))
 		neighborList.push_front(right);
 
-	PathmapTile* left = GetTile(aFromTile->myX - 1, aFromTile->myY);
+	PathmapTile* left = GetTile(aFromTile->m_pos.myX - 1, aFromTile->m_pos.myY);
 	if (left && !left->myIsVisitedFlag && !left->myIsBlockingFlag && ListDoesNotContain(left, aList))
 		neighborList.push_front(left);
 

@@ -1,8 +1,7 @@
 #include "PathmapTile.h"
 
 PathmapTile::PathmapTile(int anX, int anY, bool aIsBlockingFlag)
-: myX(anX)
-, myY(anY)
+: m_pos(anX, anY)
 , myIsBlockingFlag(aIsBlockingFlag)
 ,myIsVisitedFlag(false)
 {

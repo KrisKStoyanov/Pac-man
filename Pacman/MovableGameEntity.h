@@ -10,19 +10,18 @@ public:
 	MovableGameEntity(const Vector2f& aPosition, const char* anImage);
 	~MovableGameEntity(void);
 
-	void SetNextTile(int anX, int anY);
-	int GetCurrentTileX() const { return myCurrentTileX; }
-	int GetCurrentTileY() const { return myCurrentTileY; }
+	inline void SetCurrentTile(const Vector2f& tile) { m_currentTile = tile; }
+	inline void SetNextTile(const Vector2f& tile) { m_nextTile = tile; }
+
+	inline Vector2f GetCurrentTile() { return m_currentTile; }
+	inline Vector2f GetNextTile() { return m_nextTile; }
 
 	bool IsAtDestination();
 
 protected:
 
-	int myCurrentTileX;
-	int myCurrentTileY;
-
-	int myNextTileX;
-	int myNextTileY;
+	Vector2f m_currentTile;
+	Vector2f m_nextTile;
 
 };
 

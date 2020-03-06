@@ -14,7 +14,7 @@ void Avatar::Update(float aTime)
 {
 	int tileSize = 22;
 
-	Vector2f destination(myNextTileX * tileSize, myNextTileY * tileSize);
+	Vector2f destination(m_nextTile.myX * tileSize, m_nextTile.myY * tileSize);
 	Vector2f direction = destination - myPosition;
 
 	float distanceToMove = aTime * 30.f;
@@ -22,20 +22,16 @@ void Avatar::Update(float aTime)
 	if (distanceToMove > direction.Length())
 	{
 		myPosition = destination;
-		myCurrentTileX = myNextTileX;
-		myCurrentTileY = myNextTileY;
+		m_currentTile = m_nextTile;
 	}
 	else
 	{
 		direction.Normalize();
 		myPosition += direction * distanceToMove;
 	}
-	
-	SetDrawPos(Vector2f(myPosition.myX + m_drawOffsetX, myPosition.myY + m_drawOffsetY));
 }
 
 void Avatar::Reset()
 {
-	myCurrentTileX = myNextTileX = myPosition.myX / 22;
-	myCurrentTileY = myNextTileY = myPosition.myY / 22;
+	m_currentTile = m_nextTile = Vector2f(myPosition.myX / 22, myPosition.myY / 22);
 }

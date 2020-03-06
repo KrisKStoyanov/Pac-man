@@ -36,8 +36,9 @@ public:
 
 private:
 	Pacman();
-	void MoveAvatar();
 	bool CheckEndGameCondition();
+
+	void UpdateAvatar(float deltaTime);
 
 	void UpdateScore(int amount);
 	void UpdateLives(int amount);
@@ -72,6 +73,11 @@ private:
 	DrawEntity* m_pDeadGhost;
 
 	PACMAN_DESC m_desc;
+
+	const float m_drawOffsetX;
+	const float m_drawOffsetY;
+
+	const int m_tileSize;
 };
 
 #endif // PACMAN_H
