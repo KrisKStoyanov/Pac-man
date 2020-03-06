@@ -11,9 +11,11 @@ public:
 	~Avatar(void);
 
 	void Update(float aTime);
-private:
 
-
+	inline Vector2f GetDrawPos()
+	{
+		return m_drawPos;
+	}
 };
 
 #endif //AVATAR_H

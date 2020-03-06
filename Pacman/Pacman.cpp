@@ -45,6 +45,9 @@ bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 	m_pFpsText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 880, 50);
 	fpsStream.flush();
 
+	m_pAvatar = new DrawEntity(core.GetRenderer(), pacman_desc.avatarImage, 0, 0);
+	m_pGhost = new DrawEntity(core.GetRenderer(), pacman_desc.ghostImage, 0, 0);
+
 	WORLD_DESC world_desc;
 	world_desc.playfieldImage = pacman_desc.playfieldImage;
 	world_desc.dotImage = pacman_desc.dotImage;
@@ -211,8 +214,17 @@ void Pacman::RedrawUI(SDL_Renderer* renderer)
 bool Pacman::Draw(Core& core)
 {
 	myWorld->Draw(core);
-	myAvatar->Draw(&core);
-	myGhost->Draw(&core);
+
+	core.DrawObject(*m_pAvatar, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+	core.DrawObject(*m_pGhost, myGhost->GetDrawPos().myX, myGhost->GetDrawPos().myY);
+
+	//ALT GHOST SKINS
+	//if (myIsDeadFlag)
+	//	core->Draw("Ghost_Dead_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	//else if (myIsClaimableFlag)
+	//	core->Draw("Ghost_Vulnerable_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
+	//else
+	//	core->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
 
 	core.DrawObject(*m_pScoreText);
 	core.DrawObject(*m_pLivesText);

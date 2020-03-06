@@ -30,4 +30,6 @@ void Avatar::Update(float aTime)
 		direction.Normalize();
 		myPosition += direction * distanceToMove;
 	}
+	
+	SetDrawPos(Vector2f(myPosition.myX + m_drawOffsetX, myPosition.myY + m_drawOffsetY));
 }

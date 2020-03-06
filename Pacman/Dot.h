@@ -14,10 +14,6 @@ public:
 	{
 		return m_drawPos;
 	}
-private:
-	Vector2f m_drawPos;
-	float m_offsetX = 220;
-	float m_offsetY = 60;
 };
 
 #endif // DOT_H

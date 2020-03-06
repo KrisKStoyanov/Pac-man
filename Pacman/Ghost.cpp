@@ -85,19 +85,10 @@ void Ghost::Update(float aTime, World* aWorld)
 		direction.Normalize();
 		myPosition += direction * distanceToMove;
 	}
+	SetDrawPos(Vector2f(myPosition.myX + m_drawOffsetX, myPosition.myY + m_drawOffsetY));
 }
 
 void Ghost::SetImage(const char* anImage)
 {
 	myImage = anImage;
-}
-
-void Ghost::Draw(Core* core)
-{
-	if (myIsDeadFlag)
-		core->Draw("Ghost_Dead_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
-	else if (myIsClaimableFlag)
-		core->Draw("Ghost_Vulnerable_32.png", (int)myPosition.myX + 220, (int)myPosition.myY + 60);
-	else
-		core->Draw(myImage, (int)myPosition.myX + 220, (int)myPosition.myY + 60);
 }

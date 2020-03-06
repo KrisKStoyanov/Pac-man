@@ -67,6 +67,9 @@ private:
 	DrawTextEntity* m_pLivesText;
 	DrawTextEntity* m_pFpsText;
 
+	DrawEntity* m_pAvatar;
+	DrawEntity* m_pGhost;
+
 	PACMAN_DESC m_desc;
 };
 
