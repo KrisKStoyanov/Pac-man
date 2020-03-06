@@ -7,11 +7,23 @@
 
 struct PACMAN_DESC
 {
-	const char* avatarImage = "open_32.png";
-	
-	const char* ghostDefaultImage = "ghost_32.png";
-	const char* ghostVulnerableImage = "ghost_32.png";
-	const char* ghostDeadImage = "ghost_32.png";
+	const char* avatarOpenLeftImage = "open_left_32.png";
+	const char* avatarOpenRightImage = "open_right_32.png";
+	const char* avatarOpenUpImage = "open_up_32.png";
+	const char* avatarOpenDownImage = "open_down_32.png";
+
+	const char* avatarClosedLeftImage = "closed_left_32.png";
+	const char* avatarClosedRightImage = "closed_right_32.png";
+	const char* avatarClosedUpImage = "closed_up_32.png";
+	const char* avatarClosedDownImage = "closed_down_32.png";
+
+	const char* redGhostImage = "ghost_32_red.png";
+	const char* tealGhostImage = "ghost_32_cyan.png";
+	const char* pinkGhostImage = "ghost_32_pink.png";
+	const char* orangeGhostImage = "ghost_32_orange.png";
+
+	const char* ghostVulnerableImage = "Ghost_Vulnerable_32.png";
+	const char* ghostDeadImage = "Ghost_Dead_32.png";
 
 	const char* playfieldImage = "playfield.png";
 	const char* dotImage = "Small_Dot_32.png";
@@ -39,6 +51,7 @@ private:
 	bool CheckEndGameCondition();
 
 	void UpdateAvatar(float deltaTime);
+	void UpdateGhost(float deltaTime);
 
 	void UpdateScore(int amount);
 	void UpdateLives(int amount);
@@ -56,7 +69,12 @@ private:
 	Vector2f myNextMovement;
 
 	Avatar* myAvatar;
-	Ghost* myGhost;
+	
+	Ghost* orangeGhost;
+	Ghost* redGhost;
+	Ghost* tealGhost;
+	Ghost* pinkGhost;
+
 	World* myWorld;
 
 	bool m_isRunning;
@@ -66,9 +84,21 @@ private:
 	DrawTextEntity* m_pLivesText;
 	DrawTextEntity* m_pFpsText;
 
-	DrawEntity* m_pAvatar;
+	DrawEntity* m_pAvatarOpenLeft;
+	DrawEntity* m_pAvatarOpenRight;
+	DrawEntity* m_pAvatarOpenUp;
+	DrawEntity* m_pAvatarOpenDown;
 
-	DrawEntity* m_pDefaultGhost;
+	DrawEntity* m_pAvatarClosedLeft;
+	DrawEntity* m_pAvatarClosedRight;
+	DrawEntity* m_pAvatarClosedUp;
+	DrawEntity* m_pAvatarClosedDown;
+
+	DrawEntity* m_pRedGhost;
+	DrawEntity* m_pTealGhost;
+	DrawEntity* m_pPinkGhost;
+	DrawEntity* m_pOrangeGhost;
+
 	DrawEntity* m_pVulnerableGhost;
 	DrawEntity* m_pDeadGhost;
 
@@ -78,6 +108,8 @@ private:
 	const float m_drawOffsetY;
 
 	const int m_tileSize;
+
+	bool m_win;
 };
 
 #endif // PACMAN_H

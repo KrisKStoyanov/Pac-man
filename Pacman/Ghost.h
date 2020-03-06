@@ -3,13 +3,13 @@
 
 #include "World.h"
 #include "PathmapTile.h"
-#include <list>
+#include <vector>
 #include "MovableGameEntity.h"
 
 class Ghost : public MovableGameEntity
 {
 public:
-	Ghost(const Vector2f& aPosition);
+	Ghost(const Vector2f& aPosition, float movementSpeed);
 	~Ghost(void);
 
 	void Update(float aTime, World* aWorld);
@@ -25,7 +25,7 @@ public:
 protected:
 	int myDesiredMovementX;
 	int myDesiredMovementY;
-	std::list<PathmapTile*> myPath;
+	std::vector<PathmapTile*> myPath;
 };
 
 #endif // GHOST_H

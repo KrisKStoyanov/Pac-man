@@ -1,7 +1,7 @@
 #include "Ghost.h"
 
-Ghost::Ghost(const Vector2f& aPosition)
-: MovableGameEntity(aPosition, "ghost_32.png")
+Ghost::Ghost(const Vector2f& aPosition, float movementSpeed)
+: MovableGameEntity(aPosition, "ghost_32.png", movementSpeed)
 {
 	myIsClaimableFlag = false;
 	myIsDeadFlag = false;
@@ -12,7 +12,7 @@ Ghost::Ghost(const Vector2f& aPosition)
 
 Ghost::~Ghost(void)
 {
-	while (!myPath.empty()) delete myPath.front(), myPath.pop_front();
+	while (!myPath.empty()) delete myPath.back(), myPath.pop_back();
 }
 
 void Ghost::Die(World* aWorld)
@@ -23,9 +23,6 @@ void Ghost::Die(World* aWorld)
 
 void Ghost::Reset()
 {
-	myIsClaimableFlag = false;
-	myIsDeadFlag = false;
-
 	myDesiredMovementX = 0;
 	myDesiredMovementY = -1;
 
@@ -34,24 +31,25 @@ void Ghost::Reset()
 
 void Ghost::Update(float aTime, World* aWorld)
 {
-	float speed = 30.f;
-	int nextTileX = m_currentTile.myX + myDesiredMovementX;
-	int nextTileY = m_currentTile.myY + myDesiredMovementY;
+	Vector2f nextTile = Vector2f(
+		m_currentTile.myX + myDesiredMovementX, 
+		m_currentTile.myY + myDesiredMovementY);
 
-	if (myIsDeadFlag)
-		speed = 120.f;
+	//if (myIsDeadFlag)
+	//	speed = 120.f;
 
 	if (IsAtDestination())
 	{
 		if (!myPath.empty())
 		{
 			PathmapTile* nextTile = myPath.front();
-			myPath.pop_front();
+			delete myPath.front();
+			myPath.erase(myPath.begin());
 			SetNextTile(nextTile->m_pos);
 		}
-		else if (aWorld->TileIsValid(nextTileX, nextTileY))
+		else if (aWorld->TileIsValid(nextTile))
 		{
-			SetNextTile(Vector2f(nextTileX, nextTileY));
+			SetNextTile(nextTile);
 		}
 		else
 		{
@@ -81,7 +79,7 @@ void Ghost::Update(float aTime, World* aWorld)
 	Vector2f destination(m_nextTile.myX * tileSize, m_nextTile.myY * tileSize);
 	Vector2f direction = destination - myPosition;
 
-	float distanceToMove = aTime * speed;
+	float distanceToMove = aTime * m_movementSpeed;
 
 	if (distanceToMove > direction.Length())
 	{

@@ -7,7 +7,7 @@
 class Avatar : public MovableGameEntity
 {
 public:
-	Avatar(const Vector2f& aPosition);
+	Avatar(const Vector2f& aPosition, float movementSpeed);
 	~Avatar(void);
 
 	void Update(float aTime);

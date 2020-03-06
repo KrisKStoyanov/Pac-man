@@ -72,12 +72,14 @@ public:
 		return sqrt(myX*myX + myY*myY);
 	}
 
-	void Vector2f::Normalize()
+	Vector2f& Vector2f::Normalize()
 	{
 		float length = Length();
 
 		if (length > 0.f)
 			*this /= length;
+
+		return *this;
 	}
 
 	float myX;

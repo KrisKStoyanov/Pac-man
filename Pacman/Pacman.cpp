@@ -5,16 +5,21 @@ Pacman* Pacman::Create()
 	return new Pacman();
 }
 
-Pacman::Pacman(): 
-	myTimeToNextUpdate(0.f), 
-	myNextMovement(-1.f,0.f), 
-	myScore(0), myFps(0), myLives(3), 
+Pacman::Pacman() :
+	myTimeToNextUpdate(0.f),
+	myNextMovement(-1.f, 0.f),
+	myScore(0), myFps(0), myLives(3),
 	myGhostGhostCounter(0.f),
 	m_drawOffsetX(220.0f), m_drawOffsetY(60.0f),
-	m_tileSize(22)
+	m_tileSize(22), m_win(false)
 {
-	myAvatar = new Avatar(Vector2f(13 * m_tileSize, 22 * m_tileSize));
-	myGhost = new Ghost(Vector2f(13 * m_tileSize, 13 * m_tileSize));
+	myAvatar = new Avatar(Vector2f(13 * m_tileSize, 22 * m_tileSize), 120.0f);
+
+	redGhost = new Ghost(Vector2f(13 * m_tileSize, 13 * m_tileSize), 60.0f);
+	tealGhost = new Ghost(Vector2f(13 * m_tileSize - 26, 13 * m_tileSize), 60.0f);
+	pinkGhost = new Ghost(Vector2f(13 * m_tileSize - 52, 13 * m_tileSize), 60.0f);
+	orangeGhost = new Ghost(Vector2f(13 * m_tileSize + 26, 13 * m_tileSize), 60.0f);
+
 	myWorld = new World();
 }
 
@@ -45,8 +50,21 @@ bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 	m_pFpsText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 880, 50);
 	fpsStream.flush();
 
-	m_pAvatar = new DrawEntity(core.GetRenderer(), pacman_desc.avatarImage, 0, 0);
-	m_pDefaultGhost = new DrawEntity(core.GetRenderer(), pacman_desc.ghostDefaultImage, 0, 0);
+	m_pAvatarOpenLeft = new DrawEntity(core.GetRenderer(), pacman_desc.avatarOpenLeftImage, 0, 0);
+	m_pAvatarOpenRight = new DrawEntity(core.GetRenderer(), pacman_desc.avatarOpenRightImage, 0, 0);
+	m_pAvatarOpenUp = new DrawEntity(core.GetRenderer(), pacman_desc.avatarOpenUpImage, 0, 0);
+	m_pAvatarOpenDown = new DrawEntity(core.GetRenderer(), pacman_desc.avatarOpenDownImage, 0, 0);
+
+	m_pAvatarClosedLeft = new DrawEntity(core.GetRenderer(), pacman_desc.avatarClosedLeftImage, 0, 0);
+	m_pAvatarClosedRight = new DrawEntity(core.GetRenderer(), pacman_desc.avatarClosedRightImage, 0, 0);
+	m_pAvatarClosedUp = new DrawEntity(core.GetRenderer(), pacman_desc.avatarClosedUpImage, 0, 0);
+	m_pAvatarClosedDown = new DrawEntity(core.GetRenderer(), pacman_desc.avatarClosedDownImage, 0, 0);
+	
+	m_pRedGhost = new DrawEntity(core.GetRenderer(), pacman_desc.redGhostImage, 0, 0);
+	m_pTealGhost = new DrawEntity(core.GetRenderer(), pacman_desc.tealGhostImage, 0, 0);
+	m_pPinkGhost = new DrawEntity(core.GetRenderer(), pacman_desc.pinkGhostImage, 0, 0);
+	m_pOrangeGhost = new DrawEntity(core.GetRenderer(), pacman_desc.orangeGhostImage, 0, 0);
+
 	m_pVulnerableGhost = new DrawEntity(core.GetRenderer(), pacman_desc.ghostVulnerableImage, 0, 0);
 	m_pDeadGhost = new DrawEntity(core.GetRenderer(), pacman_desc.ghostDeadImage, 0, 0);
 
@@ -108,45 +126,144 @@ bool Pacman::Update(Core& core, float aTime)
 		}
 	}
 
+	//myAvatar->Update(aTime);
 	UpdateAvatar(aTime);
-	
-	myGhost->Update(aTime, myWorld);
 
-	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
+	redGhost->Update(aTime, myWorld);
+	tealGhost->Update(aTime, myWorld);
+	pinkGhost->Update(aTime, myWorld);
+	orangeGhost->Update(aTime, myWorld);
+
+	if (myWorld->HasIntersectedDot(myAvatar->GetPosition(), m_win))
+	{
 		UpdateScore(10);
-	
-	myGhostGhostCounter -= aTime;
+	}
 
-	if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition()))
+	if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition(), m_win))
 	{
 		UpdateScore(20);
 		myGhostGhostCounter = 20.f;
-		myGhost->myIsClaimableFlag = true;
+		redGhost->myIsClaimableFlag = true;
+		tealGhost->myIsClaimableFlag = true;
+		pinkGhost->myIsClaimableFlag = true;
+		orangeGhost->myIsClaimableFlag = true;
 	}
+
+	myGhostGhostCounter -= aTime;
 
 	if (myGhostGhostCounter < 0.1f)
 	{
-		myGhost->myIsClaimableFlag = false;
+		redGhost->myIsClaimableFlag = false;
+		tealGhost->myIsClaimableFlag = false;
+		pinkGhost->myIsClaimableFlag = false;
+		orangeGhost->myIsClaimableFlag = false;
 	}
 
-	if ((myGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
+	if ((redGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
 	{
 		if (myGhostGhostCounter < 0.1f)
 		{
-			myLives--;
-
+			UpdateLives(-1);
+			
 			myAvatar->SetPosition(Vector2f(13*22,22*22));
 			myAvatar->Reset();
-			myGhost->SetPosition(Vector2f(13*22,13*22));
-			myGhost->Reset();
+			redGhost->SetPosition(Vector2f(13*22,13*22));
+			redGhost->Reset();
+			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			tealGhost->Reset();
+			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			pinkGhost->Reset();
+			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			orangeGhost->Reset();
 		}
-		else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
+		else if (redGhost->myIsClaimableFlag && !redGhost->myIsDeadFlag)
 		{
-			myGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			myGhost->Reset();
+			redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			redGhost->Reset();
 			myScore += 50;
-			myGhost->myIsDeadFlag = true;
-			myGhost->Die(myWorld);
+			redGhost->myIsDeadFlag = true;
+			redGhost->Die(myWorld);
+		}
+	}
+
+	if ((tealGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
+	{
+		if (myGhostGhostCounter < 0.1f)
+		{
+			UpdateLives(-1);
+
+			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
+			myAvatar->Reset();
+			redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			redGhost->Reset();
+			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			tealGhost->Reset();
+			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			pinkGhost->Reset();
+			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			orangeGhost->Reset();
+		}
+		else if (tealGhost->myIsClaimableFlag && !tealGhost->myIsDeadFlag)
+		{
+			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			tealGhost->Reset();
+			myScore += 50;
+			tealGhost->myIsDeadFlag = true;
+			tealGhost->Die(myWorld);
+		}
+	}
+
+	if ((pinkGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
+	{
+		if (myGhostGhostCounter < 0.1f)
+		{
+			UpdateLives(-1);
+
+			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
+			myAvatar->Reset();
+			redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			redGhost->Reset();
+			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			tealGhost->Reset();
+			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			pinkGhost->Reset();
+			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			orangeGhost->Reset();
+		}
+		else if (pinkGhost->myIsClaimableFlag && !pinkGhost->myIsDeadFlag)
+		{
+			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			pinkGhost->Reset();
+			myScore += 50;
+			pinkGhost->myIsDeadFlag = true;
+			pinkGhost->Die(myWorld);
+		}
+	}
+
+	if ((orangeGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
+	{
+		if (myGhostGhostCounter < 0.1f)
+		{
+			UpdateLives(-1);
+
+			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
+			myAvatar->Reset();
+			redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			redGhost->Reset();
+			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			tealGhost->Reset();
+			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			pinkGhost->Reset();
+			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			orangeGhost->Reset();
+		}
+		else if (orangeGhost->myIsClaimableFlag && !orangeGhost->myIsDeadFlag)
+		{
+			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+			orangeGhost->Reset();
+			myScore += 50;
+			orangeGhost->myIsDeadFlag = true;
+			orangeGhost->Die(myWorld);
 		}
 	}
 	
@@ -165,32 +282,36 @@ void Pacman::UpdateAvatar(float deltaTime)
 {
 	if (myAvatar->IsAtDestination())
 	{
-		int nextTileX = myAvatar->GetCurrentTile().myX + myNextMovement.myX;
-		int nextTileY = myAvatar->GetCurrentTile().myY + myNextMovement.myY;
-		if (myWorld->TileIsValid(nextTileX, nextTileY))
+		Vector2f nextTile = Vector2f(myAvatar->GetCurrentTile() + myNextMovement);
+		if (myWorld->TileIsValid(nextTile))
 		{
-			myAvatar->SetNextTile(Vector2f(nextTileX, nextTileY));
+			myAvatar->SetNextTile(nextTile);
 		}
 	}
 
-	Vector2f destination(myAvatar->GetNextTile().myX * m_tileSize, myAvatar->GetNextTile().myY * m_tileSize);
+	Vector2f destination(myAvatar->GetNextTile() * m_tileSize);
 	Vector2f direction = destination - myAvatar->GetPosition();
 
-	float distanceToMove = deltaTime * 30.f;
+	float distanceToMove = deltaTime * myAvatar->GetMovementSpeed();
 
 	if (distanceToMove > direction.Length())
 	{
-		myAvatar->GetPosition() = destination;
+		myAvatar->SetPosition(destination);
 		myAvatar->SetCurrentTile(myAvatar->GetNextTile());
 	}
 	else
 	{
-		direction.Normalize();
-		myAvatar->SetPosition(myAvatar->GetPosition() +  direction * distanceToMove);
+		myAvatar->SetDirection(direction.Normalize());
+		myAvatar->SetPosition(myAvatar->GetPosition() + direction * distanceToMove);
 	}
 
-	myAvatar->Update(deltaTime);
 	myAvatar->SetDrawPos(Vector2f(myAvatar->GetPosition().myX + m_drawOffsetX, myAvatar->GetPosition().myY + m_drawOffsetY));
+}
+
+void Pacman::UpdateGhost(float deltaTime)
+{
+	
+	
 }
 
 void Pacman::UpdateScore(int amount)
@@ -201,7 +322,11 @@ void Pacman::UpdateScore(int amount)
 
 void Pacman::UpdateLives(int amount)
 {
-	myLives = +amount;
+	myLives += amount;
+	if (myLives < 1)
+	{
+		myLives = 0;
+	}
 	m_redrawUI = true;
 }
 
@@ -215,7 +340,18 @@ void Pacman::RedrawUI(SDL_Renderer* renderer)
 {
 	std::string drawTextString;
 	std::stringstream drawTextStream;
-	drawTextStream << "Score: " << myScore << "   "; //intentionally left blank
+	if (m_win)
+	{
+		drawTextStream << "You win!   ";
+	}
+	else if (myLives < 1)
+	{
+		drawTextStream << "You lose!   ";
+	}
+	else
+	{
+		drawTextStream << "Score: " << myScore << "   ";
+	}
 	drawTextString = drawTextStream.str();
 	m_pScoreText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream.flush();
@@ -227,7 +363,7 @@ void Pacman::RedrawUI(SDL_Renderer* renderer)
 	drawTextStream1.flush();
 
 	std::stringstream drawTextStream2;
-	drawTextStream2 << "FPS: " << myFps << "   "; //intentionally left blank
+	drawTextStream2 << "FPS: " << myFps << "   ";
 	drawTextString = drawTextStream2.str();
 	m_pFpsText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream2.flush();
@@ -239,21 +375,75 @@ bool Pacman::Draw(Core& core)
 {
 	myWorld->Draw(core);
 
-	core.DrawObject(*m_pAvatar, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
-
-	if (myGhost->myIsDeadFlag) 
+	if (myAvatar->GetDirection().myX > 0.0f)
 	{
-		core.DrawObject(*m_pDeadGhost, myGhost->GetDrawPos().myX, myGhost->GetDrawPos().myY);
+		core.DrawObject(*m_pAvatarClosedRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 	}
-	else if (myGhost->myIsClaimableFlag) 
+	else if (myAvatar->GetDirection().myX < 0.0f)
 	{
-		core.DrawObject(*m_pVulnerableGhost, myGhost->GetDrawPos().myX, myGhost->GetDrawPos().myY);
+		core.DrawObject(*m_pAvatarClosedLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+	}
+	else if (myAvatar->GetDirection().myY > 0.0f)
+	{
+		core.DrawObject(*m_pAvatarClosedDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+	}
+	else if (myAvatar->GetDirection().myY < 0.0f)
+	{
+		core.DrawObject(*m_pAvatarClosedUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+	}
+
+	if (redGhost->myIsDeadFlag)
+	{
+		core.DrawObject(*m_pDeadGhost, redGhost->GetDrawPos().myX, redGhost->GetDrawPos().myY);
+	}
+	else if (redGhost->myIsClaimableFlag)
+	{
+		core.DrawObject(*m_pVulnerableGhost, redGhost->GetDrawPos().myX, redGhost->GetDrawPos().myY);
 	}
 	else 
 	{
-		core.DrawObject(*m_pDefaultGhost, myGhost->GetDrawPos().myX, myGhost->GetDrawPos().myY);
+		core.DrawObject(*m_pRedGhost, redGhost->GetDrawPos().myX, redGhost->GetDrawPos().myY);
 	}
 	
+	if (tealGhost->myIsDeadFlag)
+	{
+		core.DrawObject(*m_pDeadGhost, tealGhost->GetDrawPos().myX, tealGhost->GetDrawPos().myY);
+	}
+	else if (tealGhost->myIsClaimableFlag)
+	{
+		core.DrawObject(*m_pVulnerableGhost, tealGhost->GetDrawPos().myX, tealGhost->GetDrawPos().myY);
+	}
+	else
+	{
+		core.DrawObject(*m_pTealGhost, tealGhost->GetDrawPos().myX, tealGhost->GetDrawPos().myY);
+	}
+
+	if (pinkGhost->myIsDeadFlag)
+	{
+		core.DrawObject(*m_pDeadGhost, pinkGhost->GetDrawPos().myX, pinkGhost->GetDrawPos().myY);
+	}
+	else if (pinkGhost->myIsClaimableFlag)
+	{
+		core.DrawObject(*m_pVulnerableGhost, pinkGhost->GetDrawPos().myX, pinkGhost->GetDrawPos().myY);
+	}
+	else
+	{
+		core.DrawObject(*m_pPinkGhost, pinkGhost->GetDrawPos().myX, pinkGhost->GetDrawPos().myY);
+	}
+
+	if (orangeGhost->myIsDeadFlag)
+	{
+		core.DrawObject(*m_pDeadGhost, orangeGhost->GetDrawPos().myX, orangeGhost->GetDrawPos().myY);
+	}
+	else if (orangeGhost->myIsClaimableFlag)
+	{
+		core.DrawObject(*m_pVulnerableGhost, orangeGhost->GetDrawPos().myX, orangeGhost->GetDrawPos().myY);
+	}
+	else
+	{
+		core.DrawObject(*m_pOrangeGhost, orangeGhost->GetDrawPos().myX, orangeGhost->GetDrawPos().myY);
+	}
+
 	core.DrawObject(*m_pScoreText);
 	core.DrawObject(*m_pLivesText);
 	core.DrawObject(*m_pFpsText);
@@ -269,11 +459,26 @@ void Pacman::Shutdown()
 
 	myWorld->Shutdown();
 	delete myAvatar;
-	delete myGhost;
+	delete redGhost;
+	delete tealGhost;
+	delete pinkGhost;
+	delete orangeGhost;
 	delete myWorld;
 
-	delete m_pAvatar;
-	delete m_pDefaultGhost;
+	delete m_pAvatarOpenLeft;
+	delete m_pAvatarOpenRight;
+	delete m_pAvatarOpenUp;
+	delete m_pAvatarOpenDown;
+
+	delete m_pAvatarClosedLeft;
+	delete m_pAvatarClosedRight;
+	delete m_pAvatarClosedUp;
+	delete m_pAvatarClosedDown;
+
+	delete m_pRedGhost;
+	delete m_pTealGhost;
+	delete m_pPinkGhost;
+	delete m_pOrangeGhost;
 	delete m_pVulnerableGhost;
 	delete m_pDeadGhost;
 }

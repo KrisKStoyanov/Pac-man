@@ -1,7 +1,7 @@
 #include "MovableGameEntity.h"
 
-MovableGameEntity::MovableGameEntity(const Vector2f& aPosition, const char* anImage)
-: GameEntity(aPosition, anImage)
+MovableGameEntity::MovableGameEntity(const Vector2f& aPosition, const char* anImage, float movementSpeed)
+: GameEntity(aPosition, anImage), m_movementSpeed(movementSpeed)
 {
 	m_currentTile = m_nextTile = Vector2f(myPosition.myX / 22, myPosition.myY / 22);
 }

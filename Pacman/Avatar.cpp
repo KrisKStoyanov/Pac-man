@@ -1,7 +1,7 @@
 #include "Avatar.h"
 
-Avatar::Avatar(const Vector2f& aPosition)
-: MovableGameEntity(aPosition, "open_32.png")
+Avatar::Avatar(const Vector2f& aPosition, float movementSpeed)
+: MovableGameEntity(aPosition, "open_32.png", movementSpeed)
 {
 
 }
@@ -14,10 +14,10 @@ void Avatar::Update(float aTime)
 {
 	int tileSize = 22;
 
-	Vector2f destination(m_nextTile.myX * tileSize, m_nextTile.myY * tileSize);
+	Vector2f destination(m_nextTile * tileSize);
 	Vector2f direction = destination - myPosition;
 
-	float distanceToMove = aTime * 30.f;
+	float distanceToMove = aTime * m_movementSpeed;
 
 	if (distanceToMove > direction.Length())
 	{
@@ -26,9 +26,11 @@ void Avatar::Update(float aTime)
 	}
 	else
 	{
-		direction.Normalize();
+		m_direction = direction.Normalize();
 		myPosition += direction * distanceToMove;
 	}
+
+	m_drawPos = Vector2f(myPosition.myX + m_drawOffsetX, myPosition.myY + m_drawOffsetY);
 }
 
 void Avatar::Reset()

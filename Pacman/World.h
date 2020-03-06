@@ -32,22 +32,22 @@ public:
 	void Init(Core& core, WORLD_DESC& world_desc);
 
 	void Draw(Core& core);
-	bool TileIsValid(int anX, int anY);
+	bool TileIsValid(Vector2f tile);
 
-	bool HasIntersectedDot(const Vector2f& aPosition);
-	bool HasIntersectedBigDot(const Vector2f& aPosition);
+	bool HasIntersectedDot(const Vector2f& aPosition, bool& win);
+	bool HasIntersectedBigDot(const Vector2f& aPosition, bool& win);
 	bool HasIntersectedCherry(const Vector2f& aPosition);
 
 	void Update(Core* core);
 
 	void Shutdown();
 
-	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList);
+	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::vector<PathmapTile*>& aList);
 private:
 
 	PathmapTile* GetTile(int aFromX, int aFromY);
-	bool Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::list<PathmapTile*>& aList);
-	bool ListDoesNotContain(PathmapTile* aFromTile, std::list<PathmapTile*>& aList);
+	bool Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::vector<PathmapTile*>& aList);
+	bool ListDoesNotContain(PathmapTile* aFromTile, std::vector<PathmapTile*>& aList);
 
 
 	bool InitPathmap();
