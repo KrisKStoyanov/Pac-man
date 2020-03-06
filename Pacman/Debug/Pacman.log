@@ -1,8 +1,5 @@
 ﻿  Pacman.cpp
 C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(72,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(160,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(161,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-  main.cpp
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(72,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(149,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(150,17): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   Pacman.vcxproj -> C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Debug\Pacman.exe

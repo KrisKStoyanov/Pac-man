@@ -22,9 +22,29 @@ Pacman::~Pacman(void)
 {
 }
 
-bool Pacman::Init(Core& core)
+bool Pacman::Init(Core& core, PACMAN_DESC pacman_desc)
 {
 	m_isRunning = core.Init();
+
+	std::string drawTextString;
+	std::stringstream scoreStream;
+	scoreStream << myScore;
+	drawTextString = "Score: " + scoreStream.str();
+	m_pScoreText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 20, 50);
+	scoreStream.flush();
+
+	std::stringstream liveStream;
+	liveStream << myLives;
+	drawTextString = "Lives: " + liveStream.str();
+	m_pLivesText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 20, 80);
+	liveStream.flush();
+
+	std::stringstream fpsStream;
+	fpsStream << myFps;
+	drawTextString = "FPS: " + fpsStream.str();
+	m_pFpsText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 880, 50);
+	fpsStream.flush();
+
 	myWorld->Init();
 
 	return m_isRunning;
@@ -38,31 +58,13 @@ int Pacman::Run(Core& core)
 		float currentFrame = (float)SDL_GetTicks() * 0.001f;
 		float elapsedTime = currentFrame - lastFrame;
 
-		SDL_Event curEvent;
-		while (SDL_PollEvent(&curEvent) > 0)
-		{
-			const Uint8* keystate = SDL_GetKeyboardState(NULL);
-
-			if (keystate[SDL_SCANCODE_UP])
-				myNextMovement = Vector2f(0.f, -1.f);
-			else if (keystate[SDL_SCANCODE_DOWN])
-				myNextMovement = Vector2f(0.f, 1.f);
-			else if (keystate[SDL_SCANCODE_RIGHT])
-				myNextMovement = Vector2f(1.f, 0.f);
-			else if (keystate[SDL_SCANCODE_LEFT])
-				myNextMovement = Vector2f(-1.f, 0.f);
-
-			if (keystate[SDL_SCANCODE_ESCAPE])
-			{
-				m_isRunning = false;
-			}			
-		}
-
-		Update(elapsedTime);
-
+		m_isRunning = Update(core, elapsedTime);
 		core.OnStartFrameRender();
-
 		Draw(core);
+		if (m_redrawUI)
+		{
+			RedrawUI(core.GetRenderer());
+		}
 
 		core.OnEndFrameRender();
 	
@@ -74,34 +76,40 @@ int Pacman::Run(Core& core)
 	return EXIT_SUCCESS;
 }
 
-bool Pacman::Update(float aTime)
+bool Pacman::Update(Core& core, float aTime)
 {
-	//if (!UpdateInput())
-	//	return false;
+	SDL_Event curEvent;
+	while (SDL_PollEvent(&curEvent) > 0)
+	{
+		const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
-	//if (CheckEndGameCondition())
-	//{
-	//	myDrawer->DrawText("You win!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);
-	//	return true;
-	//}
-	//else if (myLives <= 0)
-	//{
-	//	myDrawer->DrawText("You lose!", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 70);	
-	//	return true;
-	//}
+		if (keystate[SDL_SCANCODE_UP])
+			myNextMovement = Vector2f(0.f, -1.f);
+		else if (keystate[SDL_SCANCODE_DOWN])
+			myNextMovement = Vector2f(0.f, 1.f);
+		else if (keystate[SDL_SCANCODE_RIGHT])
+			myNextMovement = Vector2f(1.f, 0.f);
+		else if (keystate[SDL_SCANCODE_LEFT])
+			myNextMovement = Vector2f(-1.f, 0.f);
+
+		if (keystate[SDL_SCANCODE_ESCAPE])
+		{
+			return false;
+		}
+	}
 
 	MoveAvatar();
 	myAvatar->Update(aTime);
 	myGhost->Update(aTime, myWorld);
 
 	if (myWorld->HasIntersectedDot(myAvatar->GetPosition()))
-		myScore += 10;
-
+		UpdateScore(10);
+	
 	myGhostGhostCounter -= aTime;
 
 	if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition()))
 	{
-		myScore += 20;
+		UpdateScore(20);
 		myGhostGhostCounter = 20.f;
 		myGhost->myIsClaimableFlag = true;
 	}
@@ -129,26 +137,7 @@ bool Pacman::Update(float aTime)
 	}
 	
 	if (aTime > 0)
-		myFps = (int) (1 / aTime);
-
-	return true;
-}
-
-bool Pacman::UpdateInput()
-{
-	const Uint8 *keystate = SDL_GetKeyboardState(NULL);
-
-	if (keystate[SDL_SCANCODE_UP])
-		myNextMovement = Vector2f(0.f, -1.f);
-	else if (keystate[SDL_SCANCODE_DOWN])
-		myNextMovement = Vector2f(0.f, 1.f);
-	else if (keystate[SDL_SCANCODE_RIGHT])
-		myNextMovement = Vector2f(1.f, 0.f);
-	else if (keystate[SDL_SCANCODE_LEFT])
-		myNextMovement = Vector2f(-1.f, 0.f);
-
-	if (keystate[SDL_SCANCODE_ESCAPE])
-		return false;
+		UpdateFPS(aTime);
 
 	return true;
 }
@@ -171,32 +160,57 @@ bool Pacman::CheckEndGameCondition()
 	return false;
 }
 
+void Pacman::UpdateScore(int amount)
+{
+	myScore += amount;
+	m_redrawUI = true;
+}
+
+void Pacman::UpdateLives(int amount)
+{
+	myLives = +amount;
+	m_redrawUI = true;
+}
+
+void Pacman::UpdateFPS(float deltaTime)
+{
+	myFps = (int)(1 / deltaTime);
+	m_redrawUI = true;
+}
+
+void Pacman::RedrawUI(SDL_Renderer* renderer)
+{
+	std::string drawTextString;
+	std::stringstream drawTextStream;
+	drawTextStream << myScore;
+	drawTextString = "Score: " + drawTextStream.str();
+	m_pScoreText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
+	drawTextStream.flush();
+
+	std::stringstream drawTextStream1;
+	drawTextStream1 << myLives;
+	drawTextString = "Lives: " + drawTextStream1.str();
+	m_pLivesText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
+	drawTextStream1.flush();
+
+	std::stringstream drawTextStream2;
+	drawTextStream2 << myFps;
+	drawTextString = "FPS: " + drawTextStream2.str();
+	m_pFpsText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
+	drawTextStream2.flush();
+
+	m_redrawUI = false;
+}
+
 bool Pacman::Draw(Core& core)
 {
 	myWorld->Draw(&core);
 	myAvatar->Draw(&core);
 	myGhost->Draw(&core);
 
-	std::string scoreString;
-	std::stringstream scoreStream;
-	scoreStream << myScore;
-	scoreString = scoreStream.str();
-	core.DrawText("Score", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 50);
-	core.DrawText(scoreString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 50);
-
-	std::string livesString;
-	std::stringstream liveStream;
-	liveStream << myLives;
-	livesString = liveStream.str();
-	core.DrawText("Lives", "freefont-ttf\\sfd\\FreeMono.ttf", 20, 80);
-	core.DrawText(livesString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 90, 80);
-
-	core.DrawText("FPS", "freefont-ttf\\sfd\\FreeMono.ttf", 880, 50);
-	std::string fpsString;
-	std::stringstream fpsStream;
-	fpsStream << myFps;
-	fpsString = fpsStream.str();
-	core.DrawText(fpsString.c_str(), "freefont-ttf\\sfd\\FreeMono.ttf", 930, 50);
+	core.DrawObject(*m_pScoreText);
+	core.DrawObject(*m_pLivesText);
+	core.DrawObject(*m_pFpsText);
 
 	return true;
 }

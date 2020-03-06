@@ -4,6 +4,7 @@
 #include "SDL_ttf.h"
 #include "assert.h"
 #include <iostream>
+#include "DrawTextEntity.h"
 
 class Core
 {
@@ -11,13 +12,23 @@ public:
 	Core();
 	~Core();
 	bool Init();
-	int Run();
 	void Draw(const char* anImage, int aCellX = 0, int aCellY = 0);
 	void OnStartFrameRender();
 	void OnEndFrameRender();
-	void ProcInput();
+	void Update(const Uint8*& keystate);
 	void DrawText(const char* aText, const char* aFontFile, int aX, int aY);
+
+	void DrawObject(DrawEntity& drawEntity);
 	void Shutdown();
+
+	inline SDL_Window* GetWindow() 
+	{
+		return m_pWindow;
+	};
+	inline SDL_Renderer* GetRenderer()
+	{
+		return m_pRenderer;
+	}
 private:
 	SDL_Window* m_pWindow;
 	SDL_Renderer* m_pRenderer;

@@ -38,29 +38,6 @@ bool Core::Init()
 	return true;
 }
 
-int Core::Run()
-{
-	//float lastFrame = (float)SDL_GetTicks() * 0.001f;
-	//SDL_Event event;
-	//while (SDL_PollEvent(&event) > -1)
-	//{
-	//	float currentFrame = (float)SDL_GetTicks() * 0.001f;
-	//	float elapsedTime = currentFrame - lastFrame;
-
-	//	if (!pacman->Update(elapsedTime))
-	//		break;
-
-	//	//start frame render
-	//	pacman->Draw(this);
-
-	//	lastFrame = currentFrame;
-
-	//	//end frame render
-	//}
-
-	return EXIT_SUCCESS;
-}
-
 void Core::Draw(const char* anImage, int aCellX, int aCellY)
 {
 	SDL_Surface* surface = IMG_Load(anImage);
@@ -99,8 +76,13 @@ void Core::OnEndFrameRender()
 	SDL_Delay(1);
 }
 
-void Core::ProcInput()
+void Core::Update(const Uint8*& keystate)
 {
+	SDL_Event curEvent;
+	while (SDL_PollEvent(&curEvent) > 0)
+	{
+		keystate = SDL_GetKeyboardState(NULL);
+	}
 }
 
 void Core::DrawText(const char* aText, const char* aFontFile, int aX, int aY)
@@ -130,9 +112,16 @@ void Core::DrawText(const char* aText, const char* aFontFile, int aX, int aY)
 	TTF_CloseFont(font);
 }
 
+void Core::DrawObject(DrawEntity& drawEntity)
+{
+	SDL_RenderCopy(m_pRenderer, drawEntity.GetTexture(), &drawEntity.GetSizeRect(), &drawEntity.GetPosRect());
+}
+
 void Core::Shutdown()
 {
 	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
+	SDL_DestroyRenderer(m_pRenderer);
+	SDL_DestroyWindow(m_pWindow);
 }

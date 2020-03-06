@@ -11,7 +11,6 @@ public:
 	~Avatar(void);
 
 	void Update(float aTime);
-
 private:
 
 

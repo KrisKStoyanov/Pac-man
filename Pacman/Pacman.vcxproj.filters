@@ -70,6 +70,12 @@
     <ClCompile Include="Core.cpp">
       <Filter>Core</Filter>
     </ClCompile>
+    <ClCompile Include="DrawEntity.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawTextEntity.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -113,6 +119,12 @@
     </ClInclude>
     <ClInclude Include="Core.h">
       <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawEntity.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawTextEntity.h">
+      <Filter>Graphics</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

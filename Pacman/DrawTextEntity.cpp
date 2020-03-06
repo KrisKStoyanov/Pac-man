@@ -30,7 +30,6 @@ DrawTextEntity::~DrawTextEntity()
 void DrawTextEntity::SetText(SDL_Renderer* renderer, const char* aText, const char* aFontFile)
 {
 	mySurface = TTF_RenderText_Solid(myFont, aText, myFontColor);
-	SDL_DestroyTexture(myTexture);
 	myTexture = SDL_CreateTextureFromSurface(renderer, mySurface);
 }
 
