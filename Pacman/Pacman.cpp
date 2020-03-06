@@ -22,7 +22,7 @@ Pacman::~Pacman(void)
 {
 }
 
-bool Pacman::Init(Core& core, PACMAN_DESC pacman_desc)
+bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 {
 	m_isRunning = core.Init();
 
@@ -45,7 +45,13 @@ bool Pacman::Init(Core& core, PACMAN_DESC pacman_desc)
 	m_pFpsText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 880, 50);
 	fpsStream.flush();
 
-	myWorld->Init();
+	WORLD_DESC world_desc;
+	world_desc.playfieldImage = pacman_desc.playfieldImage;
+	world_desc.dotImage = pacman_desc.dotImage;
+	world_desc.bigDotImage = pacman_desc.bigDotImage;
+	world_desc.cherryImage = pacman_desc.cherryImage;
+
+	myWorld->Init(core, world_desc);
 
 	return m_isRunning;
 }
@@ -204,7 +210,7 @@ void Pacman::RedrawUI(SDL_Renderer* renderer)
 
 bool Pacman::Draw(Core& core)
 {
-	myWorld->Draw(&core);
+	myWorld->Draw(core);
 	myAvatar->Draw(&core);
 	myGhost->Draw(&core);
 

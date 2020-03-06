@@ -3,12 +3,23 @@
 
 #include <list>
 #include "Vector2f.h"
+#include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string>
 
-class Core;
-class PathmapTile;
-class Dot;
-class BigDot;
-class Cherry;
+#include "PathmapTile.h"
+#include "Dot.h"
+#include "BigDot.h"
+#include "Cherry.h"
+
+struct WORLD_DESC
+{
+	const char* playfieldImage = "playfield.png";
+	const char* dotImage = "Small_Dot_32.png";
+	const char* bigDotImage = "Big_Dot_32.png";
+	const char* cherryImage = "dot.png";
+};
 
 class World
 {
@@ -16,16 +27,16 @@ public:
 	World(void);
 	~World(void);
 
-	void Init();
+	void Init(Core& core, WORLD_DESC& world_desc);
 
-	void Draw(Core* core);
+	void Draw(Core& core);
 	bool TileIsValid(int anX, int anY);
 
 	bool HasIntersectedDot(const Vector2f& aPosition);
 	bool HasIntersectedBigDot(const Vector2f& aPosition);
 	bool HasIntersectedCherry(const Vector2f& aPosition);
 
-	void Update();
+	void Update(Core* core);
 
 	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList);
 
@@ -43,6 +54,12 @@ private:
 	std::list<BigDot*> myBigDots;
 	std::list<Cherry*> myCherry;
 
+	DrawEntity* m_pPlayfield;
+
+	DrawEntity* m_pDot;
+	DrawEntity* m_pBigDot;
+
+	WORLD_DESC world_desc;
 };
 
 #endif // WORLD_H

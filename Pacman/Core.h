@@ -5,6 +5,7 @@
 #include "assert.h"
 #include <iostream>
 #include "DrawTextEntity.h"
+//#include "GameEntity.h"
 
 class Core
 {
@@ -18,7 +19,7 @@ public:
 	void Update(const Uint8*& keystate);
 	void DrawText(const char* aText, const char* aFontFile, int aX, int aY);
 
-	void DrawObject(DrawEntity& drawEntity);
+	void DrawObject(DrawEntity& drawEntity, int posX = 0, int posY = 0);
 	void Shutdown();
 
 	inline SDL_Window* GetWindow() 

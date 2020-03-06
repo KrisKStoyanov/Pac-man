@@ -112,9 +112,23 @@ void Core::DrawText(const char* aText, const char* aFontFile, int aX, int aY)
 	TTF_CloseFont(font);
 }
 
-void Core::DrawObject(DrawEntity& drawEntity)
+void Core::DrawObject(DrawEntity& drawEntity, int posX, int posY)
 {
-	SDL_RenderCopy(m_pRenderer, drawEntity.GetTexture(), &drawEntity.GetSizeRect(), &drawEntity.GetPosRect());
+	if (posX == 0 && posY == 0) 
+	{
+		SDL_RenderCopy(m_pRenderer, drawEntity.GetTexture(), &drawEntity.GetSizeRect(), &drawEntity.GetPosRect());
+	}
+	else 
+	{
+		SDL_Rect sizeRect = drawEntity.GetSizeRect();
+
+		SDL_Rect posRect;
+		posRect.x = posX;
+		posRect.y = posY;
+		posRect.w = sizeRect.w;
+		posRect.h = sizeRect.h;
+		SDL_RenderCopy(m_pRenderer, drawEntity.GetTexture(), &sizeRect, &posRect);
+	}
 }
 
 void Core::Shutdown()

@@ -2,8 +2,6 @@
 #define PACMAN_H
 
 #include "Vector2f.h"
-#include "Core.h"
-#include "SDL.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -31,7 +29,7 @@ public:
 	static Pacman* Create();
 	~Pacman(void);
 
-	bool Init(Core& core, PACMAN_DESC pacman_desc);
+	bool Init(Core& core, const PACMAN_DESC& pacman_desc);
 	int Run(Core& core);
 	bool Update(Core& core, float aTime);
 	bool Draw(Core& core);

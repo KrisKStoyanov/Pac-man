@@ -1,13 +1,4 @@
 #include "World.h"
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
-
-#include "PathmapTile.h"
-#include "Dot.h"
-#include "BigDot.h"
-#include "Core.h"
 
 World::World(void)
 {
@@ -17,8 +8,12 @@ World::~World(void)
 {
 }
 
-void World::Init()
+void World::Init(Core& core, WORLD_DESC& world_desc)
 {
+	m_pPlayfield = new DrawEntity(core.GetRenderer(), world_desc.playfieldImage, 0, 0);
+	m_pDot = new DrawEntity(core.GetRenderer(), world_desc.dotImage, 0, 0);
+	m_pBigDot = new DrawEntity(core.GetRenderer(), world_desc.bigDotImage, 0, 0);
+
 	InitPathmap();
 }
 
@@ -57,20 +52,20 @@ bool World::InitPathmap()
 	return true;
 }
 
-void World::Draw(Core* core)
+void World::Draw(Core& core)
 {
-	core->Draw("playfield.png");
+	core.DrawObject(*m_pPlayfield);
 
 	for(std::list<Dot*>::iterator list_iter = myDots.begin(); list_iter != myDots.end(); list_iter++)
 	{
 		Dot* dot = *list_iter;
-		dot->Draw(core);
+		core.DrawObject(*m_pDot, dot->GetPosition().myX, dot->GetPosition().myY);		
 	}
 
 	for(std::list<BigDot*>::iterator list_iter = myBigDots.begin(); list_iter != myBigDots.end(); list_iter++)
 	{
 		BigDot* dot = *list_iter;
-		dot->Draw(core);
+		core.DrawObject(*m_pDot, dot->GetPosition().myX, dot->GetPosition().myY);
 	}
 }
 
