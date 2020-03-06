@@ -2,11 +2,12 @@
 #define WORLD_H
 
 #include <list>
-#include "Vector2f.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
 #include <string>
+
+#include "Core.h"
 
 #include "PathmapTile.h"
 #include "Dot.h"

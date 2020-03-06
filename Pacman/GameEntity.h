@@ -2,8 +2,7 @@
 #define GAMEENTITY_H
 
 #include "Vector2f.h"
-#include "Core.h"
-//#include "DrawTextEntity.h"
+#include "DrawTextEntity.h"
 
 class Core;
 

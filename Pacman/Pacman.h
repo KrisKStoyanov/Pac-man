@@ -1,12 +1,6 @@
 #ifndef PACMAN_H
 #define PACMAN_H
 
-#include "Vector2f.h"
-#include <iostream>
-#include <sstream>
-#include <fstream>
-#include <string>
-
 #include "Avatar.h"
 #include "World.h"
 #include "Ghost.h"
@@ -14,7 +8,11 @@
 struct PACMAN_DESC
 {
 	const char* avatarImage = "open_32.png";
-	const char* ghostImage = "ghost_32.png";
+	
+	const char* ghostDefaultImage = "ghost_32.png";
+	const char* ghostVulnerableImage = "ghost_32.png";
+	const char* ghostDeadImage = "ghost_32.png";
+
 	const char* playfieldImage = "playfield.png";
 	const char* dotImage = "Small_Dot_32.png";
 	const char* bigDotImage = "Big_Dot_32.png";
@@ -68,7 +66,10 @@ private:
 	DrawTextEntity* m_pFpsText;
 
 	DrawEntity* m_pAvatar;
-	DrawEntity* m_pGhost;
+
+	DrawEntity* m_pDefaultGhost;
+	DrawEntity* m_pVulnerableGhost;
+	DrawEntity* m_pDeadGhost;
 
 	PACMAN_DESC m_desc;
 };

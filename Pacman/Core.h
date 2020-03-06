@@ -2,10 +2,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
-#include "assert.h"
-#include <iostream>
-#include "DrawTextEntity.h"
-//#include "GameEntity.h"
+#include "GameEntity.h"
 
 class Core
 {
