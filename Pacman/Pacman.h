@@ -51,7 +51,7 @@ private:
 	bool CheckEndGameCondition();
 
 	void UpdateAvatar(float deltaTime);
-	void UpdateGhost(float deltaTime);
+	void UpdateGhost(Ghost& ghost, float deltaTime);
 
 	void UpdateScore(int amount);
 	void UpdateLives(int amount);

@@ -12,8 +12,6 @@ public:
 	Ghost(const Vector2f& aPosition, float movementSpeed);
 	~Ghost(void);
 
-	void Update(float aTime, World* aWorld);
-
 	bool myIsClaimableFlag;
 	bool myIsDeadFlag;
 
@@ -22,9 +20,11 @@ public:
 	void Reset();
 
 	inline Vector2f GetDrawPos() { return m_drawPos; }
+	inline Vector2f GetDesiredMovement() { return m_desiredMovement; }
+	inline void SetDesiredMovement(const Vector2f& movement) { m_desiredMovement = movement; }
+	inline std::vector<PathmapTile*> GetPath() { return myPath; }
 protected:
-	int myDesiredMovementX;
-	int myDesiredMovementY;
+	Vector2f m_desiredMovement;
 	std::vector<PathmapTile*> myPath;
 };
 

@@ -126,13 +126,12 @@ bool Pacman::Update(Core& core, float aTime)
 		}
 	}
 
-	//myAvatar->Update(aTime);
 	UpdateAvatar(aTime);
 
-	redGhost->Update(aTime, myWorld);
-	tealGhost->Update(aTime, myWorld);
-	pinkGhost->Update(aTime, myWorld);
-	orangeGhost->Update(aTime, myWorld);
+	UpdateGhost(*redGhost, aTime);
+	UpdateGhost(*tealGhost, aTime);
+	UpdateGhost(*pinkGhost, aTime);
+	UpdateGhost(*orangeGhost, aTime);
 
 	if (myWorld->HasIntersectedDot(myAvatar->GetPosition(), m_win))
 	{
@@ -308,10 +307,67 @@ void Pacman::UpdateAvatar(float deltaTime)
 	myAvatar->SetDrawPos(Vector2f(myAvatar->GetPosition().myX + m_drawOffsetX, myAvatar->GetPosition().myY + m_drawOffsetY));
 }
 
-void Pacman::UpdateGhost(float deltaTime)
-{
-	
-	
+void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
+{	
+	Vector2f nextTile = ghost.GetCurrentTile() + ghost.GetDesiredMovement();
+
+	//if (myIsDeadFlag)
+	//	speed = 120.f;
+
+	if (ghost.IsAtDestination())
+	{
+		if (!ghost.GetPath().empty())
+		{
+			PathmapTile* nextTile = ghost.GetPath().front();
+			delete ghost.GetPath().front();
+			ghost.GetPath().erase(ghost.GetPath().begin());
+			ghost.SetNextTile(nextTile->m_pos);
+		}
+		else if (myWorld->TileIsValid(nextTile))
+		{
+			ghost.SetNextTile(nextTile);
+		}
+		else
+		{
+			if (ghost.GetDesiredMovement().myX == 1)
+			{
+				ghost.SetDesiredMovement(Vector2f(0, 1));
+			}
+			else if (ghost.GetDesiredMovement().myY == 1)
+			{
+				ghost.SetDesiredMovement(Vector2f(-1, 0));
+			}
+			else if (ghost.GetDesiredMovement().myX == -1)
+			{
+				ghost.SetDesiredMovement(Vector2f(0, -1));
+			}
+			else
+			{
+				ghost.SetDesiredMovement(Vector2f(1, 0));
+			}
+
+			ghost.myIsDeadFlag = false;
+		}
+	}
+
+	int tileSize = 22;
+	Vector2f destination = ghost.GetNextTile() * tileSize;
+	Vector2f direction = destination - ghost.GetPosition();
+
+	float distanceToMove = deltaTime * ghost.GetMovementSpeed();
+
+	if (distanceToMove > direction.Length())
+	{
+		ghost.SetPosition(destination);
+		ghost.SetCurrentTile(ghost.GetNextTile());
+	}
+	else
+	{
+		direction.Normalize();
+		ghost.SetPosition(ghost.GetPosition() + direction * distanceToMove);
+	}
+
+	ghost.SetDrawPos(Vector2f(ghost.GetPosition().myX + m_drawOffsetX, ghost.GetPosition().myY + m_drawOffsetY));
 }
 
 void Pacman::UpdateScore(int amount)
