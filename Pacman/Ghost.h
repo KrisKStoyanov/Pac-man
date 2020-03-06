@@ -1,11 +1,10 @@
 #ifndef GHOST_H
 #define GHOST_H
 
+#include "World.h"
+#include "PathmapTile.h"
 #include <list>
 #include "MovableGameEntity.h"
-
-class World;
-class PathmapTile;
 
 class Ghost : public MovableGameEntity
 {
@@ -18,8 +17,6 @@ public:
 	bool myIsClaimableFlag;
 	bool myIsDeadFlag;
 
-	void SetImage(const char* anImage);
-
 	void Die(World* aWorld);
 
 	inline Vector2f GetDrawPos()
@@ -27,10 +24,8 @@ public:
 		return m_drawPos;
 	}
 protected:
-
 	int myDesiredMovementX;
 	int myDesiredMovementY;
-
 	std::list<PathmapTile*> myPath;
 };
 

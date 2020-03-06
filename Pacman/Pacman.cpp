@@ -28,20 +28,20 @@ bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 
 	std::string drawTextString;
 	std::stringstream scoreStream;
-	scoreStream << myScore;
-	drawTextString = "Score: " + scoreStream.str();
+	scoreStream << "Score: " << myScore;
+	drawTextString = scoreStream.str();
 	m_pScoreText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 20, 50);
 	scoreStream.flush();
 
 	std::stringstream liveStream;
-	liveStream << myLives;
-	drawTextString = "Lives: " + liveStream.str();
+	liveStream << "Lives: " << myLives;
+	drawTextString = liveStream.str();
 	m_pLivesText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 20, 80);
 	liveStream.flush();
 
 	std::stringstream fpsStream;
-	fpsStream << myFps;
-	drawTextString = "FPS: " + fpsStream.str();
+	fpsStream << "FPS: " << myFps << "   "; //intentionally left blank
+	drawTextString = fpsStream.str();
 	m_pFpsText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 880, 50);
 	fpsStream.flush();
 
@@ -193,20 +193,20 @@ void Pacman::RedrawUI(SDL_Renderer* renderer)
 {
 	std::string drawTextString;
 	std::stringstream drawTextStream;
-	drawTextStream << myScore;
-	drawTextString = "Score: " + drawTextStream.str();
+	drawTextStream << "Score: " << myScore;
+	drawTextString = drawTextStream.str();
 	m_pScoreText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream.flush();
 
 	std::stringstream drawTextStream1;
-	drawTextStream1 << myLives;
-	drawTextString = "Lives: " + drawTextStream1.str();
+	drawTextStream1 << "Lives: " << myLives;
+	drawTextString = drawTextStream1.str();
 	m_pLivesText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream1.flush();
 
 	std::stringstream drawTextStream2;
-	drawTextStream2 << myFps;
-	drawTextString = "FPS: " + drawTextStream2.str();
+	drawTextStream2 << "FPS: " << myFps << "   "; //intentionally left blank
+	drawTextString = drawTextStream2.str();
 	m_pFpsText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream2.flush();
 

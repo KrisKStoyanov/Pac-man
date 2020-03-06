@@ -6,6 +6,7 @@
 #include <sstream>
 #include <fstream>
 #include <string>
+#include <vector>
 
 #include "Core.h"
 
@@ -40,7 +41,6 @@ public:
 	void Update(Core* core);
 
 	void GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<PathmapTile*>& aList);
-
 private:
 
 	PathmapTile* GetTile(int aFromX, int aFromY);
@@ -51,9 +51,9 @@ private:
 	bool InitPathmap();
 
 	std::list<PathmapTile*> myPathmapTiles;
-	std::list<Dot*> myDots;
-	std::list<BigDot*> myBigDots;
-	std::list<Cherry*> myCherry;
+	std::vector<Dot*> myDots;
+	std::vector<BigDot*> myBigDots;
+	std::vector<Cherry*> myCherry;
 
 	DrawEntity* m_pPlayfield;
 

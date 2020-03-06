@@ -1,5 +1,4 @@
 #include "GameEntity.h"
-#include "Core.h"
 
 GameEntity::GameEntity(const Vector2f& aPosition, const char* anImage)
 :myPosition(aPosition)

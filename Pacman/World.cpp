@@ -56,16 +56,14 @@ void World::Draw(Core& core)
 {
 	core.DrawObject(*m_pPlayfield);
 
-	for(std::list<Dot*>::iterator list_iter = myDots.begin(); list_iter != myDots.end(); list_iter++)
+	for (unsigned int i = 0; i < myDots.size(); ++i) 
 	{
-		Dot* dot = *list_iter;
-		core.DrawObject(*m_pDot, dot->GetDrawPos().myX, dot->GetDrawPos().myY);
+		core.DrawObject(*m_pDot, myDots[i]->GetDrawPos().myX, myDots[i]->GetDrawPos().myY);
 	}
 
-	for(std::list<BigDot*>::iterator list_iter = myBigDots.begin(); list_iter != myBigDots.end(); list_iter++)
+	for (unsigned int i = 0; i < myBigDots.size(); ++i)
 	{
-		BigDot* dot = *list_iter;
-		core.DrawObject(*m_pDot, dot->GetDrawPos().myX, dot->GetDrawPos().myY);
+		core.DrawObject(*m_pBigDot, myBigDots[i]->GetDrawPos().myX, myBigDots[i]->GetDrawPos().myY);
 	}
 }
 
@@ -84,14 +82,17 @@ bool World::TileIsValid(int anX, int anY)
 
 bool World::HasIntersectedDot(const Vector2f& aPosition)
 {
-	for(std::list<Dot*>::iterator list_iter = myDots.begin(); list_iter != myDots.end(); list_iter++)
+	for (unsigned int i = 0; i < myDots.size(); ++i)
 	{
-		Dot* dot = *list_iter;
-		if ((dot->GetPosition() - aPosition).Length() < 5.f)
+		if ((myDots[i]->GetPosition() - aPosition).Length() < 5.0f)
 		{
-			myDots.remove(dot);
-			delete dot;
+			myDots.erase(myDots.begin() + i);
 			return true;
+
+			if (myDots.size() == 0 && myBigDots.size() == 0)
+			{
+				//You win
+			}
 		}
 	}
 
@@ -100,14 +101,17 @@ bool World::HasIntersectedDot(const Vector2f& aPosition)
 
 bool World::HasIntersectedBigDot(const Vector2f& aPosition)
 {
-	for(std::list<BigDot*>::iterator list_iter = myBigDots.begin(); list_iter != myBigDots.end(); list_iter++)
+	for (unsigned int i = 0; i < myBigDots.size(); ++i)
 	{
-		BigDot* dot = *list_iter;
-		if ((dot->GetPosition() - aPosition).Length() < 5.f)
+		if ((myBigDots[i]->GetPosition() - aPosition).Length() < 5.0f)
 		{
-			myBigDots.remove(dot);
-			delete dot;
+			myBigDots.erase(myBigDots.begin() + i);
 			return true;
+
+			if (myDots.size() == 0 && myBigDots.size() == 0)
+			{
+				//You win
+			}
 		}
 	}
 

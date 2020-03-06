@@ -1,7 +1,4 @@
 #include "Ghost.h"
-#include "World.h"
-#include "PathmapTile.h"
-#include "Core.h"
 
 Ghost::Ghost(const Vector2f& aPosition)
 : MovableGameEntity(aPosition, "ghost_32.png")
@@ -86,9 +83,4 @@ void Ghost::Update(float aTime, World* aWorld)
 		myPosition += direction * distanceToMove;
 	}
 	SetDrawPos(Vector2f(myPosition.myX + m_drawOffsetX, myPosition.myY + m_drawOffsetY));
-}
-
-void Ghost::SetImage(const char* anImage)
-{
-	myImage = anImage;
 }
