@@ -69,12 +69,12 @@ void World::Draw(Core& core)
 
 bool World::TileIsValid(int anX, int anY)
 {
-	for(std::list<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
+	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
 	{
-		PathmapTile* tile = *list_iter;
-
-		if (anX == tile->myX && anY == tile->myY && !tile->myIsBlockingFlag)
+		if (myPathmapTiles[i]->myX == anX && myPathmapTiles[i]->myY == anY && !myPathmapTiles[i]->myIsBlockingFlag)
+		{
 			return true;
+		}
 	}
 
 	return false;
@@ -128,10 +128,9 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<Pathma
 	PathmapTile* fromTile = GetTile(aFromX, aFromY);
 	PathmapTile* toTile = GetTile(aToX, aToY);
 
-	for(std::list<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
+	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
 	{
-		PathmapTile* tile = *list_iter;
-		tile->myIsVisitedFlag = false;
+		myPathmapTiles[i]->myIsVisitedFlag = false;
 	}
 
 	Pathfind(fromTile, toTile, aList);
@@ -139,12 +138,11 @@ void World::GetPath(int aFromX, int aFromY, int aToX, int aToY, std::list<Pathma
 
 PathmapTile* World::GetTile(int aFromX, int aFromY)
 {
-	for(std::list<PathmapTile*>::iterator list_iter = myPathmapTiles.begin(); list_iter != myPathmapTiles.end(); list_iter++)
+	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
 	{
-		PathmapTile* tile = *list_iter;
-		if (tile->myX == aFromX && tile->myY == aFromY)
+		if (myPathmapTiles[i]->myX == aFromX && myPathmapTiles[i]->myY == aFromY)
 		{
-			return tile;
+			return myPathmapTiles[i];
 		}
 	}
 

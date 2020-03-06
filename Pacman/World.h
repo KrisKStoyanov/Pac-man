@@ -50,7 +50,7 @@ private:
 
 	bool InitPathmap();
 
-	std::list<PathmapTile*> myPathmapTiles;
+	std::vector<PathmapTile*> myPathmapTiles;
 	std::vector<Dot*> myDots;
 	std::vector<BigDot*> myBigDots;
 	std::vector<Cherry*> myCherry;

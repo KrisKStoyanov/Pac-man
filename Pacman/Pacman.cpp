@@ -125,7 +125,7 @@ bool Pacman::Update(Core& core, float aTime)
 		myGhost->myIsClaimableFlag = true;
 	}
 
-	if (myGhostGhostCounter <= 0)
+	if (myGhostGhostCounter < 0.1f)
 	{
 		myGhost->myIsClaimableFlag = false;
 	}
