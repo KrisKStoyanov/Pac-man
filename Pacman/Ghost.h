@@ -19,10 +19,9 @@ public:
 
 	void Die(World* aWorld);
 
-	inline Vector2f GetDrawPos()
-	{
-		return m_drawPos;
-	}
+	void Reset();
+
+	inline Vector2f GetDrawPos() { return m_drawPos; }
 protected:
 	int myDesiredMovementX;
 	int myDesiredMovementY;

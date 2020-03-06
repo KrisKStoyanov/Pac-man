@@ -17,6 +17,5 @@ GameEntity::~GameEntity(void)
 
 bool GameEntity::Intersect(GameEntity* aGameEntity)
 {
-
 	return false;	
 }

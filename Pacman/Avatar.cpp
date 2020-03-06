@@ -33,3 +33,9 @@ void Avatar::Update(float aTime)
 	
 	SetDrawPos(Vector2f(myPosition.myX + m_drawOffsetX, myPosition.myY + m_drawOffsetY));
 }
+
+void Avatar::Reset()
+{
+	myCurrentTileX = myNextTileX = myPosition.myX / 22;
+	myCurrentTileY = myNextTileY = myPosition.myY / 22;
+}

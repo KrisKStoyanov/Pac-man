@@ -28,7 +28,7 @@ bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 
 	std::string drawTextString;
 	std::stringstream scoreStream;
-	scoreStream << "Score: " << myScore;
+	scoreStream << "Score: " << myScore << "   "; //intentionally left blank
 	drawTextString = scoreStream.str();
 	m_pScoreText = new DrawTextEntity(core.GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 20, 50);
 	scoreStream.flush();
@@ -137,7 +137,9 @@ bool Pacman::Update(Core& core, float aTime)
 			myLives--;
 
 			myAvatar->SetPosition(Vector2f(13*22,22*22));
+			myAvatar->Reset();
 			myGhost->SetPosition(Vector2f(13*22,13*22));
+			myGhost->Reset();
 		}
 		else if (myGhost->myIsClaimableFlag && !myGhost->myIsDeadFlag)
 		{
@@ -193,7 +195,7 @@ void Pacman::RedrawUI(SDL_Renderer* renderer)
 {
 	std::string drawTextString;
 	std::stringstream drawTextStream;
-	drawTextStream << "Score: " << myScore;
+	drawTextStream << "Score: " << myScore << "   "; //intentionally left blank
 	drawTextString = drawTextStream.str();
 	m_pScoreText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream.flush();

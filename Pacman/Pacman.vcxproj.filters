@@ -60,9 +60,6 @@
     <ClCompile Include="World.cpp">
       <Filter>Game\World</Filter>
     </ClCompile>
-    <ClCompile Include="Drawer.cpp">
-      <Filter>Graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Vector2f.cpp">
       <Filter>Math</Filter>
     </ClCompile>
@@ -110,9 +107,6 @@
     </ClInclude>
     <ClInclude Include="World.h">
       <Filter>Game\World</Filter>
-    </ClInclude>
-    <ClInclude Include="Drawer.h">
-      <Filter>Graphics</Filter>
     </ClInclude>
     <ClInclude Include="Vector2f.h">
       <Filter>Math</Filter>

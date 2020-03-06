@@ -20,11 +20,23 @@ void Ghost::Die(World* aWorld)
 	aWorld->GetPath(myCurrentTileX, myCurrentTileY, 13, 13, myPath);
 }
 
+void Ghost::Reset()
+{
+	myIsClaimableFlag = false;
+	myIsDeadFlag = false;
+
+	myDesiredMovementX = 0;
+	myDesiredMovementY = -1;
+
+	myCurrentTileX = myNextTileX = myPosition.myX / 22;
+	myCurrentTileY = myNextTileY = myPosition.myY / 22;
+}
+
 void Ghost::Update(float aTime, World* aWorld)
 {
 	float speed = 30.f;
-	int nextTileX = GetCurrentTileX() + myDesiredMovementX;
-	int nextTileY = GetCurrentTileY() + myDesiredMovementY;
+	int nextTileX = myCurrentTileX + myDesiredMovementX;
+	int nextTileY = myCurrentTileY + myDesiredMovementY;
 
 	if (myIsDeadFlag)
 		speed = 120.f;

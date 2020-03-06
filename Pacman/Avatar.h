@@ -12,10 +12,9 @@ public:
 
 	void Update(float aTime);
 
-	inline Vector2f GetDrawPos()
-	{
-		return m_drawPos;
-	}
+	void Reset();
+
+	inline Vector2f GetDrawPos() { return m_drawPos; }
 };
 
 #endif //AVATAR_H

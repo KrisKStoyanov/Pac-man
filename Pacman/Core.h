@@ -10,11 +10,9 @@ public:
 	Core();
 	~Core();
 	bool Init();
-	void Draw(const char* anImage, int aCellX = 0, int aCellY = 0);
 	void OnStartFrameRender();
 	void OnEndFrameRender();
 	void Update(const Uint8*& keystate);
-	void DrawText(const char* aText, const char* aFontFile, int aX, int aY);
 
 	void DrawObject(DrawEntity& drawEntity, int posX = 0, int posY = 0);
 	void Shutdown();
