@@ -8,3 +8,4 @@ StaticGameEntity::StaticGameEntity(Vector2f aPosition, const char* anImage)
 StaticGameEntity::~StaticGameEntity(void)
 {
 }
+

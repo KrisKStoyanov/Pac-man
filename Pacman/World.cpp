@@ -59,13 +59,13 @@ void World::Draw(Core& core)
 	for(std::list<Dot*>::iterator list_iter = myDots.begin(); list_iter != myDots.end(); list_iter++)
 	{
 		Dot* dot = *list_iter;
-		core.DrawObject(*m_pDot, dot->GetPosition().myX, dot->GetPosition().myY);		
+		core.DrawObject(*m_pDot, dot->GetDrawPos().myX, dot->GetDrawPos().myY);
 	}
 
 	for(std::list<BigDot*>::iterator list_iter = myBigDots.begin(); list_iter != myBigDots.end(); list_iter++)
 	{
 		BigDot* dot = *list_iter;
-		core.DrawObject(*m_pDot, dot->GetPosition().myX, dot->GetPosition().myY);
+		core.DrawObject(*m_pDot, dot->GetDrawPos().myX, dot->GetDrawPos().myY);
 	}
 }
 
