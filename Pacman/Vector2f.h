@@ -61,6 +61,11 @@ public:
 		return *this;
 	}
 
+	const bool Vector2f::operator==(const Vector2f& other)
+	{
+		return (this->myX == other.myX && this->myY == other.myY);
+	}
+
 	const Vector2f Vector2f::operator*(const float aValue) const 
 	{
 		Vector2f v(myX * aValue, myY * aValue);

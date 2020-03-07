@@ -41,14 +41,13 @@ public:
 
 	bool Init(Core& core, const PACMAN_DESC& pacman_desc);
 	int Run(Core& core);
-	bool Update(Core& core, float aTime);
+	void OnUpdate(float aTime);
 	bool Draw(Core& core);
 
 	void Shutdown();
 
 private:
 	Pacman();
-	bool CheckEndGameCondition();
 
 	void UpdateAvatar(float deltaTime);
 	void UpdateGhost(Ghost& ghost, float deltaTime);
@@ -59,8 +58,22 @@ private:
 
 	void RedrawUI(SDL_Renderer* renderer);
 
+	void PickupDot(Avatar& avatar);
+	void PickupBigDot(Avatar& avatar);
+	void SetGhostCounter(float value);
+	void ReduceGhostCounterDuration(float amount);
+	bool AvatarGhostIntersection(Ghost& ghost, float dist);
+	void IntersectGhost(Ghost& ghost);
+	void ResetGhostPositions();
+	void ResetPlayerPosition();
+	void PickupCherry();
+
 	float myTimeToNextUpdate;
 	float myGhostGhostCounter;
+
+	bool m_ghostCounterFlag;
+	float m_ghostCounterDuration;
+	float m_ghostCounterReducer;
 
 	int myLives;
 	int myScore;
@@ -78,7 +91,7 @@ private:
 	World* myWorld;
 
 	bool m_isRunning;
-	bool m_redrawUI;
+	bool m_updateUI;
 
 	DrawTextEntity* m_pScoreText;
 	DrawTextEntity* m_pLivesText;

@@ -11,7 +11,8 @@ Pacman::Pacman() :
 	myScore(0), myFps(0), myLives(3),
 	myGhostGhostCounter(0.f),
 	m_drawOffsetX(220.0f), m_drawOffsetY(60.0f),
-	m_tileSize(22), m_win(false)
+	m_tileSize(22), m_win(false),
+	m_ghostCounterDuration(20.0f), m_ghostCounterFlag(false), m_ghostCounterReducer(1.0f)
 {
 	myAvatar = new Avatar(Vector2f(13 * m_tileSize, 22 * m_tileSize), 120.0f);
 
@@ -87,13 +88,31 @@ int Pacman::Run(Core& core)
 		float currentFrame = (float)SDL_GetTicks() * 0.001f;
 		float elapsedTime = currentFrame - lastFrame;
 
-		m_isRunning = Update(core, elapsedTime);
+		SDL_Event curEvent;
+		while (SDL_PollEvent(&curEvent) > 0)
+		{
+			const Uint8* keystate = SDL_GetKeyboardState(NULL);
+
+			if (keystate[SDL_SCANCODE_UP])
+				myNextMovement = Vector2f(0.f, -1.f);
+			else if (keystate[SDL_SCANCODE_DOWN])
+				myNextMovement = Vector2f(0.f, 1.f);
+			else if (keystate[SDL_SCANCODE_RIGHT])
+				myNextMovement = Vector2f(1.f, 0.f);
+			else if (keystate[SDL_SCANCODE_LEFT])
+				myNextMovement = Vector2f(-1.f, 0.f);
+
+			if (keystate[SDL_SCANCODE_ESCAPE])
+			{
+				m_isRunning = false;
+			}
+		}
+		if (!m_win && myLives > 0)
+		{
+			OnUpdate(elapsedTime);
+		}
 		core.OnStartFrameRender();
 		Draw(core);
-		if (m_redrawUI)
-		{
-			RedrawUI(core.GetRenderer());
-		}
 		core.OnEndFrameRender();
 	
 		lastFrame = currentFrame;
@@ -104,28 +123,8 @@ int Pacman::Run(Core& core)
 	return EXIT_SUCCESS;
 }
 
-bool Pacman::Update(Core& core, float aTime)
+void Pacman::OnUpdate(float aTime)
 {
-	SDL_Event curEvent;
-	while (SDL_PollEvent(&curEvent) > 0)
-	{
-		const Uint8* keystate = SDL_GetKeyboardState(NULL);
-
-		if (keystate[SDL_SCANCODE_UP])
-			myNextMovement = Vector2f(0.f, -1.f);
-		else if (keystate[SDL_SCANCODE_DOWN])
-			myNextMovement = Vector2f(0.f, 1.f);
-		else if (keystate[SDL_SCANCODE_RIGHT])
-			myNextMovement = Vector2f(1.f, 0.f);
-		else if (keystate[SDL_SCANCODE_LEFT])
-			myNextMovement = Vector2f(-1.f, 0.f);
-
-		if (keystate[SDL_SCANCODE_ESCAPE])
-		{
-			return false;
-		}
-	}
-
 	UpdateAvatar(aTime);
 
 	UpdateGhost(*redGhost, aTime);
@@ -134,147 +133,21 @@ bool Pacman::Update(Core& core, float aTime)
 	UpdateGhost(*orangeGhost, aTime);
 
 	if (myWorld->HasIntersectedDot(myAvatar->GetPosition(), m_win))
-	{
-		UpdateScore(10);
-	}
+		PickupDot(*myAvatar);
 
 	if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition(), m_win))
-	{
-		UpdateScore(20);
-		myGhostGhostCounter = 20.f;
-		redGhost->myIsClaimableFlag = true;
-		tealGhost->myIsClaimableFlag = true;
-		pinkGhost->myIsClaimableFlag = true;
-		orangeGhost->myIsClaimableFlag = true;
-	}
+		PickupBigDot(*myAvatar);
 
-	myGhostGhostCounter -= aTime;
+	if (m_ghostCounterFlag)
+		ReduceGhostCounterDuration(aTime * m_ghostCounterReducer);
 
-	if (myGhostGhostCounter < 0.1f)
-	{
-		redGhost->myIsClaimableFlag = false;
-		tealGhost->myIsClaimableFlag = false;
-		pinkGhost->myIsClaimableFlag = false;
-		orangeGhost->myIsClaimableFlag = false;
-	}
-
-	if ((redGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
-	{
-		if (myGhostGhostCounter < 0.1f)
-		{
-			UpdateLives(-1);
-			
-			myAvatar->SetPosition(Vector2f(13*22,22*22));
-			myAvatar->Reset();
-			redGhost->SetPosition(Vector2f(13*22,13*22));
-			redGhost->Reset();
-			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			tealGhost->Reset();
-			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			pinkGhost->Reset();
-			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			orangeGhost->Reset();
-		}
-		else if (redGhost->myIsClaimableFlag && !redGhost->myIsDeadFlag)
-		{
-			redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			redGhost->Reset();
-			myScore += 50;
-			redGhost->myIsDeadFlag = true;
-			redGhost->Die(myWorld);
-		}
-	}
-
-	if ((tealGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
-	{
-		if (myGhostGhostCounter < 0.1f)
-		{
-			UpdateLives(-1);
-
-			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
-			myAvatar->Reset();
-			redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			redGhost->Reset();
-			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			tealGhost->Reset();
-			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			pinkGhost->Reset();
-			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			orangeGhost->Reset();
-		}
-		else if (tealGhost->myIsClaimableFlag && !tealGhost->myIsDeadFlag)
-		{
-			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			tealGhost->Reset();
-			myScore += 50;
-			tealGhost->myIsDeadFlag = true;
-			tealGhost->Die(myWorld);
-		}
-	}
-
-	if ((pinkGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
-	{
-		if (myGhostGhostCounter < 0.1f)
-		{
-			UpdateLives(-1);
-
-			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
-			myAvatar->Reset();
-			redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			redGhost->Reset();
-			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			tealGhost->Reset();
-			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			pinkGhost->Reset();
-			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			orangeGhost->Reset();
-		}
-		else if (pinkGhost->myIsClaimableFlag && !pinkGhost->myIsDeadFlag)
-		{
-			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			pinkGhost->Reset();
-			myScore += 50;
-			pinkGhost->myIsDeadFlag = true;
-			pinkGhost->Die(myWorld);
-		}
-	}
-
-	if ((orangeGhost->GetPosition() - myAvatar->GetPosition()).Length() < 10.f)
-	{
-		if (myGhostGhostCounter < 0.1f)
-		{
-			UpdateLives(-1);
-
-			myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
-			myAvatar->Reset();
-			redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			redGhost->Reset();
-			tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			tealGhost->Reset();
-			pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			pinkGhost->Reset();
-			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			orangeGhost->Reset();
-		}
-		else if (orangeGhost->myIsClaimableFlag && !orangeGhost->myIsDeadFlag)
-		{
-			orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-			orangeGhost->Reset();
-			myScore += 50;
-			orangeGhost->myIsDeadFlag = true;
-			orangeGhost->Die(myWorld);
-		}
-	}
+	AvatarGhostIntersection(*redGhost, 10.0f);
+	AvatarGhostIntersection(*tealGhost, 10.0f);
+	AvatarGhostIntersection(*pinkGhost, 10.0f);
+	AvatarGhostIntersection(*orangeGhost, 10.0f);
 	
 	if (aTime > 0)
 		UpdateFPS(aTime);
-
-	return true;
-}
-
-bool Pacman::CheckEndGameCondition()
-{
-	return false;
 }
 
 void Pacman::UpdateAvatar(float deltaTime)
@@ -373,7 +246,7 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 void Pacman::UpdateScore(int amount)
 {
 	myScore += amount;
-	m_redrawUI = true;
+	m_updateUI = true;
 }
 
 void Pacman::UpdateLives(int amount)
@@ -383,13 +256,13 @@ void Pacman::UpdateLives(int amount)
 	{
 		myLives = 0;
 	}
-	m_redrawUI = true;
+	m_updateUI = true;
 }
 
 void Pacman::UpdateFPS(float deltaTime)
 {
 	myFps = (int)(1 / deltaTime);
-	m_redrawUI = true;
+	m_updateUI = true;
 }
 
 void Pacman::RedrawUI(SDL_Renderer* renderer)
@@ -424,7 +297,86 @@ void Pacman::RedrawUI(SDL_Renderer* renderer)
 	m_pFpsText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream2.flush();
 
-	m_redrawUI = false;
+	m_updateUI = false;
+}
+
+void Pacman::PickupDot(Avatar& avatar)
+{
+	UpdateScore(10);
+}
+
+void Pacman::PickupBigDot(Avatar& avatar)
+{
+	UpdateScore(20);
+	SetGhostCounter(m_ghostCounterDuration);
+}
+
+void Pacman::SetGhostCounter(float value)
+{
+	myGhostGhostCounter = value;
+	m_ghostCounterFlag = true;
+}
+
+void Pacman::ReduceGhostCounterDuration(float amount)
+{
+	m_ghostCounterDuration -= amount;
+	if (m_ghostCounterDuration < 0.0f)
+	{
+		m_ghostCounterFlag = false;
+	}
+}
+
+bool Pacman::AvatarGhostIntersection(Ghost& ghost, float dist)
+{
+	if ((ghost.GetPosition() - myAvatar->GetPosition()).Length() < dist)
+	{
+		IntersectGhost(ghost);
+		return true;
+	}
+	return false;
+}
+
+void Pacman::ResetGhostPositions()
+{
+	redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+	redGhost->Reset();
+	tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+	tealGhost->Reset();
+	pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+	pinkGhost->Reset();
+	orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
+	orangeGhost->Reset();
+}
+
+void Pacman::ResetPlayerPosition()
+{
+	myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
+	myAvatar->Reset();
+}
+
+void Pacman::IntersectGhost(Ghost& ghost)
+{
+	if (!ghost.myIsDeadFlag)
+	{
+		if (!m_ghostCounterFlag)
+		{
+			UpdateLives(-1);
+			ResetPlayerPosition();
+			ResetGhostPositions();
+		}
+		else if (m_ghostCounterFlag)
+		{
+			UpdateScore(50);
+			ghost.SetPosition(Vector2f(13 * 22, 13 * 22));
+			ghost.Reset();
+			ghost.myIsDeadFlag = true;
+			ghost.Die(myWorld);
+		}
+	}
+}
+
+void Pacman::PickupCherry()
+{
 }
 
 bool Pacman::Draw(Core& core)
@@ -452,7 +404,7 @@ bool Pacman::Draw(Core& core)
 	{
 		core.DrawObject(*m_pDeadGhost, redGhost->GetDrawPos().myX, redGhost->GetDrawPos().myY);
 	}
-	else if (redGhost->myIsClaimableFlag)
+	else if (m_ghostCounterFlag)
 	{
 		core.DrawObject(*m_pVulnerableGhost, redGhost->GetDrawPos().myX, redGhost->GetDrawPos().myY);
 	}
@@ -465,7 +417,7 @@ bool Pacman::Draw(Core& core)
 	{
 		core.DrawObject(*m_pDeadGhost, tealGhost->GetDrawPos().myX, tealGhost->GetDrawPos().myY);
 	}
-	else if (tealGhost->myIsClaimableFlag)
+	else if (m_ghostCounterFlag)
 	{
 		core.DrawObject(*m_pVulnerableGhost, tealGhost->GetDrawPos().myX, tealGhost->GetDrawPos().myY);
 	}
@@ -478,7 +430,7 @@ bool Pacman::Draw(Core& core)
 	{
 		core.DrawObject(*m_pDeadGhost, pinkGhost->GetDrawPos().myX, pinkGhost->GetDrawPos().myY);
 	}
-	else if (pinkGhost->myIsClaimableFlag)
+	else if (m_ghostCounterFlag)
 	{
 		core.DrawObject(*m_pVulnerableGhost, pinkGhost->GetDrawPos().myX, pinkGhost->GetDrawPos().myY);
 	}
@@ -491,13 +443,18 @@ bool Pacman::Draw(Core& core)
 	{
 		core.DrawObject(*m_pDeadGhost, orangeGhost->GetDrawPos().myX, orangeGhost->GetDrawPos().myY);
 	}
-	else if (orangeGhost->myIsClaimableFlag)
+	else if (m_ghostCounterFlag)
 	{
 		core.DrawObject(*m_pVulnerableGhost, orangeGhost->GetDrawPos().myX, orangeGhost->GetDrawPos().myY);
 	}
 	else
 	{
 		core.DrawObject(*m_pOrangeGhost, orangeGhost->GetDrawPos().myX, orangeGhost->GetDrawPos().myY);
+	}
+
+	if (m_updateUI)
+	{
+		RedrawUI(core.GetRenderer());
 	}
 
 	core.DrawObject(*m_pScoreText);

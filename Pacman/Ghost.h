@@ -12,7 +12,6 @@ public:
 	Ghost(const Vector2f& aPosition, float movementSpeed);
 	~Ghost(void);
 
-	bool myIsClaimableFlag;
 	bool myIsDeadFlag;
 
 	void Die(World* aWorld);
