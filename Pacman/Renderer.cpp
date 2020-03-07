@@ -1,7 +1,9 @@
 #include "Renderer.h"
 
-Renderer::Renderer(RENDERER_DESC renderer_desc)
+Renderer::Renderer(RENDERER_DESC renderer_desc) : 
+	m_desc(renderer_desc), m_pRenderer(nullptr)
 {
+
 }
 
 Renderer::~Renderer()
@@ -49,4 +51,14 @@ void Renderer::OnEndFrameRender()
 {
 	SDL_RenderPresent(m_pRenderer);
 	SDL_Delay(1);
+}
+
+DrawEntity* Renderer::CreateDrawEntity(const char* imageFilepath)
+{
+	return new DrawEntity(m_pRenderer, imageFilepath, 0, 0);
+}
+
+DrawTextEntity* Renderer::CreateDrawTextEntity(const char* text, const char* fontFilepath, int posX, int posY)
+{
+	return new DrawTextEntity(m_pRenderer, text, fontFilepath, posX, posY);
 }

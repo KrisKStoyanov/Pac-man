@@ -2,7 +2,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
-#include "GameEntity.h"
+#include "DrawTextEntity.h"
 
 struct RENDERER_DESC
 {
@@ -19,6 +19,10 @@ public:
 	bool Init(SDL_Window& window);
 	void OnStartFrameRender();
 	void OnEndFrameRender();
+
+	//Can be redesigned with a <template>/<concept>
+	DrawEntity* CreateDrawEntity(const char* imageFilepath);
+	DrawTextEntity* CreateDrawTextEntity(const char* text, const char* fontFilepath, int posX, int posY);
 
 	void DrawObject(DrawEntity& drawEntity, int posX = 0, int posY = 0);
 

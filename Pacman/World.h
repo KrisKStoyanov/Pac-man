@@ -17,10 +17,10 @@
 
 struct WORLD_DESC
 {
-	const char* playfieldImage = "playfield.png";
-	const char* dotImage = "Small_Dot_32.png";
-	const char* bigDotImage = "Big_Dot_32.png";
-	const char* cherryImage = "dot.png";
+	DrawEntity* playfieldDrawEntity;
+	DrawEntity* dotDrawEntity;
+	DrawEntity* bigDotDrawEntity;
+	DrawEntity* cherryDrawEntity;
 };
 
 class World
@@ -29,7 +29,7 @@ public:
 	World(void);
 	~World(void);
 
-	void Init(Core& core, WORLD_DESC& world_desc);
+	void Init(const WORLD_DESC& world_desc);
 
 	void Draw(Core& core);
 	bool TileIsValid(Vector2f tilePos);
@@ -55,12 +55,7 @@ private:
 	std::vector<BigDot*> myBigDots;
 	std::vector<Cherry*> myCherry;
 
-	DrawEntity* m_pPlayfield;
-
-	DrawEntity* m_pDot;
-	DrawEntity* m_pBigDot;
-
-	WORLD_DESC world_desc;
+	WORLD_DESC m_desc;
 };
 
 #endif // WORLD_H

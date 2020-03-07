@@ -1,10 +1,9 @@
 #include "Pacman.h"
 
 Pacman::Pacman(PACMAN_DESC pacman_desc) :
-	myTimeToNextUpdate(0.f),
 	myNextMovement(-1.f, 0.f),
-	myScore(0), myFps(0), myLives(3),
-	myGhostGhostCounter(0.f),
+	m_score(0), m_fps(0), m_lives(3),
+	m_ghostGhostCounter(0.f),
 	m_drawOffsetX(220.0f), m_drawOffsetY(60.0f),
 	m_tileSize(22), m_win(false),
 	m_ghostCounterDefault(20.0f), m_ghostCounterDuration(20.0f), 
@@ -30,50 +29,46 @@ bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 {
 	m_isRunning = core.Init();
 
-	std::string drawTextString;
 	std::stringstream scoreStream;
-	scoreStream << "Score: " << myScore << "   "; //intentionally left blank
-	drawTextString = scoreStream.str();
-	m_pScoreText = new DrawTextEntity(core.GetRenderer()->GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 20, 50);
+	scoreStream << "Score: " << m_score << "   "; //intentionally left blank
+	m_pScoreText = core.GetRenderer()->CreateDrawTextEntity(scoreStream.str().c_str(), pacman_desc.uiFont, 20, 50);
 	scoreStream.flush();
 
 	std::stringstream liveStream;
-	liveStream << "Lives: " << myLives;
-	drawTextString = liveStream.str();
-	m_pLivesText = new DrawTextEntity(core.GetRenderer()->GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 20, 80);
+	liveStream << "Lives: " << m_lives;
+	m_pLivesText = core.GetRenderer()->CreateDrawTextEntity(liveStream.str().c_str(), pacman_desc.uiFont, 20, 80);
 	liveStream.flush();
 
 	std::stringstream fpsStream;
-	fpsStream << "FPS: " << myFps << "   "; //intentionally left blank
-	drawTextString = fpsStream.str();
-	m_pFpsText = new DrawTextEntity(core.GetRenderer()->GetRenderer(), drawTextString.c_str(), pacman_desc.uiFont, 880, 50);
+	fpsStream << "FPS: " << m_fps << "   "; //intentionally left blank
+	m_pFpsText = core.GetRenderer()->CreateDrawTextEntity(fpsStream.str().c_str(), pacman_desc.uiFont, 880, 50);
 	fpsStream.flush();
 
-	m_pAvatarOpenLeft = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.avatarOpenLeftImage, 0, 0);
-	m_pAvatarOpenRight = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.avatarOpenRightImage, 0, 0);
-	m_pAvatarOpenUp = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.avatarOpenUpImage, 0, 0);
-	m_pAvatarOpenDown = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.avatarOpenDownImage, 0, 0);
+	m_pAvatarOpenLeft = core.GetRenderer()->CreateDrawEntity(pacman_desc.avatarOpenLeftImage);
+	m_pAvatarOpenRight = core.GetRenderer()->CreateDrawEntity(pacman_desc.avatarOpenRightImage);
+	m_pAvatarOpenUp = core.GetRenderer()->CreateDrawEntity(pacman_desc.avatarOpenUpImage);
+	m_pAvatarOpenDown = core.GetRenderer()->CreateDrawEntity(pacman_desc.avatarOpenDownImage);
 
-	m_pAvatarClosedLeft = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.avatarClosedLeftImage, 0, 0);
-	m_pAvatarClosedRight = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.avatarClosedRightImage, 0, 0);
-	m_pAvatarClosedUp = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.avatarClosedUpImage, 0, 0);
-	m_pAvatarClosedDown = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.avatarClosedDownImage, 0, 0);
+	m_pAvatarClosedLeft = core.GetRenderer()->CreateDrawEntity(pacman_desc.avatarClosedLeftImage);
+	m_pAvatarClosedRight = core.GetRenderer()->CreateDrawEntity(pacman_desc.avatarClosedRightImage);
+	m_pAvatarClosedUp = core.GetRenderer()->CreateDrawEntity(pacman_desc.avatarClosedUpImage);
+	m_pAvatarClosedDown = core.GetRenderer()->CreateDrawEntity(pacman_desc.avatarClosedDownImage);
 	
-	m_pRedGhost = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.redGhostImage, 0, 0);
-	m_pTealGhost = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.tealGhostImage, 0, 0);
-	m_pPinkGhost = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.pinkGhostImage, 0, 0);
-	m_pOrangeGhost = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.orangeGhostImage, 0, 0);
+	m_pRedGhost = core.GetRenderer()->CreateDrawEntity(pacman_desc.redGhostImage);
+	m_pTealGhost = core.GetRenderer()->CreateDrawEntity(pacman_desc.tealGhostImage);
+	m_pPinkGhost = core.GetRenderer()->CreateDrawEntity(pacman_desc.pinkGhostImage);
+	m_pOrangeGhost = core.GetRenderer()->CreateDrawEntity(pacman_desc.orangeGhostImage);
 
-	m_pVulnerableGhost = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.ghostVulnerableImage, 0, 0);
-	m_pDeadGhost = new DrawEntity(core.GetRenderer()->GetRenderer(), pacman_desc.ghostDeadImage, 0, 0);
+	m_pVulnerableGhost = core.GetRenderer()->CreateDrawEntity(pacman_desc.ghostVulnerableImage);
+	m_pDeadGhost = core.GetRenderer()->CreateDrawEntity(pacman_desc.ghostDeadImage);
 
 	WORLD_DESC world_desc;
-	world_desc.playfieldImage = pacman_desc.playfieldImage;
-	world_desc.dotImage = pacman_desc.dotImage;
-	world_desc.bigDotImage = pacman_desc.bigDotImage;
-	world_desc.cherryImage = pacman_desc.cherryImage;
+	world_desc.playfieldDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.playfieldImage);
+	world_desc.dotDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.dotImage);
+	world_desc.bigDotDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.bigDotImage);
+	world_desc.cherryDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.cherryImage);
 
-	myWorld->Init(core, world_desc);
+	myWorld->Init(world_desc);
 
 	return m_isRunning;
 }
@@ -105,12 +100,12 @@ int Pacman::Run(Core& core)
 				m_isRunning = false;
 			}
 		}
-		if (!m_win && myLives > 0)
+		if (!m_win && m_lives > 0)
 		{
 			OnUpdate(elapsedTime);
 		}
 		core.GetRenderer()->OnStartFrameRender();
-		Draw(core);
+		OnDraw(core);
 		core.GetRenderer()->OnEndFrameRender();
 	
 		lastFrame = currentFrame;
@@ -249,23 +244,23 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 
 void Pacman::UpdateScore(int amount)
 {
-	myScore += amount;
+	m_score += amount;
 	m_updateUI = true;
 }
 
 void Pacman::UpdateLives(int amount)
 {
-	myLives += amount;
-	if (myLives < 1)
+	m_lives += amount;
+	if (m_lives < 1)
 	{
-		myLives = 0;
+		m_lives = 0;
 	}
 	m_updateUI = true;
 }
 
 void Pacman::UpdateFPS(float deltaTime)
 {
-	myFps = (int)(1 / deltaTime);
+	m_fps = (int)(1 / deltaTime);
 	m_updateUI = true;
 }
 
@@ -345,26 +340,26 @@ void Pacman::RedrawUI(Core& core)
 	{
 		drawTextStream << "You win!   ";
 	}
-	else if (myLives < 1)
+	else if (m_lives < 1)
 	{
 		drawTextStream << "You lose!   ";
 	}
 	else
 	{
-		drawTextStream << "Score: " << myScore << "   ";
+		drawTextStream << "Score: " << m_score << "   ";
 	}
 	drawTextString = drawTextStream.str();
 	m_pScoreText->SetText(core.GetRenderer()->GetRenderer(), drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream.flush();
 
 	std::stringstream drawTextStream1;
-	drawTextStream1 << "Lives: " << myLives;
+	drawTextStream1 << "Lives: " << m_lives;
 	drawTextString = drawTextStream1.str();
 	m_pLivesText->SetText(core.GetRenderer()->GetRenderer(), drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream1.flush();
 
 	std::stringstream drawTextStream2;
-	drawTextStream2 << "FPS: " << myFps << "   ";
+	drawTextStream2 << "FPS: " << m_fps << "   ";
 	drawTextString = drawTextStream2.str();
 	m_pFpsText->SetText(core.GetRenderer()->GetRenderer(), drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream2.flush();
@@ -385,7 +380,7 @@ void Pacman::PickupBigDot()
 
 void Pacman::SetGhostCounter(float value)
 {
-	myGhostGhostCounter = value;
+	m_ghostGhostCounter = value;
 	m_ghostCounterFlag = true;
 }
 
@@ -452,7 +447,7 @@ void Pacman::PickupCherry()
 {
 }
 
-bool Pacman::Draw(Core& core)
+bool Pacman::OnDraw(Core& core)
 {
 	myWorld->Draw(core);
 

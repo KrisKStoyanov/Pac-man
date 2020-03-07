@@ -41,13 +41,12 @@ public:
 
 	bool Init(Core& core, const PACMAN_DESC& pacman_desc);
 	int Run(Core& core);
-	void OnUpdate(float aTime);
-	bool Draw(Core& core);
-
 	void Shutdown();
 
 private:
+
 	//Simulation Logic:
+	void OnUpdate(float aTime);
 	void UpdateAvatar(float deltaTime);
 	void UpdateGhost(Ghost& ghost, float deltaTime);
 	void PickupDot();
@@ -64,6 +63,7 @@ private:
 	void UpdateFPS(float deltaTime);
 
 	//Graphics Logic:
+	bool OnDraw(Core& core);
 	void DrawAvatar(Core& core, Vector2f& direction, const bool& open);
 	void DrawGhost(
 		Core& core, Ghost& ghost,
@@ -72,17 +72,17 @@ private:
 		DrawEntity& defaultGhost);
 	void RedrawUI(Core& core);
 
-	float myTimeToNextUpdate;
-	float myGhostGhostCounter;
+	//Local data
+	float m_ghostGhostCounter;
 
 	bool m_ghostCounterFlag;
 	float m_ghostCounterDefault;
 	float m_ghostCounterDuration;
 	float m_ghostCounterReducer;
 
-	int myLives;
-	int myScore;
-	int myFps;
+	int m_lives;
+	int m_score;
+	int m_fps;
 
 	Vector2f myNextMovement;
 

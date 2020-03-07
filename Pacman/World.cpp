@@ -8,11 +8,14 @@ World::~World(void)
 {
 }
 
-void World::Init(Core& core, WORLD_DESC& world_desc)
+void World::Init(const WORLD_DESC& world_desc)
 {
-	m_pPlayfield = new DrawEntity(core.GetRenderer()->GetRenderer(), world_desc.playfieldImage, 0, 0);
-	m_pDot = new DrawEntity(core.GetRenderer()->GetRenderer(), world_desc.dotImage, 0, 0);
-	m_pBigDot = new DrawEntity(core.GetRenderer()->GetRenderer(), world_desc.bigDotImage, 0, 0);
+	//fix these pointers (copy constructor/move assignment)
+	//m_pPlayfield = world_desc.playfieldDrawEntity; 
+	//m_pDot = world_desc.dotDrawEntity;
+	//m_pBigDot = world_desc.bigDotDrawEntity;
+
+	m_desc = world_desc;
 
 	InitPathmap();
 }
@@ -54,16 +57,16 @@ bool World::InitPathmap()
 
 void World::Draw(Core& core)
 {
-	core.GetRenderer()->DrawObject(*m_pPlayfield);
+	core.GetRenderer()->DrawObject(*m_desc.playfieldDrawEntity);
 
 	for (unsigned int i = 0; i < myDots.size(); ++i) 
 	{
-		core.GetRenderer()->DrawObject(*m_pDot, myDots[i]->GetDrawPos().myX, myDots[i]->GetDrawPos().myY);
+		core.GetRenderer()->DrawObject(*m_desc.dotDrawEntity, myDots[i]->GetDrawPos().myX, myDots[i]->GetDrawPos().myY);
 	}
 
 	for (unsigned int i = 0; i < myBigDots.size(); ++i)
 	{
-		core.GetRenderer()->DrawObject(*m_pBigDot, myBigDots[i]->GetDrawPos().myX, myBigDots[i]->GetDrawPos().myY);
+		core.GetRenderer()->DrawObject(*m_desc.bigDotDrawEntity, myBigDots[i]->GetDrawPos().myX, myBigDots[i]->GetDrawPos().myY);
 	}
 }
 
@@ -123,9 +126,10 @@ bool World::HasIntersectedCherry(const Vector2f& aPosition)
 
 void World::Shutdown()
 {
-	delete m_pPlayfield;
-	delete m_pDot;
-	delete m_pBigDot;
+	delete m_desc.playfieldDrawEntity;
+	delete m_desc.dotDrawEntity;
+	delete m_desc.bigDotDrawEntity;
+	delete m_desc.cherryDrawEntity;
 
 	while (!myPathmapTiles.empty()) delete myPathmapTiles.back(), myPathmapTiles.pop_back();
 	while (!myDots.empty()) delete myDots.back(), myDots.pop_back();
