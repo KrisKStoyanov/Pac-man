@@ -3,17 +3,19 @@
 int main(int argc, char **argv)
 {
 	bool status = EXIT_FAILURE;
-	Core* core = new Core();
+
+	CORE_DESC core_desc = {};
+	Core* core = new Core(core_desc);
 
 	PACMAN_DESC pacman_desc = {};
-	Pacman* pacman = Pacman::Create();
+	Pacman* pacman = new Pacman(pacman_desc);
 	if (pacman->Init(*core, pacman_desc))
 	{
 		status = pacman->Run(*core);
 	}
 
-	delete core;
 	delete pacman;
+	delete core;
 
 	return status;
 }

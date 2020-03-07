@@ -1,32 +1,30 @@
 #pragma once
-#include "SDL.h"
-#include "SDL_image.h"
-#include "SDL_ttf.h"
-#include "GameEntity.h"
+#include "Window.h"
+#include "Renderer.h"
+
+struct CORE_DESC
+{
+	WINDOW_DESC window_desc;
+	RENDERER_DESC renderer_desc;
+};
 
 class Core
 {
 public:
-	Core();
-	~Core();
+	Core(const CORE_DESC& core_desc);
 	bool Init();
-	void OnStartFrameRender();
-	void OnEndFrameRender();
-	void Update(const Uint8*& keystate);
-
-	void DrawObject(DrawEntity& drawEntity, int posX = 0, int posY = 0);
 	void Shutdown();
 
-	inline SDL_Window* GetWindow() 
+	inline Window* GetWindow() 
 	{
 		return m_pWindow;
 	};
-	inline SDL_Renderer* GetRenderer()
+	inline Renderer* GetRenderer()
 	{
 		return m_pRenderer;
 	}
 private:
-	SDL_Window* m_pWindow;
-	SDL_Renderer* m_pRenderer;
+	Window* m_pWindow;
+	Renderer* m_pRenderer;
 };
 

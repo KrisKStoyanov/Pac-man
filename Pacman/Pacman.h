@@ -36,7 +36,7 @@ struct PACMAN_DESC
 class Pacman
 {
 public:
-	static Pacman* Create();
+	Pacman(PACMAN_DESC pacman_desc);
 	~Pacman(void);
 
 	bool Init(Core& core, const PACMAN_DESC& pacman_desc);
@@ -47,8 +47,6 @@ public:
 	void Shutdown();
 
 private:
-	Pacman();
-
 	//Simulation Logic:
 	void UpdateAvatar(float deltaTime);
 	void UpdateGhost(Ghost& ghost, float deltaTime);

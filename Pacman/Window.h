@@ -1,5 +1,7 @@
 #pragma once
 #include "SDL.h"
+#include "SDL_image.h"
+#include "SDL_ttf.h"
 
 struct WINDOW_DESC
 {
@@ -14,7 +16,12 @@ class Window
 public:
 	Window(WINDOW_DESC window_desc);
 	~Window();
+
+	bool Init();
+
+	inline SDL_Window* GetWindow() { return m_pWindow; }
 private:
 	SDL_Window* m_pWindow;
+	WINDOW_DESC m_desc;
 };
 

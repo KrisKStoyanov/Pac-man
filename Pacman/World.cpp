@@ -10,9 +10,9 @@ World::~World(void)
 
 void World::Init(Core& core, WORLD_DESC& world_desc)
 {
-	m_pPlayfield = new DrawEntity(core.GetRenderer(), world_desc.playfieldImage, 0, 0);
-	m_pDot = new DrawEntity(core.GetRenderer(), world_desc.dotImage, 0, 0);
-	m_pBigDot = new DrawEntity(core.GetRenderer(), world_desc.bigDotImage, 0, 0);
+	m_pPlayfield = new DrawEntity(core.GetRenderer()->GetRenderer(), world_desc.playfieldImage, 0, 0);
+	m_pDot = new DrawEntity(core.GetRenderer()->GetRenderer(), world_desc.dotImage, 0, 0);
+	m_pBigDot = new DrawEntity(core.GetRenderer()->GetRenderer(), world_desc.bigDotImage, 0, 0);
 
 	InitPathmap();
 }
@@ -54,16 +54,16 @@ bool World::InitPathmap()
 
 void World::Draw(Core& core)
 {
-	core.DrawObject(*m_pPlayfield);
+	core.GetRenderer()->DrawObject(*m_pPlayfield);
 
 	for (unsigned int i = 0; i < myDots.size(); ++i) 
 	{
-		core.DrawObject(*m_pDot, myDots[i]->GetDrawPos().myX, myDots[i]->GetDrawPos().myY);
+		core.GetRenderer()->DrawObject(*m_pDot, myDots[i]->GetDrawPos().myX, myDots[i]->GetDrawPos().myY);
 	}
 
 	for (unsigned int i = 0; i < myBigDots.size(); ++i)
 	{
-		core.DrawObject(*m_pBigDot, myBigDots[i]->GetDrawPos().myX, myBigDots[i]->GetDrawPos().myY);
+		core.GetRenderer()->DrawObject(*m_pBigDot, myBigDots[i]->GetDrawPos().myX, myBigDots[i]->GetDrawPos().myY);
 	}
 }
 
