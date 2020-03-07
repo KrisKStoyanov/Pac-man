@@ -233,8 +233,7 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 		}
 	}
 
-	int tileSize = 22;
-	Vector2f destination = ghost.GetNextTile() * tileSize;
+	Vector2f destination = ghost.GetNextTile() * m_tileSize;
 	Vector2f direction = destination - ghost.GetPosition();
 
 	float distanceToMove = deltaTime * ghost.GetMovementSpeed();
@@ -246,7 +245,7 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 	}
 	else
 	{
-		direction.Normalize();
+		ghost.SetDirection(direction.Normalize());
 		ghost.SetPosition(ghost.GetPosition() + direction * distanceToMove);
 	}
 
@@ -275,54 +274,51 @@ void Pacman::UpdateFPS(float deltaTime)
 	m_updateUI = true;
 }
 
-void Pacman::DrawAvatar(Core& core)
+void Pacman::DrawAvatar(Core& core, Vector2f& direction, const bool& open)
 {
-	if (myAvatar->GetDirection().myX > 0.0f)
+	if (direction == Vector2f(1, 0))
 	{
-		if (m_avatarOpen)
+		if (open)
+		{
+			core.DrawObject(*m_pAvatarOpenRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}
+		else
 		{
 			core.DrawObject(*m_pAvatarClosedRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
-		else 
-		{
-			core.DrawObject(*m_pAvatarOpenRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
-		}	
 	}
-	else if (myAvatar->GetDirection().myX < 0.0f)
+	else if (direction == Vector2f(-1, 0))
 	{
-		if (m_avatarOpen)
-		{
-			core.DrawObject(*m_pAvatarClosedLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
-		}
-		else
+		if (open)
 		{
 			core.DrawObject(*m_pAvatarOpenLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
-		
-	}
-	else if (myAvatar->GetDirection().myY > 0.0f)
-	{
-		if (m_avatarOpen)
-		{
-			core.DrawObject(*m_pAvatarClosedDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);	
-		}
 		else
+		{
+			core.DrawObject(*m_pAvatarClosedLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}
+	}
+	else if (direction == Vector2f(0, 1))
+	{
+		if (open)
 		{
 			core.DrawObject(*m_pAvatarOpenDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
-		
-	}
-	else if (myAvatar->GetDirection().myY < 0.0f)
-	{
-		if (m_avatarOpen)
-		{
-			core.DrawObject(*m_pAvatarClosedUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
-		}
 		else
+		{
+			core.DrawObject(*m_pAvatarClosedDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);			
+		}
+	}
+	else if (direction == Vector2f(0, -1))
+	{
+		if (open)
 		{
 			core.DrawObject(*m_pAvatarOpenUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
-		
+		else
+		{
+			core.DrawObject(*m_pAvatarClosedUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}
 	}
 }
 
@@ -420,7 +416,7 @@ bool Pacman::AvatarGhostIntersection(Ghost& ghost, float dist)
 
 void Pacman::ResetGhost(Ghost& ghost)
 {
-	ghost.SetPosition(Vector2f(13 * m_tileSize, 13 * m_tileSize));
+	ghost.SetPosition(ghost.GetSpawnPos());
 	ghost.GetPath().clear();
 	ghost.SetDesiredMovement(Vector2f(0, -1));
 	ghost.SetCurrentTile(ghost.GetPosition() /= (float)m_tileSize);
@@ -429,7 +425,7 @@ void Pacman::ResetGhost(Ghost& ghost)
 
 void Pacman::ResetAvatar()
 {
-	myAvatar->SetPosition(Vector2f(13 * m_tileSize, 22 * m_tileSize));
+	myAvatar->SetPosition(myAvatar->GetSpawnPos());
 	myAvatar->SetCurrentTile(myAvatar->GetPosition() /= m_tileSize);
 	myAvatar->SetNextTile(myAvatar->GetCurrentTile());
 }
@@ -465,7 +461,7 @@ bool Pacman::Draw(Core& core)
 {
 	myWorld->Draw(core);
 
-	DrawAvatar(core);
+	DrawAvatar(core, myAvatar->GetDirection(), m_avatarOpen);
 
 	DrawGhost(core, *redGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pRedGhost);
 	DrawGhost(core, *tealGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pTealGhost);

@@ -131,8 +131,10 @@
     <ClCompile Include="MovableGameEntity.cpp" />
     <ClCompile Include="Pacman.cpp" />
     <ClCompile Include="PathmapTile.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="StaticGameEntity.cpp" />
     <ClCompile Include="Vector2f.cpp" />
+    <ClCompile Include="Window.cpp" />
     <ClCompile Include="World.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,8 +150,10 @@
     <ClInclude Include="MovableGameEntity.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="PathmapTile.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="StaticGameEntity.h" />
     <ClInclude Include="Vector2f.h" />
+    <ClInclude Include="Window.h" />
     <ClInclude Include="World.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

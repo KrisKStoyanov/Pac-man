@@ -66,7 +66,7 @@ private:
 	void UpdateFPS(float deltaTime);
 
 	//Graphics Logic:
-	void DrawAvatar(Core& core);
+	void DrawAvatar(Core& core, Vector2f& direction, const bool& open);
 	void DrawGhost(
 		Core& core, Ghost& ghost,
 		DrawEntity& deadGhost,

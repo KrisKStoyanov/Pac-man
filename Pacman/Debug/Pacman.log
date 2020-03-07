@@ -1,4 +1,8 @@
-﻿  Pacman.cpp
+﻿  Avatar.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Ghost.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Pacman.cpp
 C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(20,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(20,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
@@ -11,34 +15,30 @@ C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pac
 C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(25,60): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(25,51): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
 C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(177,49): warning C4244: 'argument': conversion from 'const int' to 'const float', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(237,47): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(284,93): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(284,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(288,91): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(288,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(295,92): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(295,64): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(299,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(299,62): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(307,92): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(307,64): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(311,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(311,62): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(319,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(319,62): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(323,88): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(323,60): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(337,72): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(337,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(341,78): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(341,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(345,75): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(345,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(423,49): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(423,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(432,53): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(432,36): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(433,54): warning C4244: 'argument': conversion from 'const int' to 'const float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(236,47): warning C4244: 'argument': conversion from 'const int' to 'const float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(283,91): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(283,63): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(287,93): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(287,65): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(294,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(294,62): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(298,92): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(298,64): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(305,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(305,62): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(309,92): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(309,64): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(316,88): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(316,60): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(320,90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(320,62): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(333,72): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(333,48): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(337,78): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(337,54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(341,75): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(341,51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Pacman.cpp(429,54): warning C4244: 'argument': conversion from 'const int' to 'const float', possible loss of data
   main.cpp
 C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
   Generating Code...

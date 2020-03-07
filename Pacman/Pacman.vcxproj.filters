@@ -73,6 +73,12 @@
     <ClCompile Include="Avatar.cpp">
       <Filter>Game\Game entities\Movable</Filter>
     </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -119,6 +125,12 @@
     </ClInclude>
     <ClInclude Include="Avatar.h">
       <Filter>Game\Game entities\Movable</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h">
+      <Filter>Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

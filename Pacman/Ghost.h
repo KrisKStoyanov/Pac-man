@@ -17,10 +17,13 @@ public:
 	inline void SetDesiredMovement(const Vector2f& movement) { m_desiredMovement = movement; }
 	inline void SetPath(const std::vector<PathmapTile*>& path) { myPath = path; }
 	inline std::vector<PathmapTile*> GetPath() { return myPath; }
+	inline Vector2f GetSpawnPos() { return m_spawnPos; }
 private:
 	bool myIsDeadFlag;
 	Vector2f m_desiredMovement;
 	std::vector<PathmapTile*> myPath;
+
+	Vector2f m_spawnPos;
 };
 
 #endif // GHOST_H
