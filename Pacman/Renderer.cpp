@@ -55,10 +55,15 @@ void Renderer::OnEndFrameRender()
 
 DrawEntity* Renderer::CreateDrawEntity(const char* imageFilepath)
 {
-	return new DrawEntity(m_pRenderer, imageFilepath, 0, 0);
+	return new DrawEntity(m_pRenderer, imageFilepath);
 }
 
 DrawTextEntity* Renderer::CreateDrawTextEntity(const char* text, const char* fontFilepath, int posX, int posY)
 {
 	return new DrawTextEntity(m_pRenderer, text, fontFilepath, posX, posY);
+}
+
+void Renderer::SetDrawEntityText(DrawTextEntity& drawEntity, const char* aText, const char* aFontFile)
+{
+	drawEntity.SetText(m_pRenderer, aText, aFontFile);
 }

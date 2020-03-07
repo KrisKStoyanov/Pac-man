@@ -55,18 +55,18 @@ bool World::InitPathmap()
 	return true;
 }
 
-void World::Draw(Core& core)
+void World::Draw(Renderer& renderer)
 {
-	core.GetRenderer()->DrawObject(*m_desc.playfieldDrawEntity);
+	renderer.DrawObject(*m_desc.playfieldDrawEntity);
 
 	for (unsigned int i = 0; i < myDots.size(); ++i) 
 	{
-		core.GetRenderer()->DrawObject(*m_desc.dotDrawEntity, myDots[i]->GetDrawPos().myX, myDots[i]->GetDrawPos().myY);
+		renderer.DrawObject(*m_desc.dotDrawEntity, myDots[i]->GetDrawPos().myX, myDots[i]->GetDrawPos().myY);
 	}
 
 	for (unsigned int i = 0; i < myBigDots.size(); ++i)
 	{
-		core.GetRenderer()->DrawObject(*m_desc.bigDotDrawEntity, myBigDots[i]->GetDrawPos().myX, myBigDots[i]->GetDrawPos().myY);
+		renderer.DrawObject(*m_desc.bigDotDrawEntity, myBigDots[i]->GetDrawPos().myX, myBigDots[i]->GetDrawPos().myY);
 	}
 }
 
@@ -79,7 +79,6 @@ bool World::TileIsValid(Vector2f tilePos)
 			return true;
 		}
 	}
-
 	return false;
 }
 

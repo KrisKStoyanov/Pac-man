@@ -1,30 +1,32 @@
 #include "DrawEntity.h"
 
-DrawEntity::DrawEntity(SDL_Renderer* renderer, const char* anImage, int posX, int posY) :
-	mySurface(nullptr),
+DrawEntity::DrawEntity(SDL_Renderer* renderer, const char* anImage) :
 	myTexture(nullptr),
 	myPosRect(), mySizeRect()
 {
-	mySurface = IMG_Load(anImage);
-
-	if (!mySurface)
+	SDL_Surface* surface = IMG_Load(anImage);
+	
+	if (!surface)
+	{
 		return;
+	}
 
-	myTexture = SDL_CreateTextureFromSurface(renderer, mySurface);
+	myTexture = SDL_CreateTextureFromSurface(renderer, surface);
 
 	mySizeRect.x = 0;
 	mySizeRect.y = 0;
-	mySizeRect.w = mySurface->w;
-	mySizeRect.h = mySurface->h;
+	mySizeRect.w = surface->w;
+	mySizeRect.h = surface->h;
 
-	myPosRect.x = posX;
-	myPosRect.y = posY;
+	myPosRect.x = 0;
+	myPosRect.y = 0;
 	myPosRect.w = mySizeRect.w;
 	myPosRect.h = mySizeRect.h;
+
+	SDL_FreeSurface(surface);
 }
 
 DrawEntity::DrawEntity() :
-	mySurface(nullptr),
 	myTexture(nullptr),
 	myPosRect(), mySizeRect()
 {
@@ -33,7 +35,6 @@ DrawEntity::DrawEntity() :
 DrawEntity::~DrawEntity()
 {
 	SDL_DestroyTexture(myTexture);
-	SDL_FreeSurface(mySurface);
 }
 
 void DrawEntity::SetPosition(int posX, int posY)
@@ -44,13 +45,9 @@ void DrawEntity::SetPosition(int posX, int posY)
 
 void DrawEntity::SetImage(SDL_Renderer* renderer, const char* anImage)
 {
-	if (mySurface) 
-	{
-		SDL_FreeSurface(mySurface);
-	}
-	mySurface = IMG_Load(anImage);
+	SDL_Surface* surface = IMG_Load(anImage);
 
-	if (!mySurface)
+	if (!surface)
 	{
 		return;
 	}
@@ -59,12 +56,8 @@ void DrawEntity::SetImage(SDL_Renderer* renderer, const char* anImage)
 	{
 		SDL_DestroyTexture(myTexture);
 	}
-	myTexture = SDL_CreateTextureFromSurface(renderer, mySurface);
-}
-
-SDL_Surface* DrawEntity::GetSurface()
-{
-	return mySurface;
+	myTexture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
 }
 
 SDL_Texture* DrawEntity::GetTexture()

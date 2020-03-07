@@ -24,9 +24,9 @@ public:
 	DrawEntity* CreateDrawEntity(const char* imageFilepath);
 	DrawTextEntity* CreateDrawTextEntity(const char* text, const char* fontFilepath, int posX, int posY);
 
-	void DrawObject(DrawEntity& drawEntity, int posX = 0, int posY = 0);
+	void SetDrawEntityText(DrawTextEntity& drawEntity, const char* aText, const char* aFontFile);
 
-	inline SDL_Renderer* GetRenderer() { return m_pRenderer; }
+	void DrawObject(DrawEntity& drawEntity, int posX = 0, int posY = 0);
 private:
 	SDL_Renderer* m_pRenderer;
 	RENDERER_DESC m_desc;

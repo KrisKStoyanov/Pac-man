@@ -31,7 +31,7 @@ public:
 
 	void Init(const WORLD_DESC& world_desc);
 
-	void Draw(Core& core);
+	void Draw(Renderer& renderer);
 	bool TileIsValid(Vector2f tilePos);
 
 	bool HasIntersectedDot(const Vector2f& aPosition, bool& win);

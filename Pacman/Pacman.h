@@ -7,6 +7,12 @@
 
 struct PACMAN_DESC
 {
+	//Simulation data
+	float lives = 3;
+	float ghostCounterDuration = 20.0f;
+	float avatarToggleDrawCooldown = 0.075f;
+
+	//Graphics data
 	const char* avatarOpenLeftImage = "open_left_32.png";
 	const char* avatarOpenRightImage = "open_right_32.png";
 	const char* avatarOpenUpImage = "open_up_32.png";
@@ -63,14 +69,14 @@ private:
 	void UpdateFPS(float deltaTime);
 
 	//Graphics Logic:
-	bool OnDraw(Core& core);
-	void DrawAvatar(Core& core, Vector2f& direction, const bool& open);
+	bool OnDraw(Renderer& renderer);
+	void DrawAvatar(Renderer& renderer, Vector2f& direction, const bool& open);
 	void DrawGhost(
-		Core& core, Ghost& ghost,
+		Renderer& core, Ghost& ghost,
 		DrawEntity& deadGhost,
 		DrawEntity& vulnerableGhost,
 		DrawEntity& defaultGhost);
-	void RedrawUI(Core& core);
+	void RedrawUI(Renderer& core);
 
 	//Local data
 	float m_ghostGhostCounter;

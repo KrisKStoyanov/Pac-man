@@ -2,14 +2,17 @@
 
 Pacman::Pacman(PACMAN_DESC pacman_desc) :
 	myNextMovement(-1.f, 0.f),
-	m_score(0), m_fps(0), m_lives(3),
-	m_ghostGhostCounter(0.f),
-	m_drawOffsetX(220.0f), m_drawOffsetY(60.0f),
-	m_tileSize(22), m_win(false),
-	m_ghostCounterDefault(20.0f), m_ghostCounterDuration(20.0f), 
+	m_score(0), m_win(false), m_fps(0),
+	m_tileSize(22), m_drawOffsetX(220.0f), m_drawOffsetY(60.0f),
+	m_lives(pacman_desc.lives),
+	m_ghostGhostCounter(0.0f),
+	m_ghostCounterDefault(pacman_desc.ghostCounterDuration), 
+	m_ghostCounterDuration(pacman_desc.ghostCounterDuration),
 	m_ghostCounterFlag(false), m_ghostCounterReducer(1.0f),
-	m_avatarOpen(true), m_toggleAvatarDrawDefault(0.1f), 
-	m_toggleAvatarDrawCooldown(0.1f), m_toggleAvatarDrawReducer(1.0f)
+	m_avatarOpen(true), 
+	m_toggleAvatarDrawDefault(pacman_desc.avatarToggleDrawCooldown), 
+	m_toggleAvatarDrawCooldown(pacman_desc.avatarToggleDrawCooldown), 
+	m_toggleAvatarDrawReducer(1.0f)
 {
 	myAvatar = new Avatar(Vector2f(13 * m_tileSize, 22 * m_tileSize), 120.0f);
 
@@ -105,7 +108,7 @@ int Pacman::Run(Core& core)
 			OnUpdate(elapsedTime);
 		}
 		core.GetRenderer()->OnStartFrameRender();
-		OnDraw(core);
+		OnDraw(*core.GetRenderer());
 		core.GetRenderer()->OnEndFrameRender();
 	
 		lastFrame = currentFrame;
@@ -264,105 +267,105 @@ void Pacman::UpdateFPS(float deltaTime)
 	m_updateUI = true;
 }
 
-void Pacman::DrawAvatar(Core& core, Vector2f& direction, const bool& open)
+void Pacman::DrawAvatar(Renderer& renderer, Vector2f& direction, const bool& open)
 {
 	if (direction == Vector2f(1, 0))
 	{
 		if (open)
 		{
-			core.GetRenderer()->DrawObject(*m_pAvatarOpenRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+			renderer.DrawObject(*m_pAvatarOpenRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
 		else
 		{
-			core.GetRenderer()->DrawObject(*m_pAvatarClosedRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+			renderer.DrawObject(*m_pAvatarClosedRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
 	}
 	else if (direction == Vector2f(-1, 0))
 	{
 		if (open)
 		{
-			core.GetRenderer()->DrawObject(*m_pAvatarOpenLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+			renderer.DrawObject(*m_pAvatarOpenLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
 		else
 		{
-			core.GetRenderer()->DrawObject(*m_pAvatarClosedLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+			renderer.DrawObject(*m_pAvatarClosedLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
 	}
 	else if (direction == Vector2f(0, 1))
 	{
 		if (open)
 		{
-			core.GetRenderer()->DrawObject(*m_pAvatarOpenDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+			renderer.DrawObject(*m_pAvatarOpenDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
 		else
 		{
-			core.GetRenderer()->DrawObject(*m_pAvatarClosedDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+			renderer.DrawObject(*m_pAvatarClosedDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
 	}
 	else if (direction == Vector2f(0, -1))
 	{
 		if (open)
 		{
-			core.GetRenderer()->DrawObject(*m_pAvatarOpenUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+			renderer.DrawObject(*m_pAvatarOpenUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
 		else
 		{
-			core.GetRenderer()->DrawObject(*m_pAvatarClosedUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+			renderer.DrawObject(*m_pAvatarClosedUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
 		}
 	}
 }
 
 void Pacman::DrawGhost(
-	Core& core, Ghost& ghost, 
+	Renderer& renderer, Ghost& ghost, 
 	DrawEntity& deadGhost, 
 	DrawEntity& vulnerableGhost, 
 	DrawEntity& defaultGhost)
 {
 	if (ghost.GetDeadFlag())
 	{
-		core.GetRenderer()->DrawObject(deadGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
+		renderer.DrawObject(deadGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
 	}
 	else if (m_ghostCounterFlag)
 	{
-		core.GetRenderer()->DrawObject(vulnerableGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
+		renderer.DrawObject(vulnerableGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
 	}
 	else
 	{
-		core.GetRenderer()->DrawObject(defaultGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
+		renderer.DrawObject(defaultGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
 	}
 }
 
-void Pacman::RedrawUI(Core& core)
+void Pacman::RedrawUI(Renderer& renderer)
 {
 	std::string drawTextString;
-	std::stringstream drawTextStream;
+	std::stringstream scoreStream;
 	if (m_win)
 	{
-		drawTextStream << "You win!   ";
+		scoreStream << "You win!   ";
 	}
 	else if (m_lives < 1)
 	{
-		drawTextStream << "You lose!   ";
+		scoreStream << "You lose!   ";
 	}
 	else
 	{
-		drawTextStream << "Score: " << m_score << "   ";
+		scoreStream << "Score: " << m_score << "   ";
 	}
-	drawTextString = drawTextStream.str();
-	m_pScoreText->SetText(core.GetRenderer()->GetRenderer(), drawTextString.c_str(), m_desc.uiFont);
-	drawTextStream.flush();
+	drawTextString = scoreStream.str();
+	renderer.SetDrawEntityText(*m_pScoreText, drawTextString.c_str(), m_desc.uiFont);
+	scoreStream.flush();
 
-	std::stringstream drawTextStream1;
-	drawTextStream1 << "Lives: " << m_lives;
-	drawTextString = drawTextStream1.str();
-	m_pLivesText->SetText(core.GetRenderer()->GetRenderer(), drawTextString.c_str(), m_desc.uiFont);
-	drawTextStream1.flush();
+	std::stringstream liveStream;
+	liveStream << "Lives: " << m_lives;
+	drawTextString = liveStream.str();
+	renderer.SetDrawEntityText(*m_pLivesText, drawTextString.c_str(), m_desc.uiFont);
+	liveStream.flush();
 
-	std::stringstream drawTextStream2;
-	drawTextStream2 << "FPS: " << m_fps << "   ";
-	drawTextString = drawTextStream2.str();
-	m_pFpsText->SetText(core.GetRenderer()->GetRenderer(), drawTextString.c_str(), m_desc.uiFont);
-	drawTextStream2.flush();
+	std::stringstream fpsStream;
+	fpsStream << "FPS: " << m_fps << "   ";
+	drawTextString = fpsStream.str();
+	renderer.SetDrawEntityText(*m_pFpsText, drawTextString.c_str(), m_desc.uiFont);
+	fpsStream.flush();
 
 	m_updateUI = false;
 }
@@ -447,25 +450,25 @@ void Pacman::PickupCherry()
 {
 }
 
-bool Pacman::OnDraw(Core& core)
+bool Pacman::OnDraw(Renderer& renderer)
 {
-	myWorld->Draw(core);
+	myWorld->Draw(renderer);
 
-	DrawAvatar(core, myAvatar->GetDirection(), m_avatarOpen);
+	DrawAvatar(renderer, myAvatar->GetDirection(), m_avatarOpen);
 
-	DrawGhost(core, *redGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pRedGhost);
-	DrawGhost(core, *tealGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pTealGhost);
-	DrawGhost(core, *pinkGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pPinkGhost);
-	DrawGhost(core, *orangeGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pOrangeGhost);
+	DrawGhost(renderer, *redGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pRedGhost);
+	DrawGhost(renderer, *tealGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pTealGhost);
+	DrawGhost(renderer, *pinkGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pPinkGhost);
+	DrawGhost(renderer, *orangeGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pOrangeGhost);
 	
 	if (m_updateUI)
 	{
-		RedrawUI(core);
+		RedrawUI(renderer);
 	}
 
-	core.GetRenderer()->DrawObject(*m_pScoreText);
-	core.GetRenderer()->DrawObject(*m_pLivesText);
-	core.GetRenderer()->DrawObject(*m_pFpsText);
+	renderer.DrawObject(*m_pScoreText);
+	renderer.DrawObject(*m_pLivesText);
+	renderer.DrawObject(*m_pFpsText);
 
 	return true;
 }

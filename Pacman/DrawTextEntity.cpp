@@ -5,19 +5,26 @@ DrawTextEntity::DrawTextEntity(SDL_Renderer* renderer, const char* aText, const 
 	myFont = TTF_OpenFont(aFontFile, 24);
 
 	myFontColor = { 255,0,0,255 };
-	mySurface = TTF_RenderText_Solid(myFont, aText, myFontColor);
+	SDL_Surface* surface = TTF_RenderText_Solid(myFont, aText, myFontColor);
 
-	myTexture = SDL_CreateTextureFromSurface(renderer, mySurface);
+	if (!surface)
+	{
+		return;
+	}
+
+	myTexture = SDL_CreateTextureFromSurface(renderer, surface);
 
 	mySizeRect.x = 0;
 	mySizeRect.y = 0;
-	mySizeRect.w = mySurface->w;
-	mySizeRect.h = mySurface->h;
+	mySizeRect.w = surface->w;
+	mySizeRect.h = surface->h;
 
 	myPosRect.x = posX;
 	myPosRect.y = posY;
 	myPosRect.w = mySizeRect.w;
 	myPosRect.h = mySizeRect.h;
+
+	SDL_FreeSurface(surface);
 }
 
 DrawTextEntity::~DrawTextEntity()
@@ -27,13 +34,9 @@ DrawTextEntity::~DrawTextEntity()
 
 void DrawTextEntity::SetText(SDL_Renderer* renderer, const char* aText, const char* aFontFile)
 {
-	if (mySurface)
-	{
-		SDL_FreeSurface(mySurface);
-	}
-	mySurface = TTF_RenderText_Solid(myFont, aText, myFontColor);
+	SDL_Surface* surface = TTF_RenderText_Solid(myFont, aText, myFontColor);
 	
-	if (!mySurface)
+	if (!surface)
 	{
 		return;
 	}
@@ -42,7 +45,8 @@ void DrawTextEntity::SetText(SDL_Renderer* renderer, const char* aText, const ch
 	{
 		SDL_DestroyTexture(myTexture);
 	}
-	myTexture = SDL_CreateTextureFromSurface(renderer, mySurface);
+	myTexture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
 }
 
 SDL_Color DrawTextEntity::GetSDLColor()
