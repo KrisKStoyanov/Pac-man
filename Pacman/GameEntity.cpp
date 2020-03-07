@@ -1,9 +1,9 @@
 #include "GameEntity.h"
 
-GameEntity::GameEntity(const Vector2f& aPosition)
-:myPosition(aPosition)
-,myIdMarkedForDeleteFlag(false),
-m_drawOffsetX(220.0f), m_drawOffsetY(60.0f)
+GameEntity::GameEntity(const Vector2f& aPosition) : 
+	myPosition(aPosition), 
+	myIdMarkedForDeleteFlag(false),
+	m_drawOffsetX(220.0f), m_drawOffsetY(60.0f)
 {
 	m_drawPos = Vector2f(
 		aPosition.myX + m_drawOffsetX, 
@@ -12,9 +12,4 @@ m_drawOffsetX(220.0f), m_drawOffsetY(60.0f)
 
 GameEntity::~GameEntity(void)
 {
-}
-
-bool GameEntity::Intersect(GameEntity* aGameEntity)
-{
-	return false;	
 }

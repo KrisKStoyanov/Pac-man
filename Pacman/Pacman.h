@@ -59,7 +59,6 @@ private:
 	void PickupBigDot();
 	void SetGhostCounter(float value);
 	void ReduceGhostCounterDuration(float amount);
-	bool AvatarGhostIntersection(Ghost& ghost, float dist);
 	void IntersectGhost(Ghost& ghost);
 	void ResetGhost(Ghost& ghost);
 	void ResetAvatar();
@@ -85,6 +84,8 @@ private:
 	float m_ghostCounterDefault;
 	float m_ghostCounterDuration;
 	float m_ghostCounterReducer;
+
+	float m_ghostIntersectionDist;
 
 	int m_lives;
 	int m_score;

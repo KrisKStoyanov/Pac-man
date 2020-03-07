@@ -1,6 +1,7 @@
 #pragma once
 #include "Window.h"
 #include "Renderer.h"
+#include "macros.h"
 
 struct CORE_DESC
 {

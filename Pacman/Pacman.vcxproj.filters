@@ -132,5 +132,6 @@
     <ClInclude Include="Window.h">
       <Filter>Core</Filter>
     </ClInclude>
+    <ClInclude Include="macros.h" />
   </ItemGroup>
 </Project>

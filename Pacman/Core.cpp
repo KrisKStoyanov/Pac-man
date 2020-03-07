@@ -36,6 +36,6 @@ void Core::Shutdown()
 	TTF_Quit();
 	IMG_Quit();
 	SDL_Quit();
-	delete m_pRenderer;
-	delete m_pWindow;
+	SAFE_DELETE(m_pRenderer);
+	SAFE_DELETE(m_pWindow);
 }

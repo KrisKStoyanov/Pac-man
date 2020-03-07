@@ -14,8 +14,8 @@ int main(int argc, char **argv)
 		status = pacman->Run(*core);
 	}
 
-	delete pacman;
-	delete core;
+	SAFE_DELETE(pacman);
+	SAFE_DELETE(core);
 
 	return status;
 }

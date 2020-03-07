@@ -8,7 +8,7 @@
 class Ghost : public MovableGameEntity
 {
 public:
-	Ghost(const Vector2f& aPosition, float movementSpeed);
+	Ghost(const Vector2f& aPosition, float movementSpeed, int tileSize);
 	~Ghost(void);
 	inline bool GetDeadFlag() { return myIsDeadFlag; }
 	inline void SetDeadFlag(bool flag) { myIsDeadFlag = flag; }

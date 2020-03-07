@@ -1,6 +1,6 @@
 #include "World.h"
 
-World::World(void)
+World::World(void) : m_dotIntersectionDist(5.0f)
 {
 }
 
@@ -10,11 +10,6 @@ World::~World(void)
 
 void World::Init(const WORLD_DESC& world_desc)
 {
-	//fix these pointers (copy constructor/move assignment)
-	//m_pPlayfield = world_desc.playfieldDrawEntity; 
-	//m_pDot = world_desc.dotDrawEntity;
-	//m_pBigDot = world_desc.bigDotDrawEntity;
-
 	m_desc = world_desc;
 
 	InitPathmap();
@@ -82,11 +77,11 @@ bool World::TileIsValid(Vector2f tilePos)
 	return false;
 }
 
-bool World::HasIntersectedDot(const Vector2f& aPosition, bool& win)
+bool World::HasIntersectedDot(GameEntity& gameEntity, bool& win)
 {
 	for (unsigned int i = 0; i < myDots.size(); ++i)
 	{
-		if ((myDots[i]->GetPosition() - aPosition).Length() < 5.0f)
+		if (gameEntity.Intersect(*myDots[i], m_dotIntersectionDist))
 		{
 			myDots.erase(myDots.begin() + i);
 			if (myDots.size() == 0 && myBigDots.size() == 0)
@@ -96,15 +91,14 @@ bool World::HasIntersectedDot(const Vector2f& aPosition, bool& win)
 			return true;
 		}
 	}
-
 	return false;
 }
 
-bool World::HasIntersectedBigDot(const Vector2f& aPosition, bool& win)
+bool World::HasIntersectedBigDot(GameEntity& gameEntity, bool& win)
 {
 	for (unsigned int i = 0; i < myBigDots.size(); ++i)
 	{
-		if ((myBigDots[i]->GetPosition() - aPosition).Length() < 5.0f)
+		if (gameEntity.Intersect(*myBigDots[i],m_dotIntersectionDist))
 		{
 			myBigDots.erase(myBigDots.begin() + i);
 			if (myDots.size() == 0 && myBigDots.size() == 0)
@@ -114,26 +108,25 @@ bool World::HasIntersectedBigDot(const Vector2f& aPosition, bool& win)
 			return true;
 		}
 	}
-
 	return false;
 }
 
-bool World::HasIntersectedCherry(const Vector2f& aPosition)
+bool World::HasIntersectedCherry(GameEntity& gameEntity)
 {
 	return true;
 }
 
 void World::Shutdown()
 {
-	delete m_desc.playfieldDrawEntity;
-	delete m_desc.dotDrawEntity;
-	delete m_desc.bigDotDrawEntity;
-	delete m_desc.cherryDrawEntity;
+	SAFE_DELETE(m_desc.playfieldDrawEntity);
+	SAFE_DELETE(m_desc.dotDrawEntity);
+	SAFE_DELETE(m_desc.bigDotDrawEntity);
+	SAFE_DELETE(m_desc.cherryDrawEntity);
 
-	while (!myPathmapTiles.empty()) delete myPathmapTiles.back(), myPathmapTiles.pop_back();
-	while (!myDots.empty()) delete myDots.back(), myDots.pop_back();
-	while (!myBigDots.empty()) delete myBigDots.back(), myBigDots.pop_back();
-	while (!myCherry.empty()) delete myCherry.back(), myCherry.pop_back();
+	SAFE_DELETE_VECTOR(myPathmapTiles);
+	SAFE_DELETE_VECTOR(myDots);
+	SAFE_DELETE_VECTOR(myBigDots);
+	SAFE_DELETE_VECTOR(myCherry);
 }
 
 std::vector<PathmapTile*> World::GetPath(Vector2f fromPos, Vector2f toPos)
@@ -162,7 +155,6 @@ PathmapTile* World::GetTile(Vector2f tilePos)
 			return myPathmapTiles[i];
 		}
 	}
-
 	return NULL;
 }
 

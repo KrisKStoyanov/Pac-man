@@ -147,6 +147,7 @@
     <ClInclude Include="DrawTextEntity.h" />
     <ClInclude Include="GameEntity.h" />
     <ClInclude Include="Ghost.h" />
+    <ClInclude Include="macros.h" />
     <ClInclude Include="MovableGameEntity.h" />
     <ClInclude Include="Pacman.h" />
     <ClInclude Include="PathmapTile.h" />

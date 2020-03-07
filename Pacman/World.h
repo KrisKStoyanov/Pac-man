@@ -34,9 +34,9 @@ public:
 	void Draw(Renderer& renderer);
 	bool TileIsValid(Vector2f tilePos);
 
-	bool HasIntersectedDot(const Vector2f& aPosition, bool& win);
-	bool HasIntersectedBigDot(const Vector2f& aPosition, bool& win);
-	bool HasIntersectedCherry(const Vector2f& aPosition);
+	bool HasIntersectedDot(GameEntity& gameEntity, bool& win);
+	bool HasIntersectedBigDot(GameEntity& gameEntity, bool& win);
+	bool HasIntersectedCherry(GameEntity& gameEntity);
 
 	void Shutdown();
 
@@ -54,6 +54,8 @@ private:
 	std::vector<Dot*> myDots;
 	std::vector<BigDot*> myBigDots;
 	std::vector<Cherry*> myCherry;
+
+	float m_dotIntersectionDist;
 
 	WORLD_DESC m_desc;
 };

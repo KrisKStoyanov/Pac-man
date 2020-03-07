@@ -1,11 +1,12 @@
 #include "Pacman.h"
 
 Pacman::Pacman(PACMAN_DESC pacman_desc) :
+	m_desc(pacman_desc),
 	myNextMovement(-1.f, 0.f),
 	m_score(0), m_win(false), m_fps(0),
 	m_tileSize(22), m_drawOffsetX(220.0f), m_drawOffsetY(60.0f),
 	m_lives(pacman_desc.lives),
-	m_ghostGhostCounter(0.0f),
+	m_ghostGhostCounter(0.0f), m_ghostIntersectionDist(10.0f),
 	m_ghostCounterDefault(pacman_desc.ghostCounterDuration), 
 	m_ghostCounterDuration(pacman_desc.ghostCounterDuration),
 	m_ghostCounterFlag(false), m_ghostCounterReducer(1.0f),
@@ -14,12 +15,12 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 	m_toggleAvatarDrawCooldown(pacman_desc.avatarToggleDrawCooldown), 
 	m_toggleAvatarDrawReducer(1.0f)
 {
-	myAvatar = new Avatar(Vector2f(13 * m_tileSize, 22 * m_tileSize), 120.0f);
+	myAvatar = new Avatar(Vector2f(13 * m_tileSize, 22 * m_tileSize), 120.0f, m_tileSize);
 
-	redGhost = new Ghost(Vector2f(13 * m_tileSize, 13 * m_tileSize), 60.0f);
-	tealGhost = new Ghost(Vector2f(13 * m_tileSize - 26, 13 * m_tileSize), 60.0f);
-	pinkGhost = new Ghost(Vector2f(13 * m_tileSize - 52, 13 * m_tileSize), 60.0f);
-	orangeGhost = new Ghost(Vector2f(13 * m_tileSize + 26, 13 * m_tileSize), 60.0f);
+	redGhost = new Ghost(Vector2f(13 * m_tileSize, 13 * m_tileSize), 60.0f, m_tileSize);
+	tealGhost = new Ghost(Vector2f(13 * m_tileSize - 26, 13 * m_tileSize), 60.0f, m_tileSize);
+	pinkGhost = new Ghost(Vector2f(13 * m_tileSize - 52, 13 * m_tileSize), 60.0f, m_tileSize);
+	orangeGhost = new Ghost(Vector2f(13 * m_tileSize + 26, 13 * m_tileSize), 60.0f, m_tileSize);
 
 	myWorld = new World();
 }
@@ -128,22 +129,42 @@ void Pacman::OnUpdate(float aTime)
 	UpdateGhost(*pinkGhost, aTime);
 	UpdateGhost(*orangeGhost, aTime);
 
-	if (myWorld->HasIntersectedDot(myAvatar->GetPosition(), m_win))
+	if (myWorld->HasIntersectedDot(*myAvatar, m_win))
+	{
 		PickupDot();
-
-	if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition(), m_win))
-		PickupBigDot();
-
-	if (m_ghostCounterFlag)
-		ReduceGhostCounterDuration(aTime * m_ghostCounterReducer);
-
-	AvatarGhostIntersection(*redGhost, 10.0f);
-	AvatarGhostIntersection(*tealGhost, 10.0f);
-	AvatarGhostIntersection(*pinkGhost, 10.0f);
-	AvatarGhostIntersection(*orangeGhost, 10.0f);
+	}
 	
+	if (myWorld->HasIntersectedBigDot(*myAvatar, m_win))
+	{
+		PickupBigDot();
+	}
+	
+	if (myAvatar->Intersect(*redGhost, m_ghostIntersectionDist))
+	{
+		IntersectGhost(*redGhost);
+	}
+	if (myAvatar->Intersect(*tealGhost, m_ghostIntersectionDist))
+	{
+		IntersectGhost(*tealGhost);
+	}
+	if (myAvatar->Intersect(*pinkGhost, m_ghostIntersectionDist))
+	{
+		IntersectGhost(*pinkGhost);
+	}
+	if (myAvatar->Intersect(*orangeGhost, m_ghostIntersectionDist))
+	{
+		IntersectGhost(*orangeGhost);
+	}
+	
+	if (m_ghostCounterFlag)
+	{
+		ReduceGhostCounterDuration(aTime * m_ghostCounterReducer);
+	}
+
 	if (aTime > 0)
+	{
 		UpdateFPS(aTime);
+	}
 }
 
 void Pacman::UpdateAvatar(float deltaTime)
@@ -195,7 +216,7 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 		if (!ghost.GetPath().empty())
 		{
 			PathmapTile* nextTile = ghost.GetPath().front();
-			delete ghost.GetPath().front();
+			SAFE_DELETE(ghost.GetPath().front());
 			ghost.GetPath().erase(ghost.GetPath().begin());
 			ghost.SetNextTile(nextTile->m_pos);
 		}
@@ -397,16 +418,6 @@ void Pacman::ReduceGhostCounterDuration(float amount)
 	}
 }
 
-bool Pacman::AvatarGhostIntersection(Ghost& ghost, float dist)
-{
-	if ((ghost.GetPosition() - myAvatar->GetPosition()).Length() < dist)
-	{
-		IntersectGhost(ghost);
-		return true;
-	}
-	return false;
-}
-
 void Pacman::ResetGhost(Ghost& ghost)
 {
 	ghost.SetPosition(ghost.GetSpawnPos());
@@ -475,32 +486,32 @@ bool Pacman::OnDraw(Renderer& renderer)
 
 void Pacman::Shutdown()
 {
-	delete m_pScoreText;
-	delete m_pLivesText;
-	delete m_pFpsText;
-
 	myWorld->Shutdown();
-	delete myAvatar;
-	delete redGhost;
-	delete tealGhost;
-	delete pinkGhost;
-	delete orangeGhost;
-	delete myWorld;
+	SAFE_DELETE(m_pScoreText);
+	SAFE_DELETE(m_pLivesText);
+	SAFE_DELETE(m_pFpsText);
 
-	delete m_pAvatarOpenLeft;
-	delete m_pAvatarOpenRight;
-	delete m_pAvatarOpenUp;
-	delete m_pAvatarOpenDown;
+	SAFE_DELETE(myWorld);
+	SAFE_DELETE(myAvatar);
+	SAFE_DELETE(redGhost);
+	SAFE_DELETE(tealGhost);
+	SAFE_DELETE(pinkGhost);
+	SAFE_DELETE(orangeGhost);
 
-	delete m_pAvatarClosedLeft;
-	delete m_pAvatarClosedRight;
-	delete m_pAvatarClosedUp;
-	delete m_pAvatarClosedDown;
+	SAFE_DELETE(m_pAvatarOpenLeft);
+	SAFE_DELETE(m_pAvatarOpenRight);
+	SAFE_DELETE(m_pAvatarOpenUp);
+	SAFE_DELETE(m_pAvatarOpenDown);
 
-	delete m_pRedGhost;
-	delete m_pTealGhost;
-	delete m_pPinkGhost;
-	delete m_pOrangeGhost;
-	delete m_pVulnerableGhost;
-	delete m_pDeadGhost;
+	SAFE_DELETE(m_pAvatarClosedLeft);
+	SAFE_DELETE(m_pAvatarClosedRight);
+	SAFE_DELETE(m_pAvatarClosedUp);
+	SAFE_DELETE(m_pAvatarClosedDown);
+	
+	SAFE_DELETE(m_pRedGhost);
+	SAFE_DELETE(m_pTealGhost);
+	SAFE_DELETE(m_pPinkGhost);
+	SAFE_DELETE(m_pOrangeGhost);
+	SAFE_DELETE(m_pVulnerableGhost);
+	SAFE_DELETE(m_pDeadGhost);
 }

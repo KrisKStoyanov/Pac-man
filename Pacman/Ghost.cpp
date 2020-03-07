@@ -1,7 +1,7 @@
 #include "Ghost.h"
 
-Ghost::Ghost(const Vector2f& aPosition, float movementSpeed) : 
-	MovableGameEntity(aPosition, movementSpeed), 
+Ghost::Ghost(const Vector2f& aPosition, float movementSpeed, int tileSize) : 
+	MovableGameEntity(aPosition, movementSpeed, tileSize), 
 	m_spawnPos(aPosition)
 {
 	myIsDeadFlag = false;
@@ -10,5 +10,5 @@ Ghost::Ghost(const Vector2f& aPosition, float movementSpeed) :
 
 Ghost::~Ghost(void)
 {
-	while (!myPath.empty()) delete myPath.back(), myPath.pop_back();
+	SAFE_DELETE_VECTOR(myPath);
 }

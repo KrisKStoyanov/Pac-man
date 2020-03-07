@@ -3,6 +3,7 @@
 
 #include "Vector2f.h"
 #include "DrawTextEntity.h"
+#include "macros.h"
 
 class Core;
 
@@ -18,7 +19,7 @@ public:
 	inline Vector2f GetDrawPos() { return m_drawPos; }
 	inline void SetDrawPos(const Vector2f& drawPos) { m_drawPos = drawPos; }
 
-	bool Intersect(GameEntity* aGameEntity);
+	inline bool Intersect(GameEntity& gameEntity, float dist) { return ((gameEntity.GetPosition() - this->GetPosition()).Length() < dist); }
 
 	inline void MarkForDelete() { myIdMarkedForDeleteFlag = true; }
 	inline bool IsMarkedForDelete() const { return myIdMarkedForDeleteFlag; }
