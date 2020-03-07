@@ -1,8 +1,7 @@
 #include "GameEntity.h"
 
-GameEntity::GameEntity(const Vector2f& aPosition, const char* anImage)
+GameEntity::GameEntity(const Vector2f& aPosition)
 :myPosition(aPosition)
-,myImage(anImage)
 ,myIdMarkedForDeleteFlag(false),
 m_drawOffsetX(220.0f), m_drawOffsetY(60.0f)
 {

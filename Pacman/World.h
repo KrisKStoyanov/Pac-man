@@ -40,7 +40,7 @@ public:
 
 	void Shutdown();
 
-	void GetPath(Vector2f fromTile, Vector2f toTile, std::vector<PathmapTile*>& aList);
+	std::vector<PathmapTile*> GetPath(Vector2f fromTile, Vector2f toTile);
 private:
 
 	PathmapTile* GetTile(Vector2f tilePos);

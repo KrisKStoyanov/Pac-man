@@ -45,9 +45,6 @@
     <ClCompile Include="StaticGameEntity.cpp">
       <Filter>Game\Game entities\Static</Filter>
     </ClCompile>
-    <ClCompile Include="Avatar.cpp">
-      <Filter>Game\Game entities\Movable</Filter>
-    </ClCompile>
     <ClCompile Include="Ghost.cpp">
       <Filter>Game\Game entities\Movable</Filter>
     </ClCompile>
@@ -73,6 +70,9 @@
     <ClCompile Include="DrawTextEntity.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Avatar.cpp">
+      <Filter>Game\Game entities\Movable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pacman.h">
@@ -92,9 +92,6 @@
     </ClInclude>
     <ClInclude Include="StaticGameEntity.h">
       <Filter>Game\Game entities\Static</Filter>
-    </ClInclude>
-    <ClInclude Include="Avatar.h">
-      <Filter>Game\Game entities\Movable</Filter>
     </ClInclude>
     <ClInclude Include="Ghost.h">
       <Filter>Game\Game entities\Movable</Filter>
@@ -119,6 +116,9 @@
     </ClInclude>
     <ClInclude Include="DrawTextEntity.h">
       <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Avatar.h">
+      <Filter>Game\Game entities\Movable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

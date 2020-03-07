@@ -133,7 +133,7 @@ void World::Shutdown()
 	while (!myCherry.empty()) delete myCherry.back(), myCherry.pop_back();
 }
 
-void World::GetPath(Vector2f fromPos, Vector2f toPos, std::vector<PathmapTile*>& aList)
+std::vector<PathmapTile*> World::GetPath(Vector2f fromPos, Vector2f toPos)
 {
 	PathmapTile* fromTile = GetTile(fromPos);
 	PathmapTile* toTile = GetTile(toPos);
@@ -143,7 +143,11 @@ void World::GetPath(Vector2f fromPos, Vector2f toPos, std::vector<PathmapTile*>&
 		myPathmapTiles[i]->myIsVisitedFlag = false;
 	}
 
+	std::vector<PathmapTile*> aList;
+
 	Pathfind(fromTile, toTile, aList);
+
+	return aList;
 }
 
 PathmapTile* World::GetTile(Vector2f tilePos)

@@ -9,7 +9,7 @@ class Core;
 class GameEntity
 {
 public:
-	GameEntity(const Vector2f& aPosition, const char* anImage);
+	GameEntity(const Vector2f& aPosition);
 	~GameEntity(void);
 
 	inline Vector2f GetPosition() const { return myPosition; }
@@ -27,7 +27,6 @@ protected:
 
 	bool myIdMarkedForDeleteFlag;
 	Vector2f myPosition;
-	const char* myImage;
 
 	Vector2f m_drawPos;
 	const float m_drawOffsetX;

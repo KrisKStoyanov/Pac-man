@@ -12,7 +12,10 @@ Pacman::Pacman() :
 	myGhostGhostCounter(0.f),
 	m_drawOffsetX(220.0f), m_drawOffsetY(60.0f),
 	m_tileSize(22), m_win(false),
-	m_ghostCounterDuration(20.0f), m_ghostCounterFlag(false), m_ghostCounterReducer(1.0f)
+	m_ghostCounterDefault(20.0f), m_ghostCounterDuration(20.0f), 
+	m_ghostCounterFlag(false), m_ghostCounterReducer(1.0f),
+	m_avatarOpen(true), m_toggleAvatarDrawDefault(0.1f), 
+	m_toggleAvatarDrawCooldown(0.1f), m_toggleAvatarDrawReducer(1.0f)
 {
 	myAvatar = new Avatar(Vector2f(13 * m_tileSize, 22 * m_tileSize), 120.0f);
 
@@ -133,10 +136,10 @@ void Pacman::OnUpdate(float aTime)
 	UpdateGhost(*orangeGhost, aTime);
 
 	if (myWorld->HasIntersectedDot(myAvatar->GetPosition(), m_win))
-		PickupDot(*myAvatar);
+		PickupDot();
 
 	if (myWorld->HasIntersectedBigDot(myAvatar->GetPosition(), m_win))
-		PickupBigDot(*myAvatar);
+		PickupBigDot();
 
 	if (m_ghostCounterFlag)
 		ReduceGhostCounterDuration(aTime * m_ghostCounterReducer);
@@ -158,6 +161,16 @@ void Pacman::UpdateAvatar(float deltaTime)
 		if (myWorld->TileIsValid(nextTile))
 		{
 			myAvatar->SetNextTile(nextTile);
+		}
+		m_toggleAvatarDrawCooldown = m_toggleAvatarDrawDefault;
+	}
+	else
+	{
+		m_toggleAvatarDrawCooldown -= deltaTime * m_toggleAvatarDrawReducer;
+		if (m_toggleAvatarDrawCooldown < 0.0f)
+		{
+			m_avatarOpen = !m_avatarOpen;
+			m_toggleAvatarDrawCooldown = m_toggleAvatarDrawDefault;
 		}
 	}
 
@@ -183,9 +196,6 @@ void Pacman::UpdateAvatar(float deltaTime)
 void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 {	
 	Vector2f nextTile = ghost.GetCurrentTile() + ghost.GetDesiredMovement();
-
-	//if (myIsDeadFlag)
-	//	speed = 120.f;
 
 	if (ghost.IsAtDestination())
 	{
@@ -219,7 +229,7 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 				ghost.SetDesiredMovement(Vector2f(1, 0));
 			}
 
-			ghost.myIsDeadFlag = false;
+			ghost.SetDeadFlag(false);
 		}
 	}
 
@@ -265,7 +275,78 @@ void Pacman::UpdateFPS(float deltaTime)
 	m_updateUI = true;
 }
 
-void Pacman::RedrawUI(SDL_Renderer* renderer)
+void Pacman::DrawAvatar(Core& core)
+{
+	if (myAvatar->GetDirection().myX > 0.0f)
+	{
+		if (m_avatarOpen)
+		{
+			core.DrawObject(*m_pAvatarClosedRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}
+		else 
+		{
+			core.DrawObject(*m_pAvatarOpenRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}	
+	}
+	else if (myAvatar->GetDirection().myX < 0.0f)
+	{
+		if (m_avatarOpen)
+		{
+			core.DrawObject(*m_pAvatarClosedLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}
+		else
+		{
+			core.DrawObject(*m_pAvatarOpenLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}
+		
+	}
+	else if (myAvatar->GetDirection().myY > 0.0f)
+	{
+		if (m_avatarOpen)
+		{
+			core.DrawObject(*m_pAvatarClosedDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);	
+		}
+		else
+		{
+			core.DrawObject(*m_pAvatarOpenDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}
+		
+	}
+	else if (myAvatar->GetDirection().myY < 0.0f)
+	{
+		if (m_avatarOpen)
+		{
+			core.DrawObject(*m_pAvatarClosedUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}
+		else
+		{
+			core.DrawObject(*m_pAvatarOpenUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
+		}
+		
+	}
+}
+
+void Pacman::DrawGhost(
+	Core& core, Ghost& ghost, 
+	DrawEntity& deadGhost, 
+	DrawEntity& vulnerableGhost, 
+	DrawEntity& defaultGhost)
+{
+	if (ghost.GetDeadFlag())
+	{
+		core.DrawObject(deadGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
+	}
+	else if (m_ghostCounterFlag)
+	{
+		core.DrawObject(vulnerableGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
+	}
+	else
+	{
+		core.DrawObject(defaultGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
+	}
+}
+
+void Pacman::RedrawUI(Core& core)
 {
 	std::string drawTextString;
 	std::stringstream drawTextStream;
@@ -282,30 +363,30 @@ void Pacman::RedrawUI(SDL_Renderer* renderer)
 		drawTextStream << "Score: " << myScore << "   ";
 	}
 	drawTextString = drawTextStream.str();
-	m_pScoreText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
+	m_pScoreText->SetText(core.GetRenderer(), drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream.flush();
 
 	std::stringstream drawTextStream1;
 	drawTextStream1 << "Lives: " << myLives;
 	drawTextString = drawTextStream1.str();
-	m_pLivesText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
+	m_pLivesText->SetText(core.GetRenderer(), drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream1.flush();
 
 	std::stringstream drawTextStream2;
 	drawTextStream2 << "FPS: " << myFps << "   ";
 	drawTextString = drawTextStream2.str();
-	m_pFpsText->SetText(renderer, drawTextString.c_str(), m_desc.uiFont);
+	m_pFpsText->SetText(core.GetRenderer(), drawTextString.c_str(), m_desc.uiFont);
 	drawTextStream2.flush();
 
 	m_updateUI = false;
 }
 
-void Pacman::PickupDot(Avatar& avatar)
+void Pacman::PickupDot()
 {
 	UpdateScore(10);
 }
 
-void Pacman::PickupBigDot(Avatar& avatar)
+void Pacman::PickupBigDot()
 {
 	UpdateScore(20);
 	SetGhostCounter(m_ghostCounterDuration);
@@ -323,6 +404,7 @@ void Pacman::ReduceGhostCounterDuration(float amount)
 	if (m_ghostCounterDuration < 0.0f)
 	{
 		m_ghostCounterFlag = false;
+		m_ghostCounterDuration = m_ghostCounterDefault;
 	}
 }
 
@@ -336,41 +418,41 @@ bool Pacman::AvatarGhostIntersection(Ghost& ghost, float dist)
 	return false;
 }
 
-void Pacman::ResetGhostPositions()
+void Pacman::ResetGhost(Ghost& ghost)
 {
-	redGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-	redGhost->Reset();
-	tealGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-	tealGhost->Reset();
-	pinkGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-	pinkGhost->Reset();
-	orangeGhost->SetPosition(Vector2f(13 * 22, 13 * 22));
-	orangeGhost->Reset();
+	ghost.SetPosition(Vector2f(13 * m_tileSize, 13 * m_tileSize));
+	ghost.GetPath().clear();
+	ghost.SetDesiredMovement(Vector2f(0, -1));
+	ghost.SetCurrentTile(ghost.GetPosition() /= (float)m_tileSize);
+	ghost.SetNextTile(ghost.GetCurrentTile());
 }
 
-void Pacman::ResetPlayerPosition()
+void Pacman::ResetAvatar()
 {
-	myAvatar->SetPosition(Vector2f(13 * 22, 22 * 22));
-	myAvatar->Reset();
+	myAvatar->SetPosition(Vector2f(13 * m_tileSize, 22 * m_tileSize));
+	myAvatar->SetCurrentTile(myAvatar->GetPosition() /= m_tileSize);
+	myAvatar->SetNextTile(myAvatar->GetCurrentTile());
 }
 
 void Pacman::IntersectGhost(Ghost& ghost)
 {
-	if (!ghost.myIsDeadFlag)
+	if (!ghost.GetDeadFlag())
 	{
 		if (!m_ghostCounterFlag)
 		{
 			UpdateLives(-1);
-			ResetPlayerPosition();
-			ResetGhostPositions();
+			ResetAvatar();
+			ResetGhost(*redGhost);
+			ResetGhost(*tealGhost);
+			ResetGhost(*pinkGhost);
+			ResetGhost(*orangeGhost);
 		}
 		else if (m_ghostCounterFlag)
 		{
 			UpdateScore(50);
-			ghost.SetPosition(Vector2f(13 * 22, 13 * 22));
-			ghost.Reset();
-			ghost.myIsDeadFlag = true;
-			ghost.Die(myWorld);
+			ResetGhost(ghost);
+			ghost.SetDeadFlag(true);
+			ghost.SetPath(myWorld->GetPath(ghost.GetCurrentTile(), Vector2f(13, 13)));
 		}
 	}
 }
@@ -383,78 +465,16 @@ bool Pacman::Draw(Core& core)
 {
 	myWorld->Draw(core);
 
-	if (myAvatar->GetDirection().myX > 0.0f)
-	{
-		core.DrawObject(*m_pAvatarClosedRight, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
-	}
-	else if (myAvatar->GetDirection().myX < 0.0f)
-	{
-		core.DrawObject(*m_pAvatarClosedLeft, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
-	}
-	else if (myAvatar->GetDirection().myY > 0.0f)
-	{
-		core.DrawObject(*m_pAvatarClosedDown, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
-	}
-	else if (myAvatar->GetDirection().myY < 0.0f)
-	{
-		core.DrawObject(*m_pAvatarClosedUp, myAvatar->GetDrawPos().myX, myAvatar->GetDrawPos().myY);
-	}
+	DrawAvatar(core);
 
-	if (redGhost->myIsDeadFlag)
-	{
-		core.DrawObject(*m_pDeadGhost, redGhost->GetDrawPos().myX, redGhost->GetDrawPos().myY);
-	}
-	else if (m_ghostCounterFlag)
-	{
-		core.DrawObject(*m_pVulnerableGhost, redGhost->GetDrawPos().myX, redGhost->GetDrawPos().myY);
-	}
-	else 
-	{
-		core.DrawObject(*m_pRedGhost, redGhost->GetDrawPos().myX, redGhost->GetDrawPos().myY);
-	}
+	DrawGhost(core, *redGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pRedGhost);
+	DrawGhost(core, *tealGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pTealGhost);
+	DrawGhost(core, *pinkGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pPinkGhost);
+	DrawGhost(core, *orangeGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pOrangeGhost);
 	
-	if (tealGhost->myIsDeadFlag)
-	{
-		core.DrawObject(*m_pDeadGhost, tealGhost->GetDrawPos().myX, tealGhost->GetDrawPos().myY);
-	}
-	else if (m_ghostCounterFlag)
-	{
-		core.DrawObject(*m_pVulnerableGhost, tealGhost->GetDrawPos().myX, tealGhost->GetDrawPos().myY);
-	}
-	else
-	{
-		core.DrawObject(*m_pTealGhost, tealGhost->GetDrawPos().myX, tealGhost->GetDrawPos().myY);
-	}
-
-	if (pinkGhost->myIsDeadFlag)
-	{
-		core.DrawObject(*m_pDeadGhost, pinkGhost->GetDrawPos().myX, pinkGhost->GetDrawPos().myY);
-	}
-	else if (m_ghostCounterFlag)
-	{
-		core.DrawObject(*m_pVulnerableGhost, pinkGhost->GetDrawPos().myX, pinkGhost->GetDrawPos().myY);
-	}
-	else
-	{
-		core.DrawObject(*m_pPinkGhost, pinkGhost->GetDrawPos().myX, pinkGhost->GetDrawPos().myY);
-	}
-
-	if (orangeGhost->myIsDeadFlag)
-	{
-		core.DrawObject(*m_pDeadGhost, orangeGhost->GetDrawPos().myX, orangeGhost->GetDrawPos().myY);
-	}
-	else if (m_ghostCounterFlag)
-	{
-		core.DrawObject(*m_pVulnerableGhost, orangeGhost->GetDrawPos().myX, orangeGhost->GetDrawPos().myY);
-	}
-	else
-	{
-		core.DrawObject(*m_pOrangeGhost, orangeGhost->GetDrawPos().myX, orangeGhost->GetDrawPos().myY);
-	}
-
 	if (m_updateUI)
 	{
-		RedrawUI(core.GetRenderer());
+		RedrawUI(core);
 	}
 
 	core.DrawObject(*m_pScoreText);

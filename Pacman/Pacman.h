@@ -49,29 +49,36 @@ public:
 private:
 	Pacman();
 
+	//Simulation Logic:
 	void UpdateAvatar(float deltaTime);
 	void UpdateGhost(Ghost& ghost, float deltaTime);
-
-	void UpdateScore(int amount);
-	void UpdateLives(int amount);
-	void UpdateFPS(float deltaTime);
-
-	void RedrawUI(SDL_Renderer* renderer);
-
-	void PickupDot(Avatar& avatar);
-	void PickupBigDot(Avatar& avatar);
+	void PickupDot();
+	void PickupBigDot();
 	void SetGhostCounter(float value);
 	void ReduceGhostCounterDuration(float amount);
 	bool AvatarGhostIntersection(Ghost& ghost, float dist);
 	void IntersectGhost(Ghost& ghost);
-	void ResetGhostPositions();
-	void ResetPlayerPosition();
+	void ResetGhost(Ghost& ghost);
+	void ResetAvatar();
 	void PickupCherry();
+	void UpdateScore(int amount);
+	void UpdateLives(int amount);
+	void UpdateFPS(float deltaTime);
+
+	//Graphics Logic:
+	void DrawAvatar(Core& core);
+	void DrawGhost(
+		Core& core, Ghost& ghost,
+		DrawEntity& deadGhost,
+		DrawEntity& vulnerableGhost,
+		DrawEntity& defaultGhost);
+	void RedrawUI(Core& core);
 
 	float myTimeToNextUpdate;
 	float myGhostGhostCounter;
 
 	bool m_ghostCounterFlag;
+	float m_ghostCounterDefault;
 	float m_ghostCounterDuration;
 	float m_ghostCounterReducer;
 
@@ -123,6 +130,11 @@ private:
 	const int m_tileSize;
 
 	bool m_win;
+
+	float m_toggleAvatarDrawDefault;
+	float m_toggleAvatarDrawCooldown;
+	float m_toggleAvatarDrawReducer;
+	bool m_avatarOpen;
 };
 
 #endif // PACMAN_H
