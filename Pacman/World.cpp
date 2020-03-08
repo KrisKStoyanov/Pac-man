@@ -165,7 +165,6 @@ bool World::ListDoesNotContain(PathmapTile* aFromTile, std::vector<PathmapTile*>
 			return false;
 		}
 	}
-
 	return true;
 }
 

@@ -210,16 +210,20 @@ void Pacman::UpdateAvatar(float deltaTime)
 
 void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 {	
-	Vector2f nextTile = ghost.GetCurrentTile() + ghost.GetDesiredMovement() * m_tileSize;
-
-	if (ghost.IsAtDestination())
+	float distanceToMove = deltaTime * ghost.GetMovementSpeed();
+	Vector2f direction = ghost.GetNextTile() - ghost.GetCurrentTile();
+	
+	if (distanceToMove > direction.Length())
 	{
+		ghost.SetCurrentTile(ghost.GetNextTile());
+		
+		Vector2f nextTile = ghost.GetCurrentTile() + ghost.GetDesiredMovement() * m_tileSize;
+		
 		if (!ghost.GetPath().empty())
 		{
-			PathmapTile* nextTile = ghost.GetPath().front();
+			ghost.SetNextTile(ghost.GetPath().front()->m_pos);
 			SAFE_DELETE(ghost.GetPath().front());
 			ghost.GetPath().erase(ghost.GetPath().begin());
-			ghost.SetNextTile(nextTile->m_pos);
 		}
 		else if (myWorld->TileIsValid(nextTile))
 		{
@@ -247,22 +251,13 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 			ghost.SetDeadFlag(false);
 		}
 	}
-
-	Vector2f direction = ghost.GetNextTile() - ghost.GetPosition();
-
-	float distanceToMove = deltaTime * ghost.GetMovementSpeed();
-
-	if (distanceToMove > direction.Length())
-	{
-		ghost.SetPosition(ghost.GetNextTile());
-		ghost.SetCurrentTile(ghost.GetNextTile());
-	}
 	else
 	{
 		ghost.SetDirection(direction.Normalize());
-		ghost.SetPosition(ghost.GetPosition() + direction * distanceToMove);
+		ghost.SetCurrentTile(ghost.GetCurrentTile() + direction * distanceToMove);
 	}
 
+	ghost.SetPosition(ghost.GetCurrentTile());
 	ghost.SetDrawPos(ghost.GetPosition() + m_drawOffset);
 }
 
