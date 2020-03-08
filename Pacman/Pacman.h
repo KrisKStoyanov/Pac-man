@@ -10,8 +10,10 @@ struct PACMAN_DESC
 	//Simulation data
 	float lives = 3;
 	float avatarMovementSpeed = 160.0f;
-	float ghostMovementSpeed = 30.0f;//130.0f;
-	float ghostCounterDuration = 20.0f;
+	float ghostChaseSpeed = 140.0f;
+	float ghostScatterSpeed = 100.0f;
+	float ghostFrightenedSpeed = 60.0f;
+	float ghostCounterDuration = 12.0f;
 	float avatarToggleDrawCooldown = 0.05f;
 
 	//Graphics data
@@ -81,7 +83,6 @@ private:
 
 	//Local data
 	float m_avatarMovementSpeed;
-	float m_ghostMovementSpeed;
 
 	float m_ghostGhostCounter;
 

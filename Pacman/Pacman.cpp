@@ -14,15 +14,33 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 	m_toggleAvatarDrawDefault(pacman_desc.avatarToggleDrawCooldown), 
 	m_toggleAvatarDrawCooldown(pacman_desc.avatarToggleDrawCooldown), 
 	m_toggleAvatarDrawReducer(1.0f), 
-	m_avatarMovementSpeed(pacman_desc.avatarMovementSpeed), 
-	m_ghostMovementSpeed(pacman_desc.ghostMovementSpeed)
+	m_avatarMovementSpeed(pacman_desc.avatarMovementSpeed)
 {
 	myAvatar = new Avatar(Vector2f(13, 22) * m_tileSize, m_avatarMovementSpeed);
 
-	redGhost = new Ghost(Vector2f(13, 13) * m_tileSize, m_ghostMovementSpeed, Vector2f(0, -1));
-	tealGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(26, 0), m_ghostMovementSpeed, Vector2f(0, -1));
-	pinkGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(52, 0), m_ghostMovementSpeed, Vector2f(0, -1));
-	orangeGhost = new Ghost(Vector2f(13, 13) * m_tileSize + Vector2f(26, 0), m_ghostMovementSpeed, Vector2f(0, -1));
+	redGhost = new Ghost(Vector2f(13, 13) * m_tileSize, 
+		pacman_desc.ghostChaseSpeed, 
+		pacman_desc.ghostScatterSpeed, 
+		pacman_desc.ghostFrightenedSpeed, 
+		Vector2f(0, -1));
+
+	tealGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(26, 0), 
+		pacman_desc.ghostChaseSpeed,
+		pacman_desc.ghostScatterSpeed,
+		pacman_desc.ghostFrightenedSpeed, 
+		Vector2f(0, -1));
+
+	pinkGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(52, 0), 
+		pacman_desc.ghostChaseSpeed,
+		pacman_desc.ghostScatterSpeed,
+		pacman_desc.ghostFrightenedSpeed, 
+		Vector2f(0, -1));
+
+	orangeGhost = new Ghost(Vector2f(13, 13) * m_tileSize + Vector2f(26, 0),
+		pacman_desc.ghostChaseSpeed,
+		pacman_desc.ghostScatterSpeed,
+		pacman_desc.ghostFrightenedSpeed,
+		Vector2f(0, -1));
 
 	myWorld = new World();
 }
@@ -75,6 +93,10 @@ bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 	world_desc.cherryDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.cherryImage);
 
 	myWorld->Init(world_desc, m_tileSize);
+
+	//tealGhost->SetPath(myWorld->GetPath(tealGhost->GetCurrentTile(), Vector2f(13, 13) * m_tileSize, m_tileSize));
+	//pinkGhost->SetPath(myWorld->GetPath(pinkGhost->GetCurrentTile(), Vector2f(13, 13) * m_tileSize, m_tileSize));
+	//orangeGhost->SetPath(myWorld->GetPath(orangeGhost->GetCurrentTile(), Vector2f(13, 13) * m_tileSize, m_tileSize));
 
 	return m_isRunning;
 }
@@ -213,26 +235,19 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 #include <iostream>
 	float distanceToMove = deltaTime * ghost.GetMovementSpeed();
 	Vector2f direction = ghost.GetNextTile() - ghost.GetCurrentTile();
-	
+
 	if (distanceToMove > direction.Length())
 	{
 		ghost.SetCurrentTile(ghost.GetNextTile());
 
-		//if (!ghost.GetPath().empty())
-		//{
-		//	ghost.SetNextTile(ghost.GetPath().back()->m_pos);
-		//	ghost.GetPath().pop_back();
-		//}
-		/*else */
-		Vector2f nextDirTile = ghost.GetCurrentTile() + ghost.GetDesiredMovement() * m_tileSize;
-
+		Vector2f nextDirTile = ghost.GetCurrentTile() + ghost.GetNextDir() * m_tileSize;
 		if (myWorld->TileIsValid(nextDirTile))
 		{
 			ghost.SetNextTile(nextDirTile);
 		}
 		else
 		{
-			if (ghost.GetDesiredMovement().myX != 0)
+			if (ghost.GetNextDir().myX != 0)
 			{
 				Vector2f nextUpTile = ghost.GetCurrentTile() + Vector2f(0, -1) * m_tileSize; // -1 is down and 1 is up in SDL
 				Vector2f nextDownTile = ghost.GetCurrentTile() + Vector2f(0, 1) * m_tileSize;
@@ -240,12 +255,12 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 				{
 					if (myWorld->TileIsValid(nextUpTile))
 					{
-						ghost.SetDesiredMovement(Vector2f(0, -1));
+						ghost.SetNextDir(Vector2f(0, -1));
 						ghost.SetNextTile(nextUpTile);
 					}
 					else if (myWorld->TileIsValid(nextDownTile))
 					{
-						ghost.SetDesiredMovement(Vector2f(0, 1));
+						ghost.SetNextDir(Vector2f(0, 1));
 						ghost.SetNextTile(nextDownTile);
 					}
 				}
@@ -253,17 +268,17 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 				{
 					if (myWorld->TileIsValid(nextDownTile))
 					{
-						ghost.SetDesiredMovement(Vector2f(0, 1));
+						ghost.SetNextDir(Vector2f(0, 1));
 						ghost.SetNextTile(nextDownTile);
 					}
 					else if (myWorld->TileIsValid(nextUpTile))
 					{
-						ghost.SetDesiredMovement(Vector2f(0, -1));
+						ghost.SetNextDir(Vector2f(0, -1));
 						ghost.SetNextTile(nextUpTile);
 					}
 				}
 			}
-			else if (ghost.GetDesiredMovement().myY != 0)
+			else if (ghost.GetNextDir().myY != 0)
 			{
 				Vector2f nextLeftTile = ghost.GetCurrentTile() + Vector2f(-1, 0) * m_tileSize;
 				Vector2f nextRightTile = ghost.GetCurrentTile() + Vector2f(1, 0) * m_tileSize;
@@ -271,12 +286,12 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 				{
 					if (myWorld->TileIsValid(nextLeftTile))
 					{
-						ghost.SetDesiredMovement(Vector2f(-1, 0));
+						ghost.SetNextDir(Vector2f(-1, 0));
 						ghost.SetNextTile(nextLeftTile);
 					}
 					else if (myWorld->TileIsValid(nextRightTile))
 					{
-						ghost.SetDesiredMovement(Vector2f(1, 0));
+						ghost.SetNextDir(Vector2f(1, 0));
 						ghost.SetNextTile(nextRightTile);
 					}
 				}
@@ -284,12 +299,12 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 				{
 					if (myWorld->TileIsValid(nextRightTile))
 					{
-						ghost.SetDesiredMovement(Vector2f(1, 0));
+						ghost.SetNextDir(Vector2f(1, 0));
 						ghost.SetNextTile(nextRightTile);
 					}
 					else if (myWorld->TileIsValid(nextLeftTile))
 					{
-						ghost.SetDesiredMovement(Vector2f(-1, 0));
+						ghost.SetNextDir(Vector2f(-1, 0));
 						ghost.SetNextTile(nextLeftTile);
 					}
 				}
@@ -447,6 +462,7 @@ void Pacman::SetGhostCounter(float value)
 {
 	m_ghostGhostCounter = value;
 	m_ghostCounterFlag = true;
+	redGhost->TransitionState(GhostState::FRIGHTENED);
 }
 
 void Pacman::ReduceGhostCounterDuration(float amount)
@@ -456,13 +472,14 @@ void Pacman::ReduceGhostCounterDuration(float amount)
 	{
 		m_ghostCounterFlag = false;
 		m_ghostCounterDuration = m_ghostCounterDefault;
+		redGhost->TransitionState(GhostState::CHASE);
 	}
 }
 
 void Pacman::ResetGhost(Ghost& ghost)
 {
 	ghost.GetPath().clear();
-	ghost.SetDesiredMovement(Vector2f(0, -1));
+	ghost.SetNextDir(Vector2f(0, -1));
 	ghost.SetPosition(ghost.GetSpawnPos());
 	ghost.SetCurrentTile(ghost.GetPosition());
 	ghost.SetNextTile(ghost.GetCurrentTile());

@@ -40,12 +40,12 @@ public:
 
 	void Shutdown();
 
-	std::vector<PathmapTile*> GetPath(Vector2f fromTile, Vector2f toTile, const int tileSize);
+	std::list<PathmapTile*> GetPath(Vector2f fromTile, Vector2f toTile, const int tileSize);
 private:
 
 	PathmapTile* GetTile(Vector2f tilePos);
-	bool Pathfind(PathmapTile* fromPos, PathmapTile* toPos, const int tileSize, std::vector<PathmapTile*>& path);
-	bool ListDoesNotContain(const Vector2f& tilePos, const std::vector<PathmapTile*>& path);
+	bool Pathfind(PathmapTile* fromPos, PathmapTile* toPos, const int tileSize, std::list<PathmapTile*>& path);
+	bool ListDoesNotContain(const Vector2f& tilePos, int tileSize, std::list<PathmapTile*>& path);
 
 	bool InitPathmap(const int& tileSize);
 
