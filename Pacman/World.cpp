@@ -17,37 +17,38 @@ void World::Init(const WORLD_DESC& world_desc, const int& tileSize)
 
 bool World::InitPathmap(const int& tileSize)
 {
-	std::string line;
 	std::ifstream myfile ("map.txt");
-	if (myfile.is_open())
+	if (!myfile.is_open())
 	{
-		int lineIndex = 0;
-		while (! myfile.eof() )
+		return false;
+	}
+	std::string line;
+	int lineIndex = 0;
+	while (!myfile.eof())
+	{
+		std::getline (myfile,line);
+		for (unsigned int i = 0; i < line.length(); i++)
 		{
-			std::getline (myfile,line);
-			for (unsigned int i = 0; i < line.length(); i++)
+			Vector2f tilePos(i * tileSize, lineIndex * tileSize);
+			if (line[i] == '.')
 			{
-				Vector2f tilePos(i * tileSize, lineIndex * tileSize);
-				if (line[i] == '.')
-				{
-					Dot* dot = new Dot(Vector2f(i * tileSize, lineIndex * tileSize));
-					myDots.push_back(dot);
-				}
-				else if (line[i] == 'o')
-				{
-					BigDot* dot = new BigDot(tilePos);
-					myBigDots.push_back(dot);
-				}
-
-PathmapTile* tile = new PathmapTile(tilePos, (line[i] == 'x'));
-myPathmapTiles.push_back(tile);
+				Dot* dot = new Dot(Vector2f(i * tileSize, lineIndex * tileSize));
+				myDots.push_back(dot);
+			}
+			else if (line[i] == 'o')
+			{
+				BigDot* dot = new BigDot(tilePos);
+				myBigDots.push_back(dot);
 			}
 
-			lineIndex++;
+			PathmapTile* tile = new PathmapTile(tilePos, (line[i] == 'x'));
+			myPathmapTiles.push_back(tile);
 		}
-		myfile.close();
+
+		++lineIndex;
 	}
 
+	myfile.close();
 	return true;
 }
 
@@ -130,35 +131,16 @@ void World::Shutdown()
 	SAFE_DELETE_VECTOR(myCherry);
 }
 
-std::vector<PathmapTile*> World::GetPath(Vector2f fromPos, Vector2f toPos)
+std::vector<PathmapTile*> World::GetPath(Vector2f fromPos, Vector2f toPos, const int tileSize)
 {
-	float shortestLengthFrom = (myPathmapTiles[0]->m_pos - fromPos).Length();
-	float shortestLengthTo = (myPathmapTiles[0]->m_pos - toPos).Length();
-	Vector2f closestFrom = myPathmapTiles[0]->m_pos;
-	Vector2f closestTo = myPathmapTiles[0]->m_pos;
 	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
 	{
-		float lengthFrom = (myPathmapTiles[i]->m_pos - fromPos).Length();
-		float lengthTo = (myPathmapTiles[i]->m_pos - toPos).Length();
-
-		if (lengthFrom < shortestLengthFrom)
-		{
-			shortestLengthFrom = lengthFrom;
-			closestFrom = myPathmapTiles[i]->m_pos;
-		}
-
-		if (lengthTo < shortestLengthTo)
-		{
-			closestTo = myPathmapTiles[i]->m_pos;
-			shortestLengthTo = lengthTo;
-		}
-
 		myPathmapTiles[i]->myIsVisitedFlag = false;
 	}
 
 	std::vector<PathmapTile*> aList;
 
-	Pathfind(GetTile(closestFrom), GetTile(closestTo), aList);
+	Pathfind(GetTile(fromPos), GetTile(toPos), tileSize, aList);
 
 	return aList;
 }
@@ -175,11 +157,11 @@ PathmapTile* World::GetTile(Vector2f tilePos)
 	return NULL;
 }
 
-bool World::ListDoesNotContain(PathmapTile* aFromTile, std::vector<PathmapTile*>& aList)
+bool World::ListDoesNotContain(const Vector2f& tilePos, const std::vector<PathmapTile*>& path)
 {
-	for (unsigned int i = 0; i < aList.size(); ++i) 
+	for (unsigned int i = 0; i < path.size(); ++i) 
 	{
-		if (aList[i] == aFromTile)
+		if (path[i]->m_pos == tilePos)
 		{
 			return false;
 		}
@@ -189,13 +171,13 @@ bool World::ListDoesNotContain(PathmapTile* aFromTile, std::vector<PathmapTile*>
 
 bool SortFromGhostSpawn(PathmapTile* a, PathmapTile* b)
 {
-	int la = abs(a->m_pos.myX - 13) * 22 + abs(a->m_pos.myY - 13) * 22;
-	int lb = abs(b->m_pos.myX - 13) * 22 + abs(b->m_pos.myY - 13) * 22;
+	int la = abs(a->m_pos.myX - 13 * 22) + abs(a->m_pos.myY - 13 * 22);
+	int lb = abs(b->m_pos.myX - 13 * 22) + abs(b->m_pos.myY - 13 * 22);
 
     return la < lb;
 }
 
-bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::vector<PathmapTile*>& aList)
+bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, const int tileSize, std::vector<PathmapTile*>& aList)
 {
 	aFromTile->myIsVisitedFlag = true;
 
@@ -207,33 +189,33 @@ bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::vector<P
 
 	std::list<PathmapTile*> neighborList;
 
-	PathmapTile* up = GetTile(Vector2f(aFromTile->m_pos.myX, aFromTile->m_pos.myY - 1));
-	if (up && !up->myIsVisitedFlag && !up->myIsBlockingFlag && ListDoesNotContain(up, aList))
+	PathmapTile* up = GetTile(Vector2f(aFromTile->m_pos.myX, aFromTile->m_pos.myY - tileSize));
+	if (up && !up->myIsVisitedFlag && !up->myIsBlockingFlag && ListDoesNotContain(up->m_pos, aList))
 		neighborList.push_front(up);
 
-	PathmapTile* down = GetTile(Vector2f(aFromTile->m_pos.myX, aFromTile->m_pos.myY + 1));
-	if (down && !down->myIsVisitedFlag && !down->myIsBlockingFlag && ListDoesNotContain(down, aList))
+	PathmapTile* down = GetTile(Vector2f(aFromTile->m_pos.myX, aFromTile->m_pos.myY + tileSize));
+	if (down && !down->myIsVisitedFlag && !down->myIsBlockingFlag && ListDoesNotContain(down->m_pos, aList))
 		neighborList.push_front(down);
 
-	PathmapTile* right = GetTile(Vector2f(aFromTile->m_pos.myX + 1, aFromTile->m_pos.myY));
-	if (right && !right->myIsVisitedFlag && !right->myIsBlockingFlag && ListDoesNotContain(right, aList))
+	PathmapTile* right = GetTile(Vector2f(aFromTile->m_pos.myX + tileSize, aFromTile->m_pos.myY));
+	if (right && !right->myIsVisitedFlag && !right->myIsBlockingFlag && ListDoesNotContain(right->m_pos, aList))
 		neighborList.push_front(right);
 
-	PathmapTile* left = GetTile(Vector2f(aFromTile->m_pos.myX - 1, aFromTile->m_pos.myY));
-	if (left && !left->myIsVisitedFlag && !left->myIsBlockingFlag && ListDoesNotContain(left, aList))
+	PathmapTile* left = GetTile(Vector2f(aFromTile->m_pos.myX - tileSize, aFromTile->m_pos.myY));
+	if (left && !left->myIsVisitedFlag && !left->myIsBlockingFlag && ListDoesNotContain(left->m_pos, aList))
 		neighborList.push_front(left);
 
 	neighborList.sort(SortFromGhostSpawn);
 
-	//for(std::list<PathmapTile*>::iterator list_iter = neighborList.begin(); list_iter != neighborList.end(); list_iter++)
-	//{
-	//	aList.push_back((PathmapTile*)*list_iter);
+	for (std::list<PathmapTile*>::iterator list_iter = neighborList.begin(); list_iter != neighborList.end(); list_iter++)
+	{
+		aList.push_back((PathmapTile*)*list_iter);
 
-	//	if (Pathfind((PathmapTile*)*list_iter, aToTile, aList))
-	//		return true;
+		if (Pathfind((PathmapTile*)*list_iter, aToTile, tileSize, aList))
+			return true;
 
-	//	aList.pop_back();
-	//}
+		aList.pop_back();
+	}
 
 	return false;
 }
