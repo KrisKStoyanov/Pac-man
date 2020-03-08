@@ -8,14 +8,14 @@ World::~World(void)
 {
 }
 
-void World::Init(const WORLD_DESC& world_desc)
+void World::Init(const WORLD_DESC& world_desc, const int& tileSize)
 {
 	m_desc = world_desc;
 
-	InitPathmap();
+	InitPathmap(tileSize);
 }
 
-bool World::InitPathmap()
+bool World::InitPathmap(const int& tileSize)
 {
 	std::string line;
 	std::ifstream myfile ("map.txt");
@@ -27,18 +27,19 @@ bool World::InitPathmap()
 			std::getline (myfile,line);
 			for (unsigned int i = 0; i < line.length(); i++)
 			{
+				Vector2f tilePos(i * tileSize, lineIndex * tileSize);
 				if (line[i] == '.')
 				{
-					Dot* dot = new Dot(Vector2f(i * 22, lineIndex * 22));
+					Dot* dot = new Dot(Vector2f(i * tileSize, lineIndex * tileSize));
 					myDots.push_back(dot);
 				}
 				else if (line[i] == 'o')
 				{
-					BigDot* dot = new BigDot(Vector2f(i * 22, lineIndex * 22));
+					BigDot* dot = new BigDot(tilePos);
 					myBigDots.push_back(dot);
 				}
 
-				PathmapTile* tile = new PathmapTile(i, lineIndex, (line[i] == 'x'));
+				PathmapTile* tile = new PathmapTile(tilePos, (line[i] == 'x'));
 				myPathmapTiles.push_back(tile);
 			}
 
@@ -131,9 +132,6 @@ void World::Shutdown()
 
 std::vector<PathmapTile*> World::GetPath(Vector2f fromPos, Vector2f toPos)
 {
-	PathmapTile* fromTile = GetTile(fromPos);
-	PathmapTile* toTile = GetTile(toPos);
-
 	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
 	{
 		myPathmapTiles[i]->myIsVisitedFlag = false;
@@ -141,7 +139,7 @@ std::vector<PathmapTile*> World::GetPath(Vector2f fromPos, Vector2f toPos)
 
 	std::vector<PathmapTile*> aList;
 
-	Pathfind(fromTile, toTile, aList);
+	Pathfind(GetTile(fromPos), GetTile(toPos), aList);
 
 	return aList;
 }

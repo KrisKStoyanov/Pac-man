@@ -1,7 +1,7 @@
 #include "Avatar.h"
 
-Avatar::Avatar(const Vector2f& aPosition, float movementSpeed, int tileSize) : 
-	MovableGameEntity(aPosition, movementSpeed, tileSize),
+Avatar::Avatar(const Vector2f& aPosition, float movementSpeed) : 
+	MovableGameEntity(aPosition, movementSpeed),
 	m_spawnPos(aPosition)
 {
 

@@ -2,9 +2,9 @@
 
 Pacman::Pacman(PACMAN_DESC pacman_desc) :
 	m_desc(pacman_desc),
-	myNextMovement(-1.f, 0.f),
+	avatarDirection(-1.f, 0.f),
 	m_score(0), m_win(false), m_fps(0),
-	m_tileSize(22), m_drawOffsetX(220.0f), m_drawOffsetY(60.0f),
+	m_tileSize(22), m_drawOffset(220.0f, 60.0f),
 	m_lives(pacman_desc.lives),
 	m_ghostGhostCounter(0.0f), m_ghostIntersectionDist(10.0f),
 	m_ghostCounterDefault(pacman_desc.ghostCounterDuration), 
@@ -13,14 +13,16 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 	m_avatarOpen(true), 
 	m_toggleAvatarDrawDefault(pacman_desc.avatarToggleDrawCooldown), 
 	m_toggleAvatarDrawCooldown(pacman_desc.avatarToggleDrawCooldown), 
-	m_toggleAvatarDrawReducer(1.0f)
+	m_toggleAvatarDrawReducer(1.0f), 
+	m_avatarMovementSpeed(pacman_desc.avatarMovementSpeed), 
+	m_ghostMovementSpeed(pacman_desc.ghostMovementSpeed)
 {
-	myAvatar = new Avatar(Vector2f(13 * m_tileSize, 22 * m_tileSize), 120.0f, m_tileSize);
+	myAvatar = new Avatar(Vector2f(13, 22) * m_tileSize, m_avatarMovementSpeed);
 
-	redGhost = new Ghost(Vector2f(13 * m_tileSize, 13 * m_tileSize), 60.0f, m_tileSize);
-	tealGhost = new Ghost(Vector2f(13 * m_tileSize - 26, 13 * m_tileSize), 60.0f, m_tileSize);
-	pinkGhost = new Ghost(Vector2f(13 * m_tileSize - 52, 13 * m_tileSize), 60.0f, m_tileSize);
-	orangeGhost = new Ghost(Vector2f(13 * m_tileSize + 26, 13 * m_tileSize), 60.0f, m_tileSize);
+	redGhost = new Ghost(Vector2f(13, 13) * m_tileSize, m_ghostMovementSpeed);
+	tealGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(26, 0), m_ghostMovementSpeed);
+	pinkGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(52, 0), m_ghostMovementSpeed);
+	orangeGhost = new Ghost(Vector2f(13, 13) * m_tileSize + Vector2f(26, 0), m_ghostMovementSpeed);
 
 	myWorld = new World();
 }
@@ -72,7 +74,7 @@ bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 	world_desc.bigDotDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.bigDotImage);
 	world_desc.cherryDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.cherryImage);
 
-	myWorld->Init(world_desc);
+	myWorld->Init(world_desc, m_tileSize);
 
 	return m_isRunning;
 }
@@ -91,13 +93,13 @@ int Pacman::Run(Core& core)
 			const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
 			if (keystate[SDL_SCANCODE_UP])
-				myNextMovement = Vector2f(0.f, -1.f);
+				avatarDirection = Vector2f(0.f, -1.f);
 			else if (keystate[SDL_SCANCODE_DOWN])
-				myNextMovement = Vector2f(0.f, 1.f);
+				avatarDirection = Vector2f(0.f, 1.f);
 			else if (keystate[SDL_SCANCODE_RIGHT])
-				myNextMovement = Vector2f(1.f, 0.f);
+				avatarDirection = Vector2f(1.f, 0.f);
 			else if (keystate[SDL_SCANCODE_LEFT])
-				myNextMovement = Vector2f(-1.f, 0.f);
+				avatarDirection = Vector2f(-1.f, 0.f);
 
 			if (keystate[SDL_SCANCODE_ESCAPE])
 			{
@@ -171,7 +173,7 @@ void Pacman::UpdateAvatar(float deltaTime)
 {
 	if (myAvatar->IsAtDestination())
 	{
-		Vector2f nextTile = Vector2f(myAvatar->GetCurrentTile() + myNextMovement);
+		Vector2f nextTile = myAvatar->GetCurrentTile() + avatarDirection * m_tileSize;
 		if (myWorld->TileIsValid(nextTile))
 		{
 			myAvatar->SetNextTile(nextTile);
@@ -188,28 +190,27 @@ void Pacman::UpdateAvatar(float deltaTime)
 		}
 	}
 
-	Vector2f destination(myAvatar->GetNextTile() * m_tileSize);
-	Vector2f direction = destination - myAvatar->GetPosition();
+	Vector2f direction = myAvatar->GetNextTile() - myAvatar->GetCurrentTile();
 
 	float distanceToMove = deltaTime * myAvatar->GetMovementSpeed();
 
 	if (distanceToMove > direction.Length())
 	{
-		myAvatar->SetPosition(destination);
 		myAvatar->SetCurrentTile(myAvatar->GetNextTile());
 	}
 	else
 	{
 		myAvatar->SetDirection(direction.Normalize());
-		myAvatar->SetPosition(myAvatar->GetPosition() + direction * distanceToMove);
+		myAvatar->SetCurrentTile(myAvatar->GetCurrentTile() + direction * distanceToMove);
 	}
 
-	myAvatar->SetDrawPos(Vector2f(myAvatar->GetPosition().myX + m_drawOffsetX, myAvatar->GetPosition().myY + m_drawOffsetY));
+	myAvatar->SetPosition(myAvatar->GetCurrentTile());
+	myAvatar->SetDrawPos(myAvatar->GetCurrentTile() + m_drawOffset);
 }
 
 void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 {	
-	Vector2f nextTile = ghost.GetCurrentTile() + ghost.GetDesiredMovement();
+	Vector2f nextTile = ghost.GetCurrentTile() + ghost.GetDesiredMovement() * m_tileSize;
 
 	if (ghost.IsAtDestination())
 	{
@@ -247,14 +248,13 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 		}
 	}
 
-	Vector2f destination = ghost.GetNextTile() * m_tileSize;
-	Vector2f direction = destination - ghost.GetPosition();
+	Vector2f direction = ghost.GetNextTile() - ghost.GetPosition();
 
 	float distanceToMove = deltaTime * ghost.GetMovementSpeed();
 
 	if (distanceToMove > direction.Length())
 	{
-		ghost.SetPosition(destination);
+		ghost.SetPosition(ghost.GetNextTile());
 		ghost.SetCurrentTile(ghost.GetNextTile());
 	}
 	else
@@ -263,7 +263,7 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 		ghost.SetPosition(ghost.GetPosition() + direction * distanceToMove);
 	}
 
-	ghost.SetDrawPos(Vector2f(ghost.GetPosition().myX + m_drawOffsetX, ghost.GetPosition().myY + m_drawOffsetY));
+	ghost.SetDrawPos(ghost.GetPosition() + m_drawOffset);
 }
 
 void Pacman::UpdateScore(int amount)
@@ -420,17 +420,18 @@ void Pacman::ReduceGhostCounterDuration(float amount)
 
 void Pacman::ResetGhost(Ghost& ghost)
 {
-	ghost.SetPosition(ghost.GetSpawnPos());
 	ghost.GetPath().clear();
 	ghost.SetDesiredMovement(Vector2f(0, -1));
-	ghost.SetCurrentTile(ghost.GetPosition() /= (float)m_tileSize);
+	ghost.SetPosition(ghost.GetSpawnPos());
+	ghost.SetCurrentTile(ghost.GetPosition());
 	ghost.SetNextTile(ghost.GetCurrentTile());
 }
 
 void Pacman::ResetAvatar()
 {
+	avatarDirection = Vector2f(-1.f, 0.f);
 	myAvatar->SetPosition(myAvatar->GetSpawnPos());
-	myAvatar->SetCurrentTile(myAvatar->GetPosition() /= m_tileSize);
+	myAvatar->SetCurrentTile(myAvatar->GetPosition());
 	myAvatar->SetNextTile(myAvatar->GetCurrentTile());
 }
 

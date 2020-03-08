@@ -29,7 +29,7 @@ public:
 	World(void);
 	~World(void);
 
-	void Init(const WORLD_DESC& world_desc);
+	void Init(const WORLD_DESC& world_desc, const int& tileSize);
 
 	void Draw(Renderer& renderer);
 	bool TileIsValid(Vector2f tilePos);
@@ -48,7 +48,7 @@ private:
 	bool ListDoesNotContain(PathmapTile* aFromTile, std::vector<PathmapTile*>& aList);
 
 
-	bool InitPathmap();
+	bool InitPathmap(const int& tileSize);
 
 	std::vector<PathmapTile*> myPathmapTiles;
 	std::vector<Dot*> myDots;

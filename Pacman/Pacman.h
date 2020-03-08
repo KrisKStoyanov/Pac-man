@@ -9,6 +9,8 @@ struct PACMAN_DESC
 {
 	//Simulation data
 	float lives = 3;
+	float avatarMovementSpeed = 120.0f;
+	float ghostMovementSpeed = 60.0f;
 	float ghostCounterDuration = 20.0f;
 	float avatarToggleDrawCooldown = 0.075f;
 
@@ -78,6 +80,9 @@ private:
 	void RedrawUI(Renderer& core);
 
 	//Local data
+	float m_avatarMovementSpeed;
+	float m_ghostMovementSpeed;
+
 	float m_ghostGhostCounter;
 
 	bool m_ghostCounterFlag;
@@ -91,7 +96,7 @@ private:
 	int m_score;
 	int m_fps;
 
-	Vector2f myNextMovement;
+	Vector2f avatarDirection;
 
 	Avatar* myAvatar;
 	
@@ -128,9 +133,8 @@ private:
 	DrawEntity* m_pDeadGhost;
 
 	PACMAN_DESC m_desc;
-
-	const float m_drawOffsetX;
-	const float m_drawOffsetY;
+	
+	const Vector2f m_drawOffset;
 
 	const int m_tileSize;
 

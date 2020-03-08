@@ -7,7 +7,7 @@
 class Avatar : public MovableGameEntity
 {
 public:
-	Avatar(const Vector2f& aPosition, float movementSpeed, int tileSize);
+	Avatar(const Vector2f& aPosition, float movementSpeed);
 	~Avatar(void);
 
 	inline Vector2f GetSpawnPos() { return m_spawnPos; }

@@ -1,10 +1,11 @@
 #include "PathmapTile.h"
 
-PathmapTile::PathmapTile(int anX, int anY, bool aIsBlockingFlag)
-: m_pos(anX, anY)
-, myIsBlockingFlag(aIsBlockingFlag)
-,myIsVisitedFlag(false)
+PathmapTile::PathmapTile(Vector2f pos, bool aIsBlockingFlag) : 
+	m_pos(pos),
+	myIsBlockingFlag(aIsBlockingFlag), 
+	myIsVisitedFlag(false)
 {
+
 }
 
 PathmapTile::~PathmapTile(void)

@@ -7,7 +7,7 @@
 class MovableGameEntity : public GameEntity
 {
 public:
-	MovableGameEntity(const Vector2f& aPosition, float movementSpeed, int tileSize);
+	MovableGameEntity(const Vector2f& aPosition, float movementSpeed);
 	~MovableGameEntity(void);
 
 	inline void SetCurrentTile(const Vector2f& tile) { m_currentTile = tile; }

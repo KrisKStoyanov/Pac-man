@@ -1,7 +1,7 @@
 #include "Ghost.h"
 
-Ghost::Ghost(const Vector2f& aPosition, float movementSpeed, int tileSize) : 
-	MovableGameEntity(aPosition, movementSpeed, tileSize), 
+Ghost::Ghost(const Vector2f& aPosition, float movementSpeed) : 
+	MovableGameEntity(aPosition, movementSpeed), 
 	m_spawnPos(aPosition)
 {
 	myIsDeadFlag = false;

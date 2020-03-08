@@ -5,7 +5,7 @@
 class PathmapTile
 {
 public:
-	PathmapTile(int anX, int anY, bool aIsBlockingFlag);
+	PathmapTile(Vector2f pos, bool aIsBlockingFlag);
 	~PathmapTile(void);
 
 	Vector2f m_pos;
