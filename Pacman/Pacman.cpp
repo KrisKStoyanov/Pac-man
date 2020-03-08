@@ -19,10 +19,10 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 {
 	myAvatar = new Avatar(Vector2f(13, 22) * m_tileSize, m_avatarMovementSpeed);
 
-	redGhost = new Ghost(Vector2f(13, 13) * m_tileSize, m_ghostMovementSpeed);
-	tealGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(26, 0), m_ghostMovementSpeed);
-	pinkGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(52, 0), m_ghostMovementSpeed);
-	orangeGhost = new Ghost(Vector2f(13, 13) * m_tileSize + Vector2f(26, 0), m_ghostMovementSpeed);
+	redGhost = new Ghost(Vector2f(13, 13) * m_tileSize, m_ghostMovementSpeed, Vector2f(0, -1));
+	tealGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(26, 0), m_ghostMovementSpeed, Vector2f(0, -1));
+	pinkGhost = new Ghost(Vector2f(13, 13) * m_tileSize - Vector2f(52, 0), m_ghostMovementSpeed, Vector2f(0, -1));
+	orangeGhost = new Ghost(Vector2f(13, 13) * m_tileSize + Vector2f(26, 0), m_ghostMovementSpeed, Vector2f(0, -1));
 
 	myWorld = new World();
 }
@@ -231,6 +231,11 @@ void Pacman::UpdateGhost(Ghost& ghost, float deltaTime)
 		}
 		else
 		{
+			//Vector2f nextTile = ghost.GetCurrentTile() + ghost.GetDirection() * m_tileSize;
+			//ghost.SetPath(myWorld->GetPath(ghost.GetCurrentTile(), nextTile));
+			
+			//ghost.SetPath(myWorld->GetPath(ghost.GetCurrentTile(), myAvatar->GetCurrentTile()));
+			
 			if (ghost.GetDesiredMovement().myX == 1)
 			{
 				ghost.SetDesiredMovement(Vector2f(0, 1));
@@ -448,7 +453,7 @@ void Pacman::IntersectGhost(Ghost& ghost)
 			UpdateScore(50);
 			ResetGhost(ghost);
 			ghost.SetDeadFlag(true);
-			ghost.SetPath(myWorld->GetPath(ghost.GetCurrentTile(), Vector2f(13, 13)));
+			ghost.SetPath(myWorld->GetPath(ghost.GetCurrentTile(), myAvatar->GetCurrentTile()));
 		}
 	}
 }

@@ -1,11 +1,14 @@
 #include "Ghost.h"
 
-Ghost::Ghost(const Vector2f& aPosition, float movementSpeed) : 
+Ghost::Ghost(
+	const Vector2f& aPosition, 
+	const float movementSpeed,
+	const Vector2f& desiredMovement) :
 	MovableGameEntity(aPosition, movementSpeed), 
-	m_spawnPos(aPosition)
+	m_spawnPos(aPosition),
+	m_desiredMovement(desiredMovement)
 {
 	myIsDeadFlag = false;
-	m_desiredMovement = Vector2f(0, -1);
 }
 
 Ghost::~Ghost(void)

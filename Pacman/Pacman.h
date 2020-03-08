@@ -9,10 +9,10 @@ struct PACMAN_DESC
 {
 	//Simulation data
 	float lives = 3;
-	float avatarMovementSpeed = 120.0f;
-	float ghostMovementSpeed = 60.0f;
+	float avatarMovementSpeed = 160.0f;
+	float ghostMovementSpeed = 130.0f;
 	float ghostCounterDuration = 20.0f;
-	float avatarToggleDrawCooldown = 0.075f;
+	float avatarToggleDrawCooldown = 0.05f;
 
 	//Graphics data
 	const char* avatarOpenLeftImage = "open_left_32.png";

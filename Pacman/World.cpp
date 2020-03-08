@@ -39,8 +39,8 @@ bool World::InitPathmap(const int& tileSize)
 					myBigDots.push_back(dot);
 				}
 
-				PathmapTile* tile = new PathmapTile(tilePos, (line[i] == 'x'));
-				myPathmapTiles.push_back(tile);
+PathmapTile* tile = new PathmapTile(tilePos, (line[i] == 'x'));
+myPathmapTiles.push_back(tile);
 			}
 
 			lineIndex++;
@@ -55,7 +55,7 @@ void World::Draw(Renderer& renderer)
 {
 	renderer.DrawObject(*m_desc.playfieldDrawEntity);
 
-	for (unsigned int i = 0; i < myDots.size(); ++i) 
+	for (unsigned int i = 0; i < myDots.size(); ++i)
 	{
 		renderer.DrawObject(*m_desc.dotDrawEntity, myDots[i]->GetDrawPos().myX, myDots[i]->GetDrawPos().myY);
 	}
@@ -99,7 +99,7 @@ bool World::HasIntersectedBigDot(GameEntity& gameEntity, bool& win)
 {
 	for (unsigned int i = 0; i < myBigDots.size(); ++i)
 	{
-		if (gameEntity.Intersect(*myBigDots[i],m_dotIntersectionDist))
+		if (gameEntity.Intersect(*myBigDots[i], m_dotIntersectionDist))
 		{
 			myBigDots.erase(myBigDots.begin() + i);
 			if (myDots.size() == 0 && myBigDots.size() == 0)
@@ -132,14 +132,33 @@ void World::Shutdown()
 
 std::vector<PathmapTile*> World::GetPath(Vector2f fromPos, Vector2f toPos)
 {
+	float shortestLengthFrom = (myPathmapTiles[0]->m_pos - fromPos).Length();
+	float shortestLengthTo = (myPathmapTiles[0]->m_pos - toPos).Length();
+	Vector2f closestFrom = myPathmapTiles[0]->m_pos;
+	Vector2f closestTo = myPathmapTiles[0]->m_pos;
 	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
 	{
+		float lengthFrom = (myPathmapTiles[i]->m_pos - fromPos).Length();
+		float lengthTo = (myPathmapTiles[i]->m_pos - toPos).Length();
+
+		if (lengthFrom < shortestLengthFrom)
+		{
+			shortestLengthFrom = lengthFrom;
+			closestFrom = myPathmapTiles[i]->m_pos;
+		}
+
+		if (lengthTo < shortestLengthTo)
+		{
+			closestTo = myPathmapTiles[i]->m_pos;
+			shortestLengthTo = lengthTo;
+		}
+
 		myPathmapTiles[i]->myIsVisitedFlag = false;
 	}
 
 	std::vector<PathmapTile*> aList;
 
-	Pathfind(GetTile(fromPos), GetTile(toPos), aList);
+	Pathfind(GetTile(closestFrom), GetTile(closestTo), aList);
 
 	return aList;
 }
@@ -170,8 +189,8 @@ bool World::ListDoesNotContain(PathmapTile* aFromTile, std::vector<PathmapTile*>
 
 bool SortFromGhostSpawn(PathmapTile* a, PathmapTile* b)
 {
-	int la = abs(a->m_pos.myX - 13) + abs(a->m_pos.myY - 13);
-	int lb = abs(b->m_pos.myX - 13) + abs(b->m_pos.myY - 13);
+	int la = abs(a->m_pos.myX - 13) * 22 + abs(a->m_pos.myY - 13) * 22;
+	int lb = abs(b->m_pos.myX - 13) * 22 + abs(b->m_pos.myY - 13) * 22;
 
     return la < lb;
 }
@@ -206,15 +225,15 @@ bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, std::vector<P
 
 	neighborList.sort(SortFromGhostSpawn);
 
-	for(std::list<PathmapTile*>::iterator list_iter = neighborList.begin(); list_iter != neighborList.end(); list_iter++)
-	{
-		aList.push_back((PathmapTile*)*list_iter);
+	//for(std::list<PathmapTile*>::iterator list_iter = neighborList.begin(); list_iter != neighborList.end(); list_iter++)
+	//{
+	//	aList.push_back((PathmapTile*)*list_iter);
 
-		if (Pathfind((PathmapTile*)*list_iter, aToTile, aList))
-			return true;
+	//	if (Pathfind((PathmapTile*)*list_iter, aToTile, aList))
+	//		return true;
 
-		aList.pop_back();
-	}
+	//	aList.pop_back();
+	//}
 
 	return false;
 }
