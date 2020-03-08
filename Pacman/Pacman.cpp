@@ -2,7 +2,7 @@
 
 Pacman::Pacman(PACMAN_DESC pacman_desc) :
 	m_desc(pacman_desc),
-	avatarDirection(-1.f, 0.f),
+	m_avatarNextDir(-1.f, 0.f),
 	m_score(0), m_win(false), m_fps(0),
 	m_tileSize(22), m_drawOffset(220.0f, 60.0f),
 	m_lives(pacman_desc.lives),
@@ -93,13 +93,13 @@ int Pacman::Run(Core& core)
 			const Uint8* keystate = SDL_GetKeyboardState(NULL);
 
 			if (keystate[SDL_SCANCODE_UP])
-				avatarDirection = Vector2f(0.f, -1.f);
+				m_avatarNextDir = Vector2f(0.f, -1.f);
 			else if (keystate[SDL_SCANCODE_DOWN])
-				avatarDirection = Vector2f(0.f, 1.f);
+				m_avatarNextDir = Vector2f(0.f, 1.f);
 			else if (keystate[SDL_SCANCODE_RIGHT])
-				avatarDirection = Vector2f(1.f, 0.f);
+				m_avatarNextDir = Vector2f(1.f, 0.f);
 			else if (keystate[SDL_SCANCODE_LEFT])
-				avatarDirection = Vector2f(-1.f, 0.f);
+				m_avatarNextDir = Vector2f(-1.f, 0.f);
 
 			if (keystate[SDL_SCANCODE_ESCAPE])
 			{
@@ -171,37 +171,37 @@ void Pacman::OnUpdate(float aTime)
 
 void Pacman::UpdateAvatar(float deltaTime)
 {
-	if (myAvatar->IsAtDestination())
+	float distanceToMove = deltaTime * myAvatar->GetMovementSpeed();
+	Vector2f direction = myAvatar->GetNextTile() - myAvatar->GetCurrentTile();
+	
+	if (distanceToMove > direction.Length())
 	{
-		Vector2f nextTile = myAvatar->GetCurrentTile() + avatarDirection * m_tileSize;
-		if (myWorld->TileIsValid(nextTile))
+		myAvatar->SetCurrentTile(myAvatar->GetNextTile());
+
+		Vector2f nextInputTile = myAvatar->GetCurrentTile() + m_avatarNextDir * m_tileSize;
+		Vector2f nextDirTile = myAvatar->GetCurrentTile() + myAvatar->GetDirection() * m_tileSize;
+
+		if (myWorld->TileIsValid(nextInputTile))
 		{
-			myAvatar->SetNextTile(nextTile);
+			myAvatar->SetNextTile(nextInputTile);
+		}
+		else if(myWorld->TileIsValid(nextDirTile))
+		{
+			myAvatar->SetNextTile(nextDirTile);
 		}
 		m_toggleAvatarDrawCooldown = m_toggleAvatarDrawDefault;
 	}
 	else
 	{
+		myAvatar->SetDirection(direction.Normalize());
+		myAvatar->SetCurrentTile(myAvatar->GetCurrentTile() + direction * distanceToMove);
+
 		m_toggleAvatarDrawCooldown -= deltaTime * m_toggleAvatarDrawReducer;
 		if (m_toggleAvatarDrawCooldown < 0.0f)
 		{
 			m_avatarOpen = !m_avatarOpen;
 			m_toggleAvatarDrawCooldown = m_toggleAvatarDrawDefault;
 		}
-	}
-
-	Vector2f direction = myAvatar->GetNextTile() - myAvatar->GetCurrentTile();
-
-	float distanceToMove = deltaTime * myAvatar->GetMovementSpeed();
-
-	if (distanceToMove > direction.Length())
-	{
-		myAvatar->SetCurrentTile(myAvatar->GetNextTile());
-	}
-	else
-	{
-		myAvatar->SetDirection(direction.Normalize());
-		myAvatar->SetCurrentTile(myAvatar->GetCurrentTile() + direction * distanceToMove);
 	}
 
 	myAvatar->SetPosition(myAvatar->GetCurrentTile());
@@ -429,7 +429,7 @@ void Pacman::ResetGhost(Ghost& ghost)
 
 void Pacman::ResetAvatar()
 {
-	avatarDirection = Vector2f(-1.f, 0.f);
+	m_avatarNextDir = Vector2f(-1.f, 0.f);
 	myAvatar->SetPosition(myAvatar->GetSpawnPos());
 	myAvatar->SetCurrentTile(myAvatar->GetPosition());
 	myAvatar->SetNextTile(myAvatar->GetCurrentTile());

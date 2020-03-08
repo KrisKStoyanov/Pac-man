@@ -21,7 +21,7 @@ public:
 	inline Vector2f GetDirection() { return m_direction; }
 	inline void SetDirection(const Vector2f& direction) { m_direction = direction; }
 
-	bool IsAtDestination();
+	inline bool IsAtDestination() { return (m_currentTile == m_nextTile); }
 
 protected:
 

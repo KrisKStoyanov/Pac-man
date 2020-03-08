@@ -96,7 +96,7 @@ private:
 	int m_score;
 	int m_fps;
 
-	Vector2f avatarDirection;
+	Vector2f m_avatarNextDir;
 
 	Avatar* myAvatar;
 	

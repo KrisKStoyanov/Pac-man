@@ -10,11 +10,3 @@ MovableGameEntity::~MovableGameEntity(void)
 {
 }
 
-bool MovableGameEntity::IsAtDestination()
-{
-	if (m_currentTile == m_nextTile) 
-	{
-		return true;
-	}
-	return false;
-}
