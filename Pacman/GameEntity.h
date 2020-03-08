@@ -19,7 +19,7 @@ public:
 	inline Vector2f GetDrawPos() { return m_drawPos; }
 	inline void SetDrawPos(const Vector2f& drawPos) { m_drawPos = drawPos; }
 
-	inline bool Intersect(GameEntity& gameEntity, float dist) { return ((gameEntity.GetPosition() - this->GetPosition()).Length() < dist); }
+	inline bool Intersect(const Vector2f& entityPos, float dist) { return ((entityPos - this->GetPosition()).Length() < dist); }
 
 	inline void MarkForDelete() { myIdMarkedForDeleteFlag = true; }
 	inline bool IsMarkedForDelete() const { return myIdMarkedForDeleteFlag; }

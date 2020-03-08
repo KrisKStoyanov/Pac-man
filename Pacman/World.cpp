@@ -83,7 +83,7 @@ bool World::HasIntersectedDot(GameEntity& gameEntity, bool& win)
 {
 	for (unsigned int i = 0; i < myDots.size(); ++i)
 	{
-		if (gameEntity.Intersect(*myDots[i], m_dotIntersectionDist))
+		if (gameEntity.Intersect(myDots[i]->GetPosition(), m_dotIntersectionDist))
 		{
 			myDots.erase(myDots.begin() + i);
 			if (myDots.size() == 0 && myBigDots.size() == 0)
@@ -100,7 +100,7 @@ bool World::HasIntersectedBigDot(GameEntity& gameEntity, bool& win)
 {
 	for (unsigned int i = 0; i < myBigDots.size(); ++i)
 	{
-		if (gameEntity.Intersect(*myBigDots[i], m_dotIntersectionDist))
+		if (gameEntity.Intersect(myBigDots[i]->GetPosition(), m_dotIntersectionDist))
 		{
 			myBigDots.erase(myBigDots.begin() + i);
 			if (myDots.size() == 0 && myBigDots.size() == 0)
@@ -129,20 +129,6 @@ void World::Shutdown()
 	SAFE_DELETE_VECTOR(myDots);
 	SAFE_DELETE_VECTOR(myBigDots);
 	SAFE_DELETE_VECTOR(myCherry);
-}
-
-std::list<PathmapTile*> World::GetPath(Vector2f fromPos, Vector2f toPos, const int tileSize)
-{
-	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
-	{
-		myPathmapTiles[i]->myIsVisitedFlag = false;
-	}
-
-	std::list<PathmapTile*> aList;
-
-	Pathfind(GetTile(fromPos), GetTile(toPos), tileSize, aList);
-
-	return aList;
 }
 
 PathmapTile* World::GetTile(Vector2f tilePos)
@@ -174,7 +160,21 @@ bool SortFromGhostSpawn(PathmapTile* a, PathmapTile* b)
 	int la = abs(a->m_pos.myX - 13 * 22) + abs(a->m_pos.myY - 13 * 22);
 	int lb = abs(b->m_pos.myX - 13 * 22) + abs(b->m_pos.myY - 13 * 22);
 
-    return la < lb;
+	return la < lb;
+}
+
+std::list<PathmapTile*> World::GetPath(Vector2f fromPos, Vector2f toPos, const int tileSize)
+{
+	for (unsigned int i = 0; i < myPathmapTiles.size(); ++i)
+	{
+		myPathmapTiles[i]->myIsVisitedFlag = false;
+	}
+
+	std::list<PathmapTile*> aList;
+
+	Pathfind(GetTile(fromPos), GetTile(toPos), tileSize, aList);
+
+	return aList;
 }
 
 bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, const int tileSize, std::list<PathmapTile*>& aList)
@@ -187,31 +187,41 @@ bool World::Pathfind(PathmapTile* aFromTile, PathmapTile* aToTile, const int til
 	if (aFromTile == aToTile)
 		return true;
 
-	std::list<PathmapTile*> neighborList;
+	std::vector<PathmapTile*> neighborCollection;
 
-	PathmapTile* up = GetTile(Vector2f(aFromTile->m_pos.myX, aFromTile->m_pos.myY - tileSize));
-	if (up && !up->myIsVisitedFlag && !up->myIsBlockingFlag && ListDoesNotContain(up->m_pos, tileSize, aList))
-		neighborList.push_front(up);
+	PathmapTile* upTile = GetTile(Vector2f(aFromTile->m_pos.myX, aFromTile->m_pos.myY - tileSize));
+	PathmapTile* downTile = GetTile(Vector2f(aFromTile->m_pos.myX, aFromTile->m_pos.myY + tileSize));
+	PathmapTile* leftTile = GetTile(Vector2f(aFromTile->m_pos.myX - tileSize, aFromTile->m_pos.myY));
+	PathmapTile* rightTile = GetTile(Vector2f(aFromTile->m_pos.myX + tileSize, aFromTile->m_pos.myY));
 
-	PathmapTile* down = GetTile(Vector2f(aFromTile->m_pos.myX, aFromTile->m_pos.myY + tileSize));
-	if (down && !down->myIsVisitedFlag && !down->myIsBlockingFlag && ListDoesNotContain(down->m_pos, tileSize, aList))
-		neighborList.push_front(down);
-
-	PathmapTile* right = GetTile(Vector2f(aFromTile->m_pos.myX + tileSize, aFromTile->m_pos.myY));
-	if (right && !right->myIsVisitedFlag && !right->myIsBlockingFlag && ListDoesNotContain(right->m_pos, tileSize, aList))
-		neighborList.push_front(right);
-
-	PathmapTile* left = GetTile(Vector2f(aFromTile->m_pos.myX - tileSize, aFromTile->m_pos.myY));
-	if (left && !left->myIsVisitedFlag && !left->myIsBlockingFlag && ListDoesNotContain(left->m_pos, tileSize, aList))
-		neighborList.push_front(left);
-
-	neighborList.sort(SortFromGhostSpawn);
-
-	for (std::list<PathmapTile*>::iterator list_iter = neighborList.begin(); list_iter != neighborList.end(); list_iter++)
+	if (upTile && !upTile->myIsVisitedFlag && !upTile->myIsBlockingFlag && ListDoesNotContain(upTile->m_pos, tileSize, aList))
 	{
-		aList.push_back((PathmapTile*)*list_iter);
+		neighborCollection.push_back(upTile);
+	}
+	if (downTile && !downTile->myIsVisitedFlag && !downTile->myIsBlockingFlag && ListDoesNotContain(downTile->m_pos, tileSize, aList))
+	{
+		neighborCollection.push_back(downTile);
+	}
+	if (leftTile && !leftTile->myIsVisitedFlag && !leftTile->myIsBlockingFlag && ListDoesNotContain(leftTile->m_pos, tileSize, aList))
+	{
+		neighborCollection.push_back(leftTile);
+	}
+	if (rightTile && !rightTile->myIsVisitedFlag && !rightTile->myIsBlockingFlag && ListDoesNotContain(rightTile->m_pos, tileSize, aList))
+	{
+		neighborCollection.push_back(rightTile);
+	}
 
-		if (Pathfind((PathmapTile*)*list_iter, aToTile, tileSize, aList))
+	delete upTile;
+	delete downTile;
+	delete leftTile;
+	delete rightTile;
+	//neighborList.sort(SortFromGhostSpawn);
+
+	for (unsigned int i = 0; i < neighborCollection.size(); ++i)
+	{
+		aList.push_back(neighborCollection[i]);
+
+		if (Pathfind(neighborCollection[i], aToTile, tileSize, aList))
 			return true;
 
 		aList.pop_back();
