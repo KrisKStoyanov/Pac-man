@@ -18,6 +18,7 @@
 struct WORLD_DESC
 {
 	float tileSize;
+	float spawnCherryCooldown;
 	DrawEntity* playfieldDrawEntity;
 	DrawEntity* dotDrawEntity;
 	DrawEntity* bigDotDrawEntity;
@@ -62,10 +63,10 @@ private:
 	Cherry* m_pCherry;
 
 	float m_spawnCherryDefault;
-	float m_spawnCherryDuration;
+	float m_spawnCherryCooldown;
 	float m_spawnCherryReducer;
 
-	float m_dotIntersectionDist;
+	float m_intersectionDist;
 
 	WORLD_DESC m_desc;
 };

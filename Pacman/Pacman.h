@@ -7,6 +7,7 @@
 struct PACMAN_DESC
 {
 	//Simulation data
+	int tileSize = 22;
 	float lives = 3;
 	float avatarMovementSpeed = 160.0f;
 	float ghostChaseSpeed = 140.0f;
@@ -16,6 +17,7 @@ struct PACMAN_DESC
 	float ghostChaseDuration = 8.0f;
 	float ghostScatterDuration = 6.0f;
 	float avatarToggleDrawCooldown = 0.05f;
+	float cherrySpawnCooldown = 20.0f;
 
 	//Graphics data
 	const char* avatarOpenLeftImage = "open_left_32.png";

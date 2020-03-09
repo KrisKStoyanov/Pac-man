@@ -4,7 +4,7 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 	m_desc(pacman_desc),
 	m_avatarNextDir(-1.f, 0.f),
 	m_score(0), m_win(false), m_fps(0),
-	m_tileSize(22), m_drawOffset(220.0f, 60.0f),
+	m_tileSize(pacman_desc.tileSize), m_drawOffset(220.0f, 60.0f),
 	m_lives(pacman_desc.lives),
 	m_ghostGhostCounter(0.0f), m_ghostIntersectionDist(10.0f),
 	m_ghostCounterDefault(pacman_desc.ghostCounterDuration), 
@@ -96,7 +96,8 @@ bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 	m_pDeadGhost = core.GetRenderer()->CreateDrawEntity(pacman_desc.ghostDeadImage);
 
 	WORLD_DESC world_desc;
-	world_desc.tileSize = m_tileSize;
+	world_desc.tileSize = pacman_desc.tileSize;;
+	world_desc.spawnCherryCooldown = pacman_desc.cherrySpawnCooldown;
 	world_desc.playfieldDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.playfieldImage);
 	world_desc.dotDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.dotImage);
 	world_desc.bigDotDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.bigDotImage);

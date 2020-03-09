@@ -6,9 +6,9 @@ World::World(void) :
 	m_pathmapTileCollection(),
 	m_dotCollection(),
 	m_bigDotCollection(),
-	m_dotIntersectionDist(5.0f),
-	m_spawnCherryDefault(30.0f),
-	m_spawnCherryDuration(30.0f),
+	m_intersectionDist(5.0f),
+	m_spawnCherryDefault(15.0f),
+	m_spawnCherryCooldown(15.0f),
 	m_spawnCherryReducer(1.0f)
 {
 
@@ -21,6 +21,7 @@ World::~World(void)
 void World::Init(const WORLD_DESC& world_desc)
 {
 	m_desc = world_desc;
+	m_spawnCherryCooldown = m_spawnCherryDefault = world_desc.spawnCherryCooldown;
 
 	InitPathmap(m_desc.tileSize);
 }
@@ -66,18 +67,18 @@ void World::Update(const float& deltaTime)
 {
 	if (!m_pCherry)
 	{
-		m_spawnCherryDuration -= deltaTime * m_spawnCherryReducer;
-		if (m_spawnCherryDuration < 0.0f)
+		m_spawnCherryCooldown -= deltaTime * m_spawnCherryReducer;
+		if (m_spawnCherryCooldown < 0.0f)
 		{
 			SpawnCherry();
-			m_spawnCherryDuration = m_spawnCherryDefault;
+			m_spawnCherryCooldown = m_spawnCherryDefault;
 		}
 	}
 }
 
 void World::Reset()
 {
-	m_spawnCherryDuration = m_spawnCherryDefault;
+	m_spawnCherryCooldown = m_spawnCherryDefault;
 	SAFE_DELETE(m_pCherry);
 }
 
@@ -117,7 +118,7 @@ bool World::HasIntersectedDot(GameEntity& gameEntity, bool& win)
 {
 	for (unsigned int i = 0; i < m_dotCollection.size(); ++i)
 	{
-		if (gameEntity.Intersect(m_dotCollection[i]->GetPosition(), m_dotIntersectionDist))
+		if (gameEntity.Intersect(m_dotCollection[i]->GetPosition(), m_intersectionDist))
 		{
 			m_dotCollection.erase(m_dotCollection.begin() + i);
 			if (m_dotCollection.size() == 0 && m_bigDotCollection.size() == 0)
@@ -134,7 +135,7 @@ bool World::HasIntersectedBigDot(GameEntity& gameEntity, bool& win)
 {
 	for (unsigned int i = 0; i < m_bigDotCollection.size(); ++i)
 	{
-		if (gameEntity.Intersect(m_bigDotCollection[i]->GetPosition(), m_dotIntersectionDist))
+		if (gameEntity.Intersect(m_bigDotCollection[i]->GetPosition(), m_intersectionDist))
 		{
 			m_bigDotCollection.erase(m_bigDotCollection.begin() + i);
 			if (m_dotCollection.size() == 0 && m_bigDotCollection.size() == 0)
@@ -151,7 +152,7 @@ bool World::HasIntersectedCherry(GameEntity& gameEntity)
 {
 	if (m_pCherry)
 	{
-		if (gameEntity.Intersect(m_pCherry->GetPosition(), m_dotIntersectionDist))
+		if (gameEntity.Intersect(m_pCherry->GetPosition(), m_intersectionDist))
 		{
 			SAFE_DELETE(m_pCherry);
 			return true;
