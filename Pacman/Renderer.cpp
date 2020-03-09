@@ -28,23 +28,16 @@ void Renderer::OnStartFrameRender()
 	SDL_RenderClear(m_pRenderer);
 }
 
-void Renderer::DrawObject(DrawEntity& drawEntity, int posX, int posY)
+void Renderer::DrawObject(DrawEntity& drawEntity, const Vector2f& drawPos)
 {
-	if (posX == 0 && posY == 0)
-	{
-		SDL_RenderCopy(m_pRenderer, drawEntity.GetTexture(), &drawEntity.GetSizeRect(), &drawEntity.GetPosRect());
-	}
-	else
-	{
-		SDL_Rect sizeRect = drawEntity.GetSizeRect();
+	SDL_Rect sizeRect = drawEntity.GetSizeRect();
 
-		SDL_Rect posRect;
-		posRect.x = posX;
-		posRect.y = posY;
-		posRect.w = sizeRect.w;
-		posRect.h = sizeRect.h;
-		SDL_RenderCopy(m_pRenderer, drawEntity.GetTexture(), &sizeRect, &posRect);
-	}
+	SDL_Rect posRect;
+	posRect.x = drawPos.myX;
+	posRect.y = drawPos.myY;
+	posRect.w = sizeRect.w;
+	posRect.h = sizeRect.h;
+	SDL_RenderCopy(m_pRenderer, drawEntity.GetTexture(), &sizeRect, &posRect);
 }
 
 void Renderer::OnEndFrameRender()

@@ -86,21 +86,21 @@ void World::Reset()
 
 void World::Draw(Renderer& renderer)
 {
-	renderer.DrawObject(*m_desc.playfieldDrawEntity);
+	renderer.DrawObject(*m_desc.playfieldDrawEntity, Vector2f(0.0f, 0.0f));
 
 	for (unsigned int i = 0; i < m_dotCollection.size(); ++i)
 	{
-		renderer.DrawObject(*m_desc.dotDrawEntity, m_dotCollection[i]->GetDrawPos().myX, m_dotCollection[i]->GetDrawPos().myY);
+		renderer.DrawObject(*m_desc.dotDrawEntity, m_dotCollection[i]->GetDrawPos());
 	}
 
 	for (unsigned int i = 0; i < m_bigDotCollection.size(); ++i)
 	{
-		renderer.DrawObject(*m_desc.bigDotDrawEntity, m_bigDotCollection[i]->GetDrawPos().myX, m_bigDotCollection[i]->GetDrawPos().myY);
+		renderer.DrawObject(*m_desc.bigDotDrawEntity, m_bigDotCollection[i]->GetDrawPos());
 	}
 
 	if (m_pCherry)
 	{
-		renderer.DrawObject(*m_desc.cherryDrawEntity, m_pCherry->GetDrawPos().myX, m_pCherry->GetDrawPos().myY);
+		renderer.DrawObject(*m_desc.cherryDrawEntity, m_pCherry->GetDrawPos());
 	}
 }
 

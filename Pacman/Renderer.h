@@ -26,7 +26,7 @@ public:
 
 	void SetDrawEntityText(DrawTextEntity& drawEntity, const char* aText, const char* aFontFile);
 
-	void DrawObject(DrawEntity& drawEntity, int posX = 0, int posY = 0);
+	void DrawObject(DrawEntity& drawEntity, const Vector2f& drawPos);
 private:
 	SDL_Renderer* m_pRenderer;
 	RENDERER_DESC m_desc;

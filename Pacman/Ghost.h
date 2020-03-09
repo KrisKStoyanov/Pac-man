@@ -2,8 +2,6 @@
 #define GHOST_H
 
 #include "World.h"
-#include <vector>
-#include <list>
 #include "MovableGameEntity.h"
 
 enum class GhostState : unsigned short

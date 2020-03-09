@@ -54,20 +54,21 @@ public:
 
 	bool Init(Core& core, const PACMAN_DESC& pacman_desc);
 	int Run(Core& core);
-	void Shutdown();
+	void Shutdown(void);
 
 private:
 
 	//Simulation Logic:
 	void OnUpdate(float aTime);
-	void PickupDot();
-	void PickupBigDot();
+	void PickupDot(void);
+	void PickupBigDot(void);
 	void IntersectGhost(Ghost& ghost);
 	void ResetGhost(Ghost& ghost);
-	void ResetAvatar();
-	void PickupCherry();
+	void ResetAvatar(void);
+	void PickupCherry(void);
 	void UpdateScore(int amount);
 	void UpdateLives(int amount);
+
 	void UpdateFPS(float deltaTime);
 
 	//Graphics Logic:
@@ -81,16 +82,20 @@ private:
 	int m_score;
 	int m_fps;
 
+	int m_avgFps;
+	int m_frameCounter;
+	const int m_fpsCaptureThreshold;
+
 	float m_bonusLiveScoreThreshold;
 
-	Avatar* myAvatar;
+	Avatar* m_pAvatar;
 	
-	Ghost* orangeGhost;
-	Ghost* redGhost;
-	Ghost* tealGhost;
-	Ghost* pinkGhost;
+	Ghost* m_pBlinky;
+	Ghost* m_pPinky;
+	Ghost* m_pInky;
+	Ghost* m_pClyde;
 
-	World* myWorld;
+	World* m_pWorld;
 
 	bool m_isRunning;
 	bool m_updateUI;

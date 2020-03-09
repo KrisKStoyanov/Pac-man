@@ -3,7 +3,6 @@
 
 #include "World.h"
 #include "MovableGameEntity.h"
-#include "Vector2f.h"
 
 struct AVATAR_DRAW_DESC
 {

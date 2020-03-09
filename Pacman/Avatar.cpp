@@ -68,44 +68,44 @@ void Avatar::Draw(Renderer& renderer,
 	{
 		if (m_drawOpen)
 		{
-			renderer.DrawObject(rightOpenImage, m_drawPos.myX, m_drawPos.myY);
+			renderer.DrawObject(rightOpenImage, m_drawPos);
 		}
 		else
 		{
-			renderer.DrawObject(rightClosedImage, m_drawPos.myX, m_drawPos.myY);
+			renderer.DrawObject(rightClosedImage, m_drawPos);
 		}
 	}
 	else if (m_direction == Vector2f(-1, 0))
 	{
 		if (m_drawOpen)
 		{
-			renderer.DrawObject(leftOpenImage, m_drawPos.myX, m_drawPos.myY);
+			renderer.DrawObject(leftOpenImage, m_drawPos);
 		}
 		else
 		{
-			renderer.DrawObject(leftClosedImage, m_drawPos.myX, m_drawPos.myY);
+			renderer.DrawObject(leftClosedImage, m_drawPos);
 		}
 	}
 	else if (m_direction == Vector2f(0, 1))
 	{
 		if (m_drawOpen)
 		{
-			renderer.DrawObject(downOpenImage, m_drawPos.myX, m_drawPos.myY);
+			renderer.DrawObject(downOpenImage, m_drawPos);
 		}
 		else
 		{
-			renderer.DrawObject(downClosedImage, m_drawPos.myX, m_drawPos.myY);
+			renderer.DrawObject(downClosedImage, m_drawPos);
 		}
 	}
 	else if (m_direction == Vector2f(0, -1))
 	{
 		if (m_drawOpen)
 		{
-			renderer.DrawObject(upOpenImage, m_drawPos.myX, m_drawPos.myY);
+			renderer.DrawObject(upOpenImage, m_drawPos);
 		}
 		else
 		{
-			renderer.DrawObject(upClosedImage, m_drawPos.myX, m_drawPos.myY);
+			renderer.DrawObject(upClosedImage, m_drawPos);
 		}
 	}
 }

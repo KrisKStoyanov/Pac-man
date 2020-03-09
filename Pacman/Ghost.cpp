@@ -555,14 +555,14 @@ void Ghost::Draw(Renderer& renderer, DrawEntity& defaultImage, DrawEntity& vulne
 {
 	if (myIsDeadFlag)
 	{
-		renderer.DrawObject(deadImage, m_drawPos.myX, m_drawPos.myY);
+		renderer.DrawObject(deadImage, m_drawPos);
 	}
 	else if (m_state == GhostState::FRIGHTENED)
 	{
-		renderer.DrawObject(vulnerableImage, m_drawPos.myX, m_drawPos.myY);
+		renderer.DrawObject(vulnerableImage, m_drawPos);
 	}
 	else
 	{
-		renderer.DrawObject(defaultImage, m_drawPos.myX, m_drawPos.myY);
+		renderer.DrawObject(defaultImage, m_drawPos);
 	}
 }
