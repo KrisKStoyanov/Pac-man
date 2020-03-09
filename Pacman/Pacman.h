@@ -60,7 +60,6 @@ private:
 
 	//Simulation Logic:
 	void OnUpdate(float aTime);
-	void UpdateAvatar(float deltaTime);
 	void PickupDot();
 	void PickupBigDot();
 	void IntersectGhost(Ghost& ghost);
@@ -73,12 +72,9 @@ private:
 
 	//Graphics Logic:
 	bool OnDraw(Renderer& renderer);
-	void DrawAvatar(Renderer& renderer, Vector2f& direction, const bool& open);
 	void RedrawUI(Renderer& core);
 
 	//Local data
-	float m_avatarMovementSpeed;
-
 	float m_ghostIntersectionDist;
 
 	int m_lives;
@@ -86,8 +82,6 @@ private:
 	int m_fps;
 
 	float m_bonusLiveScoreThreshold;
-
-	Vector2f m_avatarNextDir;
 
 	Avatar* myAvatar;
 	
@@ -125,16 +119,9 @@ private:
 
 	PACMAN_DESC m_desc;
 	
-	const Vector2f m_drawOffset;
-
-	const int m_tileSize;
+	Vector2f m_drawOffset;
 
 	bool m_win;
-
-	float m_toggleAvatarDrawDefault;
-	float m_toggleAvatarDrawCooldown;
-	float m_toggleAvatarDrawReducer;
-	bool m_avatarOpen;
 };
 
 #endif // PACMAN_H

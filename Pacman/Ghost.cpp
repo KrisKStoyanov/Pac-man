@@ -21,9 +21,7 @@ Ghost::Ghost(
 	m_frightenedDefaultDuration(frightenedDuration),
 	m_scatterDefaultDuration(scatterDuration),
 	m_scatterCurrentDuration(scatterDuration),
-	m_stateDurationReducer(1.0f),
-	m_leftDir(-1.f, 0.f), m_rightDir(1.f, 0.f),
-	m_upDir(0.f, -1.f), m_downDir(0.f, 1.f)
+	m_stateDurationReducer(1.0f)
 {
 	m_state = GhostState::CHASE;
 	myIsDeadFlag = false;
@@ -81,8 +79,8 @@ void Ghost::Update(
 
 				if (m_nextDir.myX != 0)
 				{
-					Vector2f nextUpTile = m_currentTile + m_upDir * tileSize;
-					Vector2f nextDownTile = m_currentTile + m_downDir * tileSize;
+					Vector2f nextUpTile = m_currentTile + world.m_upDir * tileSize;
+					Vector2f nextDownTile = m_currentTile + world.m_downDir * tileSize;
 
 					float distToAvatarUp = distToAvatarDir + 1.0f;
 					float distToAvatarDown = distToAvatarDir + 1.0f;
@@ -102,19 +100,19 @@ void Ghost::Update(
 					}
 					else if (distToAvatarUp < distToAvatarDown)
 					{
-						m_nextDir = m_upDir;
+						m_nextDir = world.m_upDir;
 						m_nextTile = nextUpTile;
 					}
 					else
 					{
-						m_nextDir = m_downDir;
+						m_nextDir = world.m_downDir;
 						m_nextTile = nextDownTile;
 					}
 				}
 				else if (m_nextDir.myY != 0)
 				{
-					Vector2f nextLeftTile = m_currentTile + m_leftDir * tileSize;
-					Vector2f nextRightTile = m_currentTile + m_rightDir * tileSize;
+					Vector2f nextLeftTile = m_currentTile + world.m_leftDir * tileSize;
+					Vector2f nextRightTile = m_currentTile + world.m_rightDir * tileSize;
 
 					float distToAvatarLeft = distToAvatarDir + 1.0f;
 					float distToAvatarRight = distToAvatarDir + 1.0f;
@@ -134,71 +132,71 @@ void Ghost::Update(
 					}
 					else if (distToAvatarLeft < distToAvatarRight)
 					{
-						m_nextDir = m_leftDir;
+						m_nextDir = world.m_leftDir;
 						m_nextTile = nextLeftTile;
 					}
 					else
 					{
-						m_nextDir = m_rightDir;
+						m_nextDir = world.m_rightDir;
 						m_nextTile = nextRightTile;
 					}
 				}
 			}
 			else if (m_nextDir.myX != 0)
 			{
-				Vector2f nextUpTile = m_currentTile + m_upDir * tileSize;
-				Vector2f nextDownTile = m_currentTile + m_downDir * tileSize;
+				Vector2f nextUpTile = m_currentTile + world.m_upDir * tileSize;
+				Vector2f nextDownTile = m_currentTile + world.m_downDir * tileSize;
 
 				if (world.TileIsValid(nextUpTile) && world.TileIsValid(nextDownTile))
 				{
 					if ((nextUpTile - target).Length() < (nextDownTile - target).Length())
 					{
-						m_nextDir = m_upDir;
+						m_nextDir = world.m_upDir;
 						m_nextTile = nextUpTile;
 					}
 					else
 					{
-						m_nextDir = m_downDir;
+						m_nextDir = world.m_downDir;
 						m_nextTile = nextDownTile;
 					}
 				}
 				else if (world.TileIsValid(nextUpTile))
 				{
-					m_nextDir = m_upDir;
+					m_nextDir = world.m_upDir;
 					m_nextTile = nextUpTile;
 				}
 				else
 				{
-					m_nextDir = m_downDir;
+					m_nextDir = world.m_downDir;
 					m_nextTile = nextDownTile;
 				}
 			}
 			else if (m_nextDir.myY != 0)
 			{
-				Vector2f nextLeftTile = m_currentTile + m_leftDir * tileSize;
-				Vector2f nextRightTile = m_currentTile + m_rightDir * tileSize;
+				Vector2f nextLeftTile = m_currentTile + world.m_leftDir * tileSize;
+				Vector2f nextRightTile = m_currentTile + world.m_rightDir * tileSize;
 
 				if (world.TileIsValid(nextLeftTile) && world.TileIsValid(nextRightTile))
 				{
 					if ((nextLeftTile - target).Length() < (nextRightTile - target).Length())
 					{
-						m_nextDir = m_leftDir;
+						m_nextDir = world.m_leftDir;
 						m_nextTile = nextLeftTile;
 					}
 					else
 					{
-						m_nextDir = m_rightDir;
+						m_nextDir = world.m_rightDir;
 						m_nextTile = nextRightTile;
 					}
 				}
 				else if (world.TileIsValid(nextLeftTile))
 				{
-					m_nextDir = m_leftDir;
+					m_nextDir = world.m_leftDir;
 					m_nextTile = nextLeftTile;
 				}
 				else
 				{
-					m_nextDir = m_rightDir;
+					m_nextDir = world.m_rightDir;
 					m_nextTile = nextRightTile;
 				}
 			}
@@ -213,8 +211,8 @@ void Ghost::Update(
 
 				if (m_nextDir.myX != 0)
 				{
-					Vector2f nextUpTile = m_currentTile + m_upDir * tileSize;
-					Vector2f nextDownTile = m_currentTile + m_downDir * tileSize;
+					Vector2f nextUpTile = m_currentTile + world.m_upDir * tileSize;
+					Vector2f nextDownTile = m_currentTile + world.m_downDir * tileSize;
 
 					float distToAvatarUp = distToAvatarDir - 1.0f;
 					float distToAvatarDown = distToAvatarDir - 1.0f;
@@ -234,19 +232,19 @@ void Ghost::Update(
 					}
 					else if (distToAvatarUp > distToAvatarDown)
 					{
-						m_nextDir = m_upDir;
+						m_nextDir = world.m_upDir;
 						m_nextTile = nextUpTile;
 					}
 					else
 					{
-						m_nextDir = m_downDir;
+						m_nextDir = world.m_downDir;
 						m_nextTile = nextDownTile;
 					}
 				}
 				else if (m_nextDir.myY != 0)
 				{
-					Vector2f nextLeftTile = m_currentTile + m_leftDir * tileSize;
-					Vector2f nextRightTile = m_currentTile + m_rightDir * tileSize;
+					Vector2f nextLeftTile = m_currentTile + world.m_leftDir * tileSize;
+					Vector2f nextRightTile = m_currentTile + world.m_rightDir * tileSize;
 
 					float distToAvatarLeft = distToAvatarDir - 1.0f;
 					float distToAvatarRight = distToAvatarDir - 1.0f;
@@ -266,71 +264,71 @@ void Ghost::Update(
 					}
 					else if (distToAvatarLeft > distToAvatarRight)
 					{
-						m_nextDir = m_leftDir;
+						m_nextDir = world.m_leftDir;
 						m_nextTile = nextLeftTile;
 					}
 					else
 					{
-						m_nextDir = m_rightDir;
+						m_nextDir = world.m_rightDir;
 						m_nextTile = nextRightTile;
 					}
 				}
 			}
 			else if (m_nextDir.myX != 0)
 			{
-				Vector2f nextUpTile = m_currentTile + m_upDir * tileSize;
-				Vector2f nextDownTile = m_currentTile + m_downDir * tileSize;
+				Vector2f nextUpTile = m_currentTile + world.m_upDir * tileSize;
+				Vector2f nextDownTile = m_currentTile + world.m_downDir * tileSize;
 
 				if (world.TileIsValid(nextUpTile) && world.TileIsValid(nextDownTile))
 				{
 					if ((nextUpTile - target).Length() > (nextDownTile - target).Length())
 					{
-						m_nextDir = m_upDir;
+						m_nextDir = world.m_upDir;
 						m_nextTile = nextUpTile;
 					}
 					else
 					{
-						m_nextDir = m_downDir;
+						m_nextDir = world.m_downDir;
 						m_nextTile = nextDownTile;
 					}
 				}
 				else if (world.TileIsValid(nextUpTile))
 				{
-					m_nextDir = m_upDir;
+					m_nextDir = world.m_upDir;
 					m_nextTile = nextUpTile;
 				}
 				else
 				{
-					m_nextDir = m_downDir;
+					m_nextDir = world.m_downDir;
 					m_nextTile = nextDownTile;
 				}
 			}
 			else if (m_nextDir.myY != 0)
 			{
-				Vector2f nextLeftTile = m_currentTile + m_leftDir * tileSize;
-				Vector2f nextRightTile = m_currentTile + m_rightDir * tileSize;
+				Vector2f nextLeftTile = m_currentTile + world.m_leftDir * tileSize;
+				Vector2f nextRightTile = m_currentTile + world.m_rightDir * tileSize;
 
 				if (world.TileIsValid(nextLeftTile) && world.TileIsValid(nextRightTile))
 				{
 					if ((nextLeftTile - target).Length() > (nextRightTile - target).Length())
 					{
-						m_nextDir = m_leftDir;
+						m_nextDir = world.m_leftDir;
 						m_nextTile = nextLeftTile;
 					}
 					else
 					{
-						m_nextDir = m_rightDir;
+						m_nextDir = world.m_rightDir;
 						m_nextTile = nextRightTile;
 					}
 				}
 				else if (world.TileIsValid(nextLeftTile))
 				{
-					m_nextDir = m_leftDir;
+					m_nextDir = world.m_leftDir;
 					m_nextTile = nextLeftTile;
 				}
 				else
 				{
-					m_nextDir = m_rightDir;
+					m_nextDir = world.m_rightDir;
 					m_nextTile = nextRightTile;
 				}
 			}
@@ -343,8 +341,8 @@ void Ghost::Update(
 			{
 				if (m_nextDir.myX != 0)
 				{
-					Vector2f nextUpTile = m_currentTile + m_upDir * tileSize;
-					Vector2f nextDownTile = m_currentTile + m_downDir * tileSize;
+					Vector2f nextUpTile = m_currentTile + world.m_upDir * tileSize;
+					Vector2f nextDownTile = m_currentTile + world.m_downDir * tileSize;
 
 					float r = world.GetRandFloat(deltaTime);
 
@@ -352,12 +350,12 @@ void Ghost::Update(
 					{
 						if (r < 3.3f)
 						{
-							m_nextDir = m_upDir;
+							m_nextDir = world.m_upDir;
 							m_nextTile = nextUpTile;
 						}
 						else if (r < 6.6f)
 						{
-							m_nextDir = m_downDir;
+							m_nextDir = world.m_downDir;
 							m_nextTile = nextDownTile;
 						}
 						else
@@ -370,7 +368,7 @@ void Ghost::Update(
 					{
 						if (r < 5.0f)
 						{
-							m_nextDir = m_upDir;
+							m_nextDir = world.m_upDir;
 							m_nextTile = nextUpTile;
 						}
 						else
@@ -382,7 +380,7 @@ void Ghost::Update(
 					{
 						if (r < 5.0f)
 						{
-							m_nextDir = m_downDir;
+							m_nextDir = world.m_downDir;
 							m_nextTile = nextDownTile;
 						}
 						else
@@ -397,8 +395,8 @@ void Ghost::Update(
 				}
 				else if (m_nextDir.myY != 0)
 				{
-					Vector2f nextLeftTile = m_currentTile + m_leftDir * tileSize;
-					Vector2f nextRightTile = m_currentTile + m_rightDir * tileSize;
+					Vector2f nextLeftTile = m_currentTile + world.m_leftDir * tileSize;
+					Vector2f nextRightTile = m_currentTile + world.m_rightDir * tileSize;
 
 					float r = world.GetRandFloat(deltaTime);
 
@@ -406,12 +404,12 @@ void Ghost::Update(
 					{
 						if (r < 3.3f)
 						{
-							m_nextDir = m_leftDir;
+							m_nextDir = world.m_leftDir;
 							m_nextTile = nextLeftTile;
 						}
 						else if (r < 6.6f)
 						{
-							m_nextDir = m_rightDir;
+							m_nextDir = world.m_rightDir;
 							m_nextTile = nextRightTile;
 						}
 						else
@@ -424,7 +422,7 @@ void Ghost::Update(
 					{
 						if (r < 5.0f)
 						{
-							m_nextDir = m_leftDir;
+							m_nextDir = world.m_leftDir;
 							m_nextTile = nextLeftTile;
 						}
 						else
@@ -436,7 +434,7 @@ void Ghost::Update(
 					{
 						if (r < 5.0f)
 						{
-							m_nextDir = m_rightDir;
+							m_nextDir = world.m_rightDir;
 							m_nextTile = nextRightTile;
 						}
 						else
@@ -452,61 +450,61 @@ void Ghost::Update(
 			}
 			else if (m_nextDir.myX != 0)
 			{
-				Vector2f nextUpTile = m_currentTile + m_upDir * tileSize;
-				Vector2f nextDownTile = m_currentTile + m_downDir * tileSize;
+				Vector2f nextUpTile = m_currentTile + world.m_upDir * tileSize;
+				Vector2f nextDownTile = m_currentTile + world.m_downDir * tileSize;
 
 				if (world.TileIsValid(nextUpTile) && world.TileIsValid(nextDownTile))
 				{
 					float r = world.GetRandFloat(deltaTime);
 					if (r < 5.0f)
 					{
-						m_nextDir = m_upDir;
+						m_nextDir = world.m_upDir;
 						m_nextTile = nextUpTile;
 					}
 					else
 					{
-						m_nextDir = m_downDir;
+						m_nextDir = world.m_downDir;
 						m_nextTile = nextDownTile;
 					}
 				}
 				else if (world.TileIsValid(nextUpTile))
 				{
-					m_nextDir = m_upDir;
+					m_nextDir = world.m_upDir;
 					m_nextTile = nextUpTile;
 				}
 				else
 				{
-					m_nextDir = m_downDir;
+					m_nextDir = world.m_downDir;
 					m_nextTile = nextDownTile;
 				}
 			}
 			else if (m_nextDir.myY != 0)
 			{
-				Vector2f nextLeftTile = m_currentTile + m_leftDir * tileSize;
-				Vector2f nextRightTile = m_currentTile + m_rightDir * tileSize;
+				Vector2f nextLeftTile = m_currentTile + world.m_leftDir * tileSize;
+				Vector2f nextRightTile = m_currentTile + world.m_rightDir * tileSize;
 
 				if (world.TileIsValid(nextLeftTile) && world.TileIsValid(nextRightTile))
 				{
 					float r = world.GetRandFloat(deltaTime);
 					if (r < 5.0f)
 					{
-						m_nextDir = m_leftDir;
+						m_nextDir = world.m_leftDir;
 						m_nextTile = nextLeftTile;
 					}
 					else
 					{
-						m_nextDir = m_rightDir;
+						m_nextDir = world.m_rightDir;
 						m_nextTile = nextRightTile;
 					}
 				}
 				else if (world.TileIsValid(nextLeftTile))
 				{
-					m_nextDir = m_leftDir;
+					m_nextDir = world.m_leftDir;
 					m_nextTile = nextLeftTile;
 				}
 				else
 				{
-					m_nextDir = m_rightDir;
+					m_nextDir = world.m_rightDir;
 					m_nextTile = nextRightTile;
 				}
 			}

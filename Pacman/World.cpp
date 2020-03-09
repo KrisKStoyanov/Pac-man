@@ -9,7 +9,9 @@ World::World(void) :
 	m_intersectionDist(5.0f),
 	m_spawnCherryDefault(15.0f),
 	m_spawnCherryCooldown(15.0f),
-	m_spawnCherryReducer(1.0f)
+	m_spawnCherryReducer(1.0f),
+	m_leftDir(-1.f, 0.f), m_rightDir(1.f, 0.f),
+	m_upDir(0.f, -1.f), m_downDir(0.f, 1.f)
 {
 
 }

@@ -48,6 +48,11 @@ public:
 	std::list<PathmapTile*> GetPath(Vector2f fromTile, Vector2f toTile, const int tileSize);
 
 	float GetRandFloat(float seed);
+
+	const Vector2f m_leftDir;
+	const Vector2f m_rightDir;
+	const Vector2f m_upDir;
+	const Vector2f m_downDir;
 private:
 	void SpawnCherry(const Vector2f& position = Vector2f(12.5f, 16.0f));
 	PathmapTile* GetTile(Vector2f tilePos);

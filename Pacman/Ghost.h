@@ -64,11 +64,6 @@ private:
 	float m_stateDurationReducer;
 
 	float m_stateDuration;
-
-	const Vector2f m_leftDir;
-	const Vector2f m_rightDir;
-	const Vector2f m_upDir;
-	const Vector2f m_downDir;
 };
 
 #endif // GHOST_H
