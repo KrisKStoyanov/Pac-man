@@ -43,6 +43,9 @@ public:
 
 	void TransitionState(GhostState state);
 private:
+
+	float GetRandFloat(float seed, float min, float max);
+
 	bool myIsDeadFlag;
 	Vector2f m_nextDir;
 	std::list<PathmapTile*> myPath;
@@ -61,6 +64,8 @@ private:
 	float m_scatterDefaultDuration;
 	float m_scatterCurrentDuration;
 	float m_scatterDurationReducer;
+
+	float m_stateDuration;
 
 	const Vector2f m_leftDir;
 	const Vector2f m_rightDir;

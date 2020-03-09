@@ -39,7 +39,7 @@ struct PACMAN_DESC
 	const char* playfieldImage = "playfield.png";
 	const char* dotImage = "Small_Dot_32.png";
 	const char* bigDotImage = "Big_Dot_32.png";
-	const char* cherryImage = "dot.png";
+	const char* cherryImage = "cherry_32.png";
 
 	const char* uiFont = "freefont-ttf\\sfd\\FreeMono.ttf";
 };
@@ -96,6 +96,8 @@ private:
 	int m_lives;
 	int m_score;
 	int m_fps;
+
+	float m_bonusLiveScoreThreshold;
 
 	Vector2f m_avatarNextDir;
 

@@ -14,7 +14,8 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 	m_toggleAvatarDrawDefault(pacman_desc.avatarToggleDrawCooldown), 
 	m_toggleAvatarDrawCooldown(pacman_desc.avatarToggleDrawCooldown), 
 	m_toggleAvatarDrawReducer(1.0f), 
-	m_avatarMovementSpeed(pacman_desc.avatarMovementSpeed)
+	m_avatarMovementSpeed(pacman_desc.avatarMovementSpeed),
+	m_bonusLiveScoreThreshold(1000)
 {
 	myAvatar = new Avatar(Vector2f(13, 22) * m_tileSize, m_avatarMovementSpeed);
 
@@ -22,7 +23,7 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 		pacman_desc.ghostChaseSpeed, 
 		pacman_desc.ghostScatterSpeed, 
 		pacman_desc.ghostFrightenedSpeed, 
-		pacman_desc.ghostChaseDuration,
+		pacman_desc.ghostChaseDuration + pacman_desc.ghostChaseDuration,
 		pacman_desc.ghostScatterDuration,
 		Vector2f(1, 0));
 
@@ -31,14 +32,14 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 		pacman_desc.ghostScatterSpeed,
 		pacman_desc.ghostFrightenedSpeed, 
 		pacman_desc.ghostChaseDuration,
-		pacman_desc.ghostScatterDuration,
+		pacman_desc.ghostScatterDuration + pacman_desc.ghostScatterDuration,
 		Vector2f(-1, 0));
 
 	pinkGhost = new Ghost(Vector2f(11, 10) * m_tileSize, 
 		pacman_desc.ghostChaseSpeed,
 		pacman_desc.ghostScatterSpeed,
 		pacman_desc.ghostFrightenedSpeed, 
-		pacman_desc.ghostChaseDuration,
+		pacman_desc.ghostChaseDuration + pacman_desc.ghostChaseDuration,
 		pacman_desc.ghostScatterDuration,
 		Vector2f(-1, 0));
 
@@ -47,7 +48,7 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 		pacman_desc.ghostScatterSpeed,
 		pacman_desc.ghostFrightenedSpeed,
 		pacman_desc.ghostChaseDuration,
-		pacman_desc.ghostScatterDuration,
+		pacman_desc.ghostScatterDuration + pacman_desc.ghostScatterDuration,
 		Vector2f(1, 0));
 
 	myWorld = new World();
@@ -95,16 +96,13 @@ bool Pacman::Init(Core& core, const PACMAN_DESC& pacman_desc)
 	m_pDeadGhost = core.GetRenderer()->CreateDrawEntity(pacman_desc.ghostDeadImage);
 
 	WORLD_DESC world_desc;
+	world_desc.tileSize = m_tileSize;
 	world_desc.playfieldDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.playfieldImage);
 	world_desc.dotDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.dotImage);
 	world_desc.bigDotDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.bigDotImage);
 	world_desc.cherryDrawEntity = core.GetRenderer()->CreateDrawEntity(pacman_desc.cherryImage);
 
-	myWorld->Init(world_desc, m_tileSize);
-
-	//tealGhost->SetPath(myWorld->GetPath(tealGhost->GetCurrentTile(), Vector2f(13, 13) * m_tileSize, m_tileSize));
-	//pinkGhost->SetPath(myWorld->GetPath(pinkGhost->GetCurrentTile(), Vector2f(13, 13) * m_tileSize, m_tileSize));
-	//orangeGhost->SetPath(myWorld->GetPath(orangeGhost->GetCurrentTile(), Vector2f(13, 13) * m_tileSize, m_tileSize));
+	myWorld->Init(world_desc);
 
 	return m_isRunning;
 }
@@ -156,21 +154,24 @@ void Pacman::OnUpdate(float aTime)
 {
 	UpdateAvatar(aTime);
 
+	myWorld->Update(aTime);
+
 	redGhost->Update(*myWorld, myAvatar->GetCurrentTile(), aTime, m_tileSize, m_drawOffset);
-	//UpdateGhost(*redGhost, *myWorld, myAvatar->GetCurrentTile(), aTime, m_tileSize, m_drawOffset);
-	//redGhost->Update(*myWorld, myAvatar->GetCurrentTile(), aTime, m_tileSize, m_drawOffset);
-	//tealGhost->Update(*myWorld, myAvatar->GetCurrentTile(), aTime, m_tileSize, m_drawOffset);
-	//pinkGhost->Update(*myWorld, myAvatar->GetCurrentTile(), aTime, m_tileSize, m_drawOffset);
-	//orangeGhost->Update(*myWorld, myAvatar->GetCurrentTile(), aTime, m_tileSize, m_drawOffset);
+	tealGhost->Update(*myWorld, myAvatar->GetCurrentTile(), aTime, m_tileSize, m_drawOffset);
+	pinkGhost->Update(*myWorld, myAvatar->GetCurrentTile(), aTime, m_tileSize, m_drawOffset);
+	orangeGhost->Update(*myWorld, myAvatar->GetCurrentTile(), aTime, m_tileSize, m_drawOffset);
 
 	if (myWorld->HasIntersectedDot(*myAvatar, m_win))
 	{
 		PickupDot();
-	}
-	
+	}	
 	if (myWorld->HasIntersectedBigDot(*myAvatar, m_win))
 	{
 		PickupBigDot();
+	}
+	if (myWorld->HasIntersectedCherry(*myAvatar))
+	{
+		PickupCherry();
 	}
 	
 	if (myAvatar->Intersect(redGhost->GetPosition(), m_ghostIntersectionDist))
@@ -243,6 +244,10 @@ void Pacman::UpdateAvatar(float deltaTime)
 void Pacman::UpdateScore(int amount)
 {
 	m_score += amount;
+	if (m_score > m_bonusLiveScoreThreshold)
+	{
+		UpdateLives(1);
+	}
 	m_updateUI = true;
 }
 
@@ -380,10 +385,10 @@ void Pacman::SetGhostCounter(float value)
 {
 	m_ghostGhostCounter = value;
 	m_ghostCounterFlag = true;
-	redGhost->TransitionState(GhostState::FRIGHTENED);
-	tealGhost->TransitionState(GhostState::FRIGHTENED);
-	pinkGhost->TransitionState(GhostState::FRIGHTENED);
-	orangeGhost->TransitionState(GhostState::FRIGHTENED);
+	redGhost->SetState(GhostState::FRIGHTENED);
+	tealGhost->SetState(GhostState::FRIGHTENED);
+	pinkGhost->SetState(GhostState::FRIGHTENED);
+	orangeGhost->SetState(GhostState::FRIGHTENED);
 }
 
 void Pacman::ReduceGhostCounterDuration(float amount)
@@ -393,10 +398,10 @@ void Pacman::ReduceGhostCounterDuration(float amount)
 	{
 		m_ghostCounterFlag = false;
 		m_ghostCounterDuration = m_ghostCounterDefault;
-		redGhost->TransitionState(GhostState::CHASE);
-		tealGhost->TransitionState(GhostState::CHASE);
-		pinkGhost->TransitionState(GhostState::CHASE);
-		orangeGhost->TransitionState(GhostState::CHASE);
+		redGhost->SetState(GhostState::CHASE);
+		tealGhost->SetState(GhostState::CHASE);
+		pinkGhost->SetState(GhostState::CHASE);
+		orangeGhost->SetState(GhostState::CHASE);
 	}
 }
 
@@ -424,6 +429,7 @@ void Pacman::IntersectGhost(Ghost& ghost)
 		if (!m_ghostCounterFlag)
 		{
 			UpdateLives(-1);
+			myWorld->Reset();
 			ResetAvatar();
 			ResetGhost(*redGhost);
 			ResetGhost(*tealGhost);
@@ -441,6 +447,7 @@ void Pacman::IntersectGhost(Ghost& ghost)
 
 void Pacman::PickupCherry()
 {
+	UpdateScore(1000);
 }
 
 bool Pacman::OnDraw(Renderer& renderer)
