@@ -1,0 +1,43 @@
+﻿  Avatar.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Window.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  BigDot.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\DrawEntity.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  Cherry.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\DrawEntity.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  Core.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Window.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  Dot.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\DrawEntity.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  DrawEntity.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\DrawEntity.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  DrawTextEntity.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\DrawEntity.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  GameEntity.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\DrawEntity.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  Ghost.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Window.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  main.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Window.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  MovableGameEntity.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\DrawEntity.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  Pacman.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Window.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  PathmapTile.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Renderer.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Renderer.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  StaticGameEntity.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\DrawEntity.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  Vector2f.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Vector2f.h(82,14): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Window.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Window.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  World.cpp
+C:\Users\stoya\OneDrive\Desktop\ubisoft\68da786c-0585-48e8-a9e0-8c2fdcb78c23_Pacman Source Code\Pacman\Pac-man\Pacman\Window.h(2,10): fatal error C1083: Cannot open include file: 'SDL.h': No such file or directory
+  Generating Code...

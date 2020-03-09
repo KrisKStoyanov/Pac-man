@@ -54,7 +54,14 @@ bool World::InitPathmap(const int& tileSize)
 				m_bigDotCollection.push_back(dot);
 			}
 
-			PathmapTile* tile = new PathmapTile(tilePos, (line[i] == 'x'));
+			bool teleportTile = false;
+			bool blockingTile = (line[i] == 'x');
+			if (!blockingTile)
+			{
+				teleportTile = (line[i] == 'z');
+			}
+
+			PathmapTile* tile = new PathmapTile(tilePos, blockingTile, teleportTile);
 			m_pathmapTileCollection.push_back(tile);
 		}
 
