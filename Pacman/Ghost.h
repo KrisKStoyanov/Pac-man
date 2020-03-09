@@ -1,7 +1,7 @@
 #ifndef GHOST_H
 #define GHOST_H
 
-#include "PathmapTile.h"
+#include "World.h"
 #include <vector>
 #include <list>
 #include "MovableGameEntity.h"
@@ -19,8 +19,10 @@ public:
 	Ghost(const Vector2f& aPosition, 
 		const float chaseSpeed, 
 		const float scatterSpeed, 
-		const float frightenedSpeed, 
-		const Vector2f& desiredMovement);
+		const float frightenedSpeed,
+		const float chaseDuration,
+		const float scatterDuration,
+		const Vector2f& nextDirection);
 	~Ghost(void);
 	inline bool GetDeadFlag() { return myIsDeadFlag; }
 	inline void SetDeadFlag(bool flag) { myIsDeadFlag = flag; }
@@ -37,6 +39,8 @@ public:
 	inline const float GetScatterSpeed() { return m_scatterSpeed; }
 	inline const float GetFrightenedSpeed() { return m_frightenedSpeed; }
 
+	void Update(World& world, const Vector2f& target, const float deltaTime, const float tileSize, const Vector2f& drawOffset);
+
 	void TransitionState(GhostState state);
 private:
 	bool myIsDeadFlag;
@@ -49,6 +53,19 @@ private:
 	float m_chaseSpeed;
 	float m_scatterSpeed;
 	float m_frightenedSpeed;
+
+	float m_chaseDefaultDuration;
+	float m_chaseCurrentDuration;
+	float m_chaseDurationReducer;
+
+	float m_scatterDefaultDuration;
+	float m_scatterCurrentDuration;
+	float m_scatterDurationReducer;
+
+	const Vector2f m_leftDir;
+	const Vector2f m_rightDir;
+	const Vector2f m_upDir;
+	const Vector2f m_downDir;
 };
 
 #endif // GHOST_H

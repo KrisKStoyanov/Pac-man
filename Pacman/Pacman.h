@@ -2,7 +2,6 @@
 #define PACMAN_H
 
 #include "Avatar.h"
-#include "World.h"
 #include "Ghost.h"
 
 struct PACMAN_DESC
@@ -14,6 +13,8 @@ struct PACMAN_DESC
 	float ghostScatterSpeed = 100.0f;
 	float ghostFrightenedSpeed = 60.0f;
 	float ghostCounterDuration = 12.0f;
+	float ghostChaseDuration = 8.0f;
+	float ghostScatterDuration = 6.0f;
 	float avatarToggleDrawCooldown = 0.05f;
 
 	//Graphics data
@@ -58,7 +59,6 @@ private:
 	//Simulation Logic:
 	void OnUpdate(float aTime);
 	void UpdateAvatar(float deltaTime);
-	void UpdateGhost(Ghost& ghost, float deltaTime);
 	void PickupDot();
 	void PickupBigDot();
 	void SetGhostCounter(float value);
