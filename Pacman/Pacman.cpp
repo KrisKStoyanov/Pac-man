@@ -6,10 +6,7 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 	m_score(0), m_win(false), m_fps(0),
 	m_tileSize(pacman_desc.tileSize), m_drawOffset(220.0f, 60.0f),
 	m_lives(pacman_desc.lives),
-	m_ghostGhostCounter(0.0f), m_ghostIntersectionDist(10.0f),
-	m_ghostCounterDefault(pacman_desc.ghostCounterDuration), 
-	m_ghostCounterDuration(pacman_desc.ghostCounterDuration),
-	m_ghostCounterFlag(false), m_ghostCounterReducer(1.0f),
+	m_ghostIntersectionDist(10.0f),
 	m_avatarOpen(true), 
 	m_toggleAvatarDrawDefault(pacman_desc.avatarToggleDrawCooldown), 
 	m_toggleAvatarDrawCooldown(pacman_desc.avatarToggleDrawCooldown), 
@@ -23,6 +20,7 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 		pacman_desc.ghostChaseSpeed, 
 		pacman_desc.ghostScatterSpeed, 
 		pacman_desc.ghostFrightenedSpeed, 
+		pacman_desc.ghostFrightenedDuration,
 		pacman_desc.ghostChaseDuration + pacman_desc.ghostChaseDuration,
 		pacman_desc.ghostScatterDuration,
 		Vector2f(1, 0));
@@ -32,6 +30,7 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 		pacman_desc.ghostScatterSpeed,
 		pacman_desc.ghostFrightenedSpeed, 
 		pacman_desc.ghostChaseDuration,
+		pacman_desc.ghostFrightenedDuration,
 		pacman_desc.ghostScatterDuration + pacman_desc.ghostScatterDuration,
 		Vector2f(-1, 0));
 
@@ -39,6 +38,7 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 		pacman_desc.ghostChaseSpeed,
 		pacman_desc.ghostScatterSpeed,
 		pacman_desc.ghostFrightenedSpeed, 
+		pacman_desc.ghostFrightenedDuration,
 		pacman_desc.ghostChaseDuration + pacman_desc.ghostChaseDuration,
 		pacman_desc.ghostScatterDuration,
 		Vector2f(-1, 0));
@@ -48,6 +48,7 @@ Pacman::Pacman(PACMAN_DESC pacman_desc) :
 		pacman_desc.ghostScatterSpeed,
 		pacman_desc.ghostFrightenedSpeed,
 		pacman_desc.ghostChaseDuration,
+		pacman_desc.ghostFrightenedDuration,
 		pacman_desc.ghostScatterDuration + pacman_desc.ghostScatterDuration,
 		Vector2f(1, 0));
 
@@ -192,11 +193,6 @@ void Pacman::OnUpdate(float aTime)
 		IntersectGhost(*orangeGhost);
 	}
 	
-	if (m_ghostCounterFlag)
-	{
-		ReduceGhostCounterDuration(aTime * m_ghostCounterReducer);
-	}
-
 	if (aTime > 0)
 	{
 		UpdateFPS(aTime);
@@ -316,26 +312,6 @@ void Pacman::DrawAvatar(Renderer& renderer, Vector2f& direction, const bool& ope
 	}
 }
 
-void Pacman::DrawGhost(
-	Renderer& renderer, Ghost& ghost, 
-	DrawEntity& deadGhost, 
-	DrawEntity& vulnerableGhost, 
-	DrawEntity& defaultGhost)
-{
-	if (ghost.GetDeadFlag())
-	{
-		renderer.DrawObject(deadGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
-	}
-	else if (m_ghostCounterFlag)
-	{
-		renderer.DrawObject(vulnerableGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
-	}
-	else
-	{
-		renderer.DrawObject(defaultGhost, ghost.GetDrawPos().myX, ghost.GetDrawPos().myY);
-	}
-}
-
 void Pacman::RedrawUI(Renderer& renderer)
 {
 	std::string drawTextString;
@@ -379,36 +355,14 @@ void Pacman::PickupDot()
 void Pacman::PickupBigDot()
 {
 	UpdateScore(20);
-	SetGhostCounter(m_ghostCounterDuration);
-}
-
-void Pacman::SetGhostCounter(float value)
-{
-	m_ghostGhostCounter = value;
-	m_ghostCounterFlag = true;
 	redGhost->SetState(GhostState::FRIGHTENED);
 	tealGhost->SetState(GhostState::FRIGHTENED);
 	pinkGhost->SetState(GhostState::FRIGHTENED);
 	orangeGhost->SetState(GhostState::FRIGHTENED);
 }
 
-void Pacman::ReduceGhostCounterDuration(float amount)
-{
-	m_ghostCounterDuration -= amount;
-	if (m_ghostCounterDuration < 0.0f)
-	{
-		m_ghostCounterFlag = false;
-		m_ghostCounterDuration = m_ghostCounterDefault;
-		redGhost->SetState(GhostState::CHASE);
-		tealGhost->SetState(GhostState::CHASE);
-		pinkGhost->SetState(GhostState::CHASE);
-		orangeGhost->SetState(GhostState::CHASE);
-	}
-}
-
 void Pacman::ResetGhost(Ghost& ghost)
 {
-	ghost.GetPath().clear();
 	ghost.SetNextDir(Vector2f(0, -1));
 	ghost.SetPosition(ghost.GetSpawnPos());
 	ghost.SetCurrentTile(ghost.GetPosition());
@@ -427,7 +381,7 @@ void Pacman::IntersectGhost(Ghost& ghost)
 {
 	if (!ghost.GetDeadFlag())
 	{
-		if (!m_ghostCounterFlag)
+		if (!(ghost.GetState() == GhostState::FRIGHTENED))
 		{
 			UpdateLives(-1);
 			myWorld->Reset();
@@ -437,7 +391,7 @@ void Pacman::IntersectGhost(Ghost& ghost)
 			ResetGhost(*pinkGhost);
 			ResetGhost(*orangeGhost);
 		}
-		else if (m_ghostCounterFlag)
+		else
 		{
 			UpdateScore(50);
 			ResetGhost(ghost);
@@ -457,10 +411,10 @@ bool Pacman::OnDraw(Renderer& renderer)
 
 	DrawAvatar(renderer, myAvatar->GetDirection(), m_avatarOpen);
 
-	DrawGhost(renderer, *redGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pRedGhost);
-	DrawGhost(renderer, *tealGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pTealGhost);
-	DrawGhost(renderer, *pinkGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pPinkGhost);
-	DrawGhost(renderer, *orangeGhost, *m_pDeadGhost, *m_pVulnerableGhost, *m_pOrangeGhost);
+	redGhost->Draw(renderer, *m_pRedGhost, *m_pVulnerableGhost, *m_pDeadGhost);
+	tealGhost->Draw(renderer, *m_pTealGhost, *m_pVulnerableGhost, *m_pDeadGhost);
+	pinkGhost->Draw(renderer, *m_pPinkGhost, *m_pVulnerableGhost, *m_pDeadGhost);
+	orangeGhost->Draw(renderer, *m_pOrangeGhost, *m_pVulnerableGhost, *m_pDeadGhost);
 	
 	if (m_updateUI)
 	{

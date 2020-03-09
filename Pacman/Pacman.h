@@ -13,8 +13,8 @@ struct PACMAN_DESC
 	float ghostChaseSpeed = 140.0f;
 	float ghostScatterSpeed = 100.0f;
 	float ghostFrightenedSpeed = 60.0f;
-	float ghostCounterDuration = 12.0f;
 	float ghostChaseDuration = 8.0f;
+	float ghostFrightenedDuration = 10.0f;
 	float ghostScatterDuration = 6.0f;
 	float avatarToggleDrawCooldown = 0.05f;
 	float cherrySpawnCooldown = 20.0f;
@@ -63,8 +63,6 @@ private:
 	void UpdateAvatar(float deltaTime);
 	void PickupDot();
 	void PickupBigDot();
-	void SetGhostCounter(float value);
-	void ReduceGhostCounterDuration(float amount);
 	void IntersectGhost(Ghost& ghost);
 	void ResetGhost(Ghost& ghost);
 	void ResetAvatar();
@@ -76,22 +74,10 @@ private:
 	//Graphics Logic:
 	bool OnDraw(Renderer& renderer);
 	void DrawAvatar(Renderer& renderer, Vector2f& direction, const bool& open);
-	void DrawGhost(
-		Renderer& core, Ghost& ghost,
-		DrawEntity& deadGhost,
-		DrawEntity& vulnerableGhost,
-		DrawEntity& defaultGhost);
 	void RedrawUI(Renderer& core);
 
 	//Local data
 	float m_avatarMovementSpeed;
-
-	float m_ghostGhostCounter;
-
-	bool m_ghostCounterFlag;
-	float m_ghostCounterDefault;
-	float m_ghostCounterDuration;
-	float m_ghostCounterReducer;
 
 	float m_ghostIntersectionDist;
 

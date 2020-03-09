@@ -6,6 +6,7 @@ Ghost::Ghost(
 	const float scatterSpeed,
 	const float frightenedSpeed,
 	const float chaseDuration,
+	const float frightenedDuration,
 	const float scatterDuration,
 	const Vector2f& nextDirection) :
 	MovableGameEntity(aPosition, chaseSpeed), 
@@ -16,10 +17,11 @@ Ghost::Ghost(
 	m_frightenedSpeed(frightenedSpeed),
 	m_chaseDefaultDuration(chaseDuration),
 	m_chaseCurrentDuration(chaseDuration),
-	m_chaseDurationReducer(1.0f),
+	m_frightenedCurrentDuration(frightenedDuration),
+	m_frightenedDefaultDuration(frightenedDuration),
 	m_scatterDefaultDuration(scatterDuration),
 	m_scatterCurrentDuration(scatterDuration),
-	m_scatterDurationReducer(1.0f),
+	m_stateDurationReducer(1.0f),
 	m_leftDir(-1.f, 0.f), m_rightDir(1.f, 0.f),
 	m_upDir(0.f, -1.f), m_downDir(0.f, 1.f)
 {
@@ -29,7 +31,29 @@ Ghost::Ghost(
 
 Ghost::~Ghost(void)
 {
-	SAFE_DELETE_VECTOR(myPath);
+
+}
+
+void Ghost::SetState(GhostState state)
+{
+	switch (state)
+	{
+	case GhostState::CHASE:
+		m_movementSpeed = m_chaseSpeed;
+		m_stateDuration = m_chaseDefaultDuration;
+		break;
+	case GhostState::FRIGHTENED:
+		m_movementSpeed = m_frightenedSpeed;
+		m_stateDuration = m_frightenedDefaultDuration;
+		break;
+	case GhostState::SCATTER:
+		m_movementSpeed = m_scatterSpeed;
+		m_stateDuration = m_scatterDefaultDuration;
+		break;
+	default:
+		break;
+	}
+	m_state = state;
 }
 
 void Ghost::Update(
@@ -39,19 +63,6 @@ void Ghost::Update(
 	const float tileSize, 
 	const Vector2f& drawOffset)
 {
-	switch (m_state)
-	{
-	case GhostState::CHASE:
-		m_movementSpeed = m_chaseSpeed;
-		break;
-	case GhostState::FRIGHTENED:
-		m_movementSpeed = m_frightenedSpeed;
-		break;
-	case GhostState::SCATTER:
-		m_movementSpeed = m_scatterSpeed;
-		break;
-	}
-
 	float distanceToMove = deltaTime * m_movementSpeed;
 	Vector2f direction = m_nextTile - m_currentTile;
 
@@ -515,7 +526,7 @@ void Ghost::Update(
 	myPosition = m_currentTile;
 	m_drawPos = myPosition + drawOffset;
 
-	m_stateDuration -= deltaTime * m_chaseDurationReducer;
+	m_stateDuration -= deltaTime * m_stateDurationReducer;
 
 	if (m_stateDuration < 0.0f)
 	{
@@ -523,16 +534,37 @@ void Ghost::Update(
 		{
 		case GhostState::CHASE:
 		{
-			m_state = GhostState::SCATTER;
-			m_stateDuration = m_scatterDefaultDuration;
+			SetState(GhostState::SCATTER);
+		}
+		break;
+		case GhostState::FRIGHTENED:
+		{
+			SetState(GhostState::SCATTER);
 		}
 		break;
 		case GhostState::SCATTER:
 		{
-			m_state = GhostState::CHASE;
-			m_stateDuration = m_chaseDefaultDuration;
+			SetState(GhostState::CHASE);
 		}
 		break;
+		default:
+		break;
 		}
+	}
+}
+
+void Ghost::Draw(Renderer& renderer, DrawEntity& defaultImage, DrawEntity& vulnerableImage, DrawEntity& deadImage)
+{
+	if (myIsDeadFlag)
+	{
+		renderer.DrawObject(deadImage, m_drawPos.myX, m_drawPos.myY);
+	}
+	else if (m_state == GhostState::FRIGHTENED)
+	{
+		renderer.DrawObject(vulnerableImage, m_drawPos.myX, m_drawPos.myY);
+	}
+	else
+	{
+		renderer.DrawObject(defaultImage, m_drawPos.myX, m_drawPos.myY);
 	}
 }
